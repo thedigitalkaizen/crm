@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Kaizen CRM</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --font-sora: "Sora"; --font-inter: "Inter"; }
+/* The Kaizen Agency: calm, plain. No gradients, no glows. */
+:root {
+  --royal: #2f6bff;
+  --royal-ink: #1f4fd1;
+  --royal-soft: #eaf0ff;
+  --navy: #0b1226;
+  --navy-2: #151d36;
+  --emerald: #10b981;
+  --emerald-ink: #047857;
+  --emerald-soft: #e7f7f0;
+  --amber-ink: #92400e;
+  --amber-soft: #fdf3e2;
+  --red-ink: #b42318;
+  --red-soft: #fdecea;
+
+  --bg: #f6f7fa;
+  --surface: #ffffff;
+  --ink: #0b1226;
+  --ink-2: #48506a;
+  --ink-3: #7a8199;
+  --line: #e3e6ee;
+  --line-2: #eef0f5;
+
+  --radius: 10px;
+  --font-head: var(--font-sora), "Sora", system-ui, sans-serif;
+  --font-body: var(--font-inter), "Inter", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 600; letter-spacing: -0.01em; margin: 0; color: var(--ink); }
+h1 { font-size: 24px; }
+h2 { font-size: 18px; }
+h3 { font-size: 15px; }
+p { margin: 0; }
+a { color: var(--royal-ink); text-decoration: none; }
+a:hover { text-decoration: underline; }
+small, .muted { color: var(--ink-3); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- shell ---------- */
+.shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+.side {
+  background: var(--navy);
+  color: #c9cfe0;
+  padding: 22px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky; top: 0; height: 100vh;
+}
+.side .brand img { height: 30px; display: block; margin: 0 8px; }
+.side .tag { font-size: 12px; color: #8a92ad; margin: 8px 10px 0; }
+.side nav { display: flex; flex-direction: column; gap: 2px; }
+.side nav a {
+  color: #c9cfe0; padding: 8px 10px; border-radius: 8px; font-size: 14px; text-decoration: none;
+}
+.side nav a:hover { background: var(--navy-2); color: #fff; }
+.side nav a[aria-current="page"] { background: var(--navy-2); color: #fff; box-shadow: inset 3px 0 0 var(--emerald); }
+.side .foot { margin-top: auto; font-size: 13px; padding: 0 10px; }
+.side .foot .who { color: #fff; font-weight: 500; }
+.side .foot button { margin-top: 8px; background: none; border: 1px solid #2a3352; color: #c9cfe0; padding: 6px 10px; border-radius: 8px; cursor: pointer; font: inherit; font-size: 13px; }
+.side .foot button:hover { border-color: #46507a; color: #fff; }
+
+.main { padding: 28px 36px 60px; max-width: 1180px; width: 100%; min-width: 0; }
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+.page-head p { color: var(--ink-2); margin-top: 4px; }
+.crumb { font-size: 13px; color: var(--ink-3); margin-bottom: 6px; }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; padding: 12px 16px; gap: 12px; }
+  .side .tag { display: none; }
+  .side nav { flex-direction: row; flex-wrap: wrap; }
+  .side .foot { margin: 0 0 0 auto; display: flex; align-items: center; gap: 10px; }
+  .side .foot button { margin: 0; }
+  .main { padding: 20px 16px 48px; }
+}
+
+/* ---------- surfaces ---------- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.card + .card { margin-top: 16px; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.card-head p { color: var(--ink-3); font-size: 13px; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 960px) { .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid-3 { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .grid-2, .grid-4 { grid-template-columns: 1fr; } }
+
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+.stat .label { font-size: 13px; color: var(--ink-2); }
+.stat .value { font-family: var(--font-head); font-size: 24px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.stat .delta { font-size: 12.5px; margin-top: 2px; color: var(--ink-3); }
+.delta.good { color: var(--emerald-ink); }
+.delta.bad { color: var(--red-ink); }
+
+/* ---------- tables ---------- */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 12.5px; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px; border-bottom: 1px solid var(--line-2); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
+td a[href*="/invoices/"] { white-space: nowrap; }
+.empty { padding: 28px; text-align: center; color: var(--ink-3); font-size: 14px; }
+
+/* ---------- badges ---------- */
+.badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 999px; background: var(--line-2); color: var(--ink-2); white-space: nowrap; }
+.badge.paid, .badge.active, .badge.captured { background: var(--emerald-soft); color: var(--emerald-ink); }
+.badge.overdue, .badge.failed, .badge.churned { background: var(--red-soft); color: var(--red-ink); }
+.badge.due, .badge.onboarding, .badge.paused { background: var(--amber-soft); color: var(--amber-ink); }
+.badge.upcoming, .badge.created { background: var(--royal-soft); color: var(--royal-ink); }
+.badge.test { background: var(--amber-soft); color: var(--amber-ink); }
+
+/* ---------- forms ---------- */
+label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--ink-2); font-weight: 500; }
+input, select, textarea {
+  font: inherit; font-size: 14px; color: var(--ink);
+  background: #fff; border: 1px solid #d5d9e3; border-radius: 8px; padding: 8px 10px; width: 100%;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--royal-soft); border-color: var(--royal); }
+textarea { min-height: 76px; resize: vertical; }
+input[type="checkbox"] { width: auto; }
+.check { flex-direction: row; align-items: center; gap: 8px; font-weight: 400; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+.form-grid .full { grid-column: 1 / -1; }
+.form-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.form-row > label { flex: 1 1 140px; }
+@media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+.hint { font-size: 12.5px; color: var(--ink-3); font-weight: 400; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font: inherit; font-size: 14px; font-weight: 500; line-height: 1;
+  padding: 10px 14px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+  background: var(--royal); color: #fff; text-decoration: none;
+}
+.btn:hover { background: var(--royal-ink); text-decoration: none; }
+.btn.secondary { background: #fff; color: var(--ink); border-color: #d5d9e3; }
+.btn.secondary:hover { background: var(--bg); }
+.btn.ghost { background: none; color: var(--ink-2); padding: 6px 8px; }
+.btn.ghost:hover { background: var(--line-2); color: var(--ink); }
+.btn.danger { background: #fff; color: var(--red-ink); border-color: #f1c8c3; }
+.btn.danger:hover { background: var(--red-soft); }
+.btn.pay { background: var(--emerald-ink); }
+.btn.pay:hover { background: #065f46; }
+.btn.small { padding: 6px 10px; font-size: 13px; }
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+.notice { border-radius: 8px; padding: 10px 14px; font-size: 14px; border: 1px solid var(--line); background: var(--surface); }
+.notice.ok { background: var(--emerald-soft); border-color: #bfe8d6; color: var(--emerald-ink); }
+.notice.err { background: var(--red-soft); border-color: #f1c8c3; color: var(--red-ink); }
+.notice.warn { background: var(--amber-soft); border-color: #f2dcb4; color: var(--amber-ink); }
+.notice.info { background: var(--royal-soft); border-color: #cbd8ff; color: var(--royal-ink); }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 18px; overflow-x: auto; }
+.tabs a { padding: 9px 12px; color: var(--ink-2); font-size: 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.tabs a:hover { color: var(--ink); text-decoration: none; }
+.tabs a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--royal); font-weight: 500; }
+
+.kv { display: grid; grid-template-columns: 140px 1fr; gap: 8px 12px; font-size: 14px; }
+.kv dt { color: var(--ink-3); }
+.kv dd { margin: 0; }
+
+.copy { display: flex; gap: 8px; }
+.copy input { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; }
+
+details > summary { cursor: pointer; color: var(--royal-ink); font-size: 14px; list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] > summary { margin-bottom: 12px; }
+
+/* ---------- auth pages ---------- */
+.auth { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+.auth .box { width: 100%; max-width: 400px; }
+.auth .logo { height: 34px; margin-bottom: 26px; }
+.auth .card { padding: 26px; }
+.auth h1 { font-size: 21px; margin-bottom: 6px; }
+.auth form { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+.auth .btn { width: 100%; padding: 12px; }
+.auth .below { text-align: center; color: var(--ink-3); font-size: 13px; margin-top: 18px; }
+
+/* ---------- charts ---------- */
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart text { font-family: var(--font-body); font-size: 11px; fill: var(--ink-3); }
+.chart .grid line { stroke: var(--line-2); }
+.chart .axis { stroke: var(--line); }
+.chart rect.bar { fill: var(--royal); }
+.chart rect.bar:hover { fill: var(--royal-ink); }
+.chart .line { fill: none; stroke: var(--emerald); stroke-width: 2; }
+.chart .dot { fill: var(--surface); stroke: var(--emerald); stroke-width: 2; }
+.chart .vlabel { fill: var(--ink-2); font-weight: 500; }
+.legend { display: flex; gap: 14px; font-size: 12.5px; color: var(--ink-2); margin-top: 6px; flex-wrap: wrap; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--royal); }
+.legend span.em::before { background: var(--emerald); height: 3px; vertical-align: 3px; border-radius: 2px; }
+
+.sandbox-pay { max-width: 460px; margin: 40px auto; }
+
+/* ---------- invoice ---------- */
+.invoice { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 36px 40px; max-width: 820px; }
+.invoice .pre { white-space: pre-line; }
+.inv-head { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: 22px; }
+.inv-logo { height: 30px; display: block; margin-bottom: 14px; }
+.inv-from { font-size: 13.5px; color: var(--ink-2); line-height: 1.6; }
+.inv-from strong { color: var(--ink); }
+.inv-meta { text-align: right; }
+.inv-meta h1 { font-size: 22px; margin-bottom: 10px; }
+.inv-meta dl { display: grid; grid-template-columns: auto auto; gap: 4px 14px; margin: 0 0 10px; font-size: 13.5px; justify-content: end; }
+.inv-meta dt { color: var(--ink-3); }
+.inv-meta dd { margin: 0; font-weight: 500; }
+.inv-to { font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+.inv-lines tfoot td { border-bottom: none; padding: 6px 10px; }
+.inv-lines tfoot tr:first-child td { border-top: 1px solid var(--line); padding-top: 12px; }
+.inv-total td { font-family: var(--font-head); font-weight: 600; font-size: 16px; color: var(--ink); }
+.inv-foot { margin-top: 30px; font-size: 13px; }
+.inv-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+@media (max-width: 640px) { .invoice { padding: 22px 18px; } .inv-meta { text-align: left; } .inv-meta dl { justify-content: start; } }
+
+.explain { font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+.summary { font-size: 15px; line-height: 1.65; color: var(--ink-2); }
+.summary strong { color: var(--ink); }
+
+.line-items { display: grid; grid-template-columns: 1fr 90px 160px; gap: 8px; align-items: end; }
+.line-items .h { font-size: 13px; color: var(--ink-2); font-weight: 500; }
+@media (max-width: 640px) { .line-items { grid-template-columns: 1fr 70px 110px; } }
+
+@media print {
+  @page { margin: 14mm; }
+  body { background: #fff; }
+  .side, .no-print, .inv-actions, nextjs-portal { display: none !important; }
+  .shell { display: block; }
+  .main { padding: 0; max-width: none; }
+  .invoice { border: none; padding: 0; max-width: none; }
+  .badge { border: 1px solid currentColor; }
+}
+
+/* Pipeline board and task lists */
+.board { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+.board-col { background: var(--line-2); border-radius: var(--radius); padding: 10px; min-height: 120px; }
+.board-col h3 { font-size: 14px; margin: 2px 4px 2px; display: flex; justify-content: space-between; }
+.board-col .sub { font-size: 12.5px; color: var(--ink-3); margin: 0 4px 10px; }
+.deal { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; color: var(--ink); }
+.deal:hover { border-color: var(--royal); text-decoration: none; }
+.deal .t { font-weight: 600; font-size: 14px; }
+.deal .m { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+.deal .late { color: var(--red-ink); font-weight: 500; }
+.timeline { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-direction: column; gap: 12px; }
+.timeline li { border-top: 1px solid var(--line-2); padding-top: 10px; }
+.timeline .who { color: var(--ink-3); font-size: 12.5px; margin-top: 2px; }
+@media (max-width: 960px) { .board { grid-template-columns: repeat(4, 240px); } }
+.task-list { list-style: none; padding: 0; margin: 0; }
+.task-row { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; padding: 9px 0; border-top: 1px solid var(--line-2); }
+.task-list .task-row:first-child { border-top: 0; }
+.tick { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--ink-3); background: var(--surface); cursor: pointer; padding: 0; font-size: 13px; line-height: 1; color: #fff; margin-top: 1px; }
+.tick:hover { border-color: var(--emerald); }
+.tick.on { background: var(--emerald); border-color: var(--emerald); }
+.task-done { color: var(--ink-3); text-decoration: line-through; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.loading { min-height: 60vh; display: grid; place-items: center; color: var(--ink-3); }
+.toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 50; max-width: min(560px, calc(100vw - 32px)); box-shadow: 0 6px 24px rgba(11,18,38,.12); }
+.busy-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--royal); z-index: 60; animation: kzbusy 1.2s ease-in-out infinite; transform-origin: left; }
+@keyframes kzbusy { 0% { transform: scaleX(.05); } 50% { transform: scaleX(.7); } 100% { transform: scaleX(.05); translate: 100% 0; } }
+@media (prefers-reduced-motion: reduce) { .busy-bar { animation: none; } }
+.pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; background: var(--line-2); padding: 1px 5px; border-radius: 4px; }
+pre.box { white-space: pre-wrap; font-size: 12.5px; background: var(--bg); padding: 10px; border-radius: 8px; margin: 0 0 10px; overflow-x: auto; }
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">Loading…</div></div>
+<script>
+(function () {
+'use strict';
+var API = 'https://script.google.com/macros/s/AKfycbx6EB2OdR0G_ALa753jCtawTBJqDJpvrKc3ipHGpTo6YASbF9d78AUZNH4ba4ZoHTRzKQ/exec';
+
+/* ---------- small helpers ---------- */
+var esc = function (v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+var D3 = { BHD: 1, OMR: 1, KWD: 1 };
+var digits = function (c) { return D3[c] ? 3 : 2; };
+var major = function (m, c) { return (Number(m) || 0) / Math.pow(10, digits(c)); };
+function money(m, c, compact) {
+  if (!c) return '—';
+  return new Intl.NumberFormat(c === 'INR' ? 'en-IN' : 'en', { style: 'currency', currency: c, notation: compact ? 'compact' : 'standard', maximumFractionDigits: compact ? 1 : digits(c) }).format(major(m, c));
+}
+function plain(v, c) { return new Intl.NumberFormat(c === 'INR' ? 'en-IN' : 'en', { style: 'currency', currency: c, maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(v); }
+function inputAmount(m, c) { return m ? String(major(m, c)) : ''; }
+function toDate(s) { if (!s) return null; var d = new Date(String(s).length === 10 ? s + 'T00:00:00Z' : s); return isNaN(d) ? null : d; }
+var DF = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+function fmtDate(s) { var d = toDate(s); return d ? DF.format(d) : '—'; }
+function fmtTime(s) { var d = toDate(s); return d ? DF.format(d) + ' ' + d.toISOString().slice(11, 16) + ' UTC' : ''; }
+function fmtMonth(ym) { var p = String(ym).split('-'); return new Intl.DateTimeFormat('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(+p[0], +p[1] - 1, 1))); }
+function today() { return new Date().toISOString().slice(0, 10); }
+function addDays(ymd, n) { return new Date(Date.parse(ymd + 'T00:00:00Z') + n * 86400000).toISOString().slice(0, 10); }
+function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g, ' '); }
+var nf = new Intl.NumberFormat('en');
+function opts(list, cur, labels) { return list.map(function (v) { var k = Array.isArray(v) ? v[0] : v, l = Array.isArray(v) ? v[1] : (labels ? labels[v] || cap(v) : cap(v)); return '<option value="' + esc(k) + '"' + (String(cur) === String(k) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join(''); }
+function tel(p) { return String(p || '').replace(/[^\d+]/g, ''); }
+function wa(p) { var d = String(p || '').replace(/\D/g, ''); return d.length >= 8 ? ' · <a href="https://wa.me/' + d + '" target="_blank" rel="noopener noreferrer">WhatsApp</a>' : ''; }
+function first(name) { return String(name || '').split(' ')[0]; }
+
+/* ---------- labels ---------- */
+var COUNTRIES = { IN: ['India', 'INR'], SA: ['Saudi Arabia', 'SAR'], AE: ['United Arab Emirates', 'AED'], QA: ['Qatar', 'QAR'], BH: ['Bahrain', 'BHD'], OM: ['Oman', 'OMR'], KW: ['Kuwait', 'KWD'], OT: ['Other', 'USD'] };
+var CURRENCIES = ['INR', 'SAR', 'AED', 'QAR', 'BHD', 'OMR', 'KWD', 'USD'];
+var INDUSTRIES = ['education', 'travel', 'training', 'other'];
+var SERVICES = ['Meta Ads', 'Google Ads', 'Landing pages', 'Lead Ops / CRM setup', 'WhatsApp follow-up', 'Creative production'];
+var LEAD_SOURCES = { meta: 'Facebook / Instagram ad', google: 'Google ad', whatsapp: 'WhatsApp', website: 'Website form', walk_in: 'Walk-in / call', referral: 'Referral', other: 'Other' };
+var LEAD_STATUSES = ['new', 'contacted', 'interested', 'won', 'lost'];
+var LEAD_KIND = { new: 'upcoming', contacted: '', interested: 'due', won: 'paid', lost: 'overdue' };
+function wonLabel(ind) { return { education: 'Admitted', travel: 'Booked', training: 'Enrolled' }[ind] || 'Converted'; }
+function leadLabel(s, ind) { return { new: 'New, not contacted', contacted: 'Contacted', interested: 'Interested', won: wonLabel(ind), lost: 'Not interested' }[s] || s; }
+var STAGES = ['new', 'contacted', 'meeting', 'proposal', 'won', 'lost'];
+var OPEN_STAGES = ['new', 'contacted', 'meeting', 'proposal'];
+var STAGE_LABEL = { new: 'New enquiry', contacted: 'Talking', meeting: 'Meeting booked', proposal: 'Proposal sent', won: 'Won', lost: 'Lost' };
+var STAGE_HINT = { new: 'Not spoken yet', contacted: 'First call done', meeting: 'Call or visit fixed', proposal: 'Waiting for a yes' };
+var STAGE_KIND = { won: 'paid', lost: 'overdue', proposal: 'due', meeting: 'upcoming' };
+var PROSPECT_SOURCES = { website: 'Website', referral: 'Referral', instagram: 'Instagram', linkedin: 'LinkedIn', whatsapp: 'WhatsApp', cold: 'Cold outreach', event: 'Event', other: 'Other' };
+var TASK_LABEL = { todo: 'To do', doing: 'In progress', done: 'Done' };
+var PRIORITY = { low: 'Low', normal: 'Normal', high: 'Urgent' };
+var EXPENSE_CATS = { ad_spend: 'Ad spend (paid by us)', freelancer: 'Freelancer / contractor', salary: 'Salary', software: 'Software & tools', office: 'Office & rent', travel: 'Travel', marketing: 'Our own marketing', other: 'Other' };
+var QUOTE_LABEL = { draft: 'Draft', sent: 'Sent', accepted: 'Accepted', declined: 'Declined' };
+var QUOTE_KIND = { accepted: 'paid', declined: 'void', sent: 'due', draft: '' };
+var CHANNEL = { meta: 'Meta Ads', google: 'Google Ads', other: 'Other' };
+var ROLE_WORD = { admin: 'owner', staff: 'team', client: 'client', system: 'automatic' };
+
+/* ---------- state ---------- */
+var S = { token: '', role: '', d: null, notes: {}, msg: null, busy: 0, info: null, toast: null };
+try { S.token = localStorage.getItem('kz_token') || ''; S.role = localStorage.getItem('kz_role') || ''; } catch (e) { /* private mode */ }
+function saveAuth(token, role) { S.token = token || ''; S.role = role || ''; try { if (token) { localStorage.setItem('kz_token', token); localStorage.setItem('kz_role', role); } else { localStorage.removeItem('kz_token'); localStorage.removeItem('kz_role'); } } catch (e) { /* fine */ } }
+var D = function () { return S.d || {}; };
+var isOwner = function () { return S.role === 'admin'; };
+var isClient = function () { return S.role === 'client'; };
+
+/* ---------- server calls ---------- */
+function rid() { var a = ''; while (a.length < 24) a += Math.random().toString(36).slice(2); return 'r' + Date.now().toString(36) + a.slice(0, 20); }
+function call(fn) {
+  var args = Array.prototype.slice.call(arguments, 1), id = rid();
+  S.busy++; busyBar();
+  function attempt(left) {
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args, token: S.token, rid: id }), redirect: 'follow' })
+      .then(function (r) { return r.text(); })
+      .then(function (t) {
+        var j; try { j = JSON.parse(t); } catch (e) { throw new Error('Google was busy and did not answer. Please try again.'); }
+        if (!j.ok) { var err = new Error(j.e || 'Request failed'); err.server = true; throw err; }
+        return j.v;
+      })
+      .catch(function (e) {
+        if (!e.server && left > 0) return new Promise(function (res) { setTimeout(res, 2000); }).then(function () { return attempt(left - 1); });
+        if (!e.server && e.message === 'Failed to fetch') e = new Error('Could not reach the server. Check your internet connection.');
+        throw e;
+      });
+  }
+  return attempt(2).then(function (v) { S.busy--; busyBar(); return v; }, function (e) {
+    S.busy--; busyBar();
+    if (e.message === 'SIGNED_OUT') { saveAuth('', ''); S.d = null; go('login'); e = new Error('Please sign in again.'); }
+    throw e;
+  });
+}
+function busyBar() { var b = document.getElementById('busy'); if (S.busy > 0 && !b) { b = document.createElement('div'); b.id = 'busy'; b.className = 'busy-bar'; document.body.appendChild(b); } else if (S.busy <= 0 && b) b.remove(); }
+
+/* local data patches after a save */
+function upsert(table, row) { if (!row || !S.d) return row; var list = S.d[table] || (S.d[table] = []); var i = list.findIndex(function (x) { return x.id === row.id; }); if (i >= 0) list[i] = row; else list.push(row); return row; }
+function drop(table, id) { if (S.d && S.d[table]) S.d[table] = S.d[table].filter(function (x) { return x.id !== id; }); }
+function byId(table, id) { return (D()[table] || []).find(function (x) { return x.id === id; }) || null; }
+function clientName(id) { var c = isClient() ? D().client : byId('clients', id); return c ? c.name : ''; }
+function userName(id) { var u = byId('users', id); return u ? u.name : ''; }
+
+/* ---------- routing ---------- */
+function route() {
+  var h = location.hash.replace(/^#\/?/, ''), i = h.indexOf('?');
+  var path = i >= 0 ? h.slice(0, i) : h, qs = i >= 0 ? h.slice(i + 1) : '';
+  var q = {}; new URLSearchParams(qs).forEach(function (v, k) { q[k] = v; });
+  return { parts: path.split('/').filter(Boolean), q: q };
+}
+function link(path, q) {
+  var s = '#/' + path, p = new URLSearchParams();
+  Object.keys(q || {}).forEach(function (k) { if (q[k] !== '' && q[k] != null) p.set(k, q[k]); });
+  var t = p.toString(); return t ? s + '?' + t : s;
+}
+function go(path, q) { var h = link(path, q); if (location.hash === h) render(); else location.hash = h; }
+
+/* ---------- boot ---------- */
+function load() {
+  return call(isClient() ? 'loadPortal' : 'loadAll').then(function (d) { S.d = d; saveAuth(S.token, d.me.role); });
+}
+function boot() {
+  window.addEventListener('hashchange', function () { S.msg = null; render(); window.scrollTo(0, 0); });
+  var r = route(), pub = ['login', 'setup', 'invite'].indexOf(r.parts[0]) >= 0;
+  if (!S.token || pub) { render(); if (!S.token && !pub) go('login'); return; }
+  load().then(render, function (e) { saveAuth('', ''); S.msg = { key: 'login', err: e.message }; go('login'); });
+}
+
+/* ---------- rendering ---------- */
+var app = document.getElementById('app');
+function render() {
+  var r = route(), html;
+  try {
+    var p0 = r.parts[0] || '';
+    if (p0 === 'login') html = viewLogin(r);
+    else if (p0 === 'setup') html = viewSetup(r);
+    else if (p0 === 'invite') html = viewInvite(r);
+    else if (!S.token) { go('login'); return; }
+    else if (!S.d) html = '<div class="loading">Loading…</div>';
+    else html = shell(isClient() ? portalView(r) : adminView(r), r);
+  } catch (e) { html = '<div class="main"><p class="notice err">Something went wrong: ' + esc(e.message) + '</p></div>'; console.error(e); }
+  app.innerHTML = html;
+  afterRender();
+}
+function afterRender() {
+  if (S.msg) {
+    var f = app.querySelector('[data-key="' + S.msg.key + '"]');
+    var html = S.msg.err ? '<p class="notice err" role="alert" style="margin-top:10px">' + esc(S.msg.err) + '</p>'
+      : S.msg.link ? '<div class="notice ok" style="margin-top:10px"><p style="margin-bottom:8px">' + esc(S.msg.ok) + '</p><div class="copy"><input readonly value="' + esc(S.msg.link) + '" onfocus="this.select()" aria-label="Link"><button type="button" class="btn secondary small" data-copy="' + esc(S.msg.link) + '">Copy</button></div></div>'
+      : '<p class="notice ok" role="status" style="margin-top:10px">' + esc(S.msg.ok) + '</p>';
+    if (f) f.insertAdjacentHTML('beforeend', html);
+    else { showToast(S.msg.err || S.msg.ok, !!S.msg.err); }
+  }
+  var lazy = app.querySelector('[data-notes]');
+  if (lazy) loadNotes(lazy.getAttribute('data-notes'));
+}
+function showToast(text, err) {
+  var t = document.createElement('p'); t.className = 'notice toast ' + (err ? 'err' : 'ok'); t.textContent = text; document.body.appendChild(t);
+  setTimeout(function () { t.remove(); }, 4000);
+}
+
+function shell(content, r) {
+  var p = '/' + r.parts.join('/');
+  var links = isClient()
+    ? [['', 'Home'], ['leads', 'Your leads'], ['results', 'Your results'], ['invoices', 'Invoices & payments']]
+    : [['', 'Overview'], ['clients', 'Clients'], ['leads', 'Client leads'], ['pipeline', 'Sales pipeline'], ['tasks', 'Tasks']]
+      .concat(isOwner() ? [['invoices', 'Invoices'], ['accounts', 'Accounts'], ['team', 'Team'], ['settings', 'Settings']] : []);
+  var alias = { client: 'clients', lead: 'leads', prospect: 'pipeline', task: 'tasks', invoice: isClient() ? 'invoices' : (r.q.from === 'accounts' ? 'accounts' : 'invoices'), quotes: 'accounts', quote: 'accounts', expenses: 'accounts' };
+  var top = alias[r.parts[0]] || r.parts[0] || '';
+  var nav = links.map(function (l) { return '<a href="' + link(l[0]) + '"' + (top === l[0] ? ' aria-current="page"' : '') + '>' + esc(l[1]) + '</a>'; }).join('');
+  var me = D().me || {};
+  var sub = isClient() ? (D().client || {}).name : isOwner() ? 'Owner' : 'Team';
+  return '<div class="shell"><aside class="side"><div class="brand"><img src="logo-on-dark.svg" alt="The Kaizen Agency"><p class="tag">' + (isClient() ? 'Client dashboard' : 'Agency CRM') + '</p></div>' +
+    '<nav aria-label="Main">' + nav + '</nav><div class="foot"><div><div class="who">' + esc(me.name) + '</div><div>' + esc(sub) + '</div></div>' +
+    '<a href="' + link('account') + '" style="color:#c9cfe0;font-size:13px;display:block;margin-top:6px">Password</a>' +
+    '<button type="button" data-act="logout">Sign out</button></div></aside><main class="main">' + content + '</main></div>';
+}
+
+function head(title, sub, right, crumb) {
+  return '<div class="page-head"><div>' + (crumb ? '<div class="crumb">' + crumb + '</div>' : '') + '<h1>' + esc(title) + '</h1>' + (sub ? '<p>' + sub + '</p>' : '') + '</div>' + (right ? '<div class="pill-row">' + right + '</div>' : '') + '</div>';
+}
+function badge(kind, text) { return '<span class="badge ' + esc(kind) + '">' + esc(text) + '</span>'; }
+function stat(label, value, explain, style) { return '<div class="stat"><div class="label">' + esc(label) + '</div><div class="value"' + (style ? ' style="' + style + '"' : '') + '>' + value + '</div>' + (explain ? '<div class="delta">' + explain + '</div>' : '<div class="delta">&nbsp;</div>') + '</div>'; }
+function tabs(list, cur, label) { return '<nav class="tabs" aria-label="' + esc(label || 'Sections') + '">' + list.map(function (t) { return '<a href="' + t[0] + '"' + (cur === t[2] ? ' aria-current="page"' : '') + '>' + esc(t[1]) + '</a>'; }).join('') + '</nav>'; }
+function btn(text, act, data, cls, confirmText) {
+  var a = Object.keys(data || {}).map(function (k) { return ' data-' + k + '="' + esc(data[k]) + '"'; }).join('');
+  return '<button type="button" class="btn ' + (cls || '') + '" data-act="' + act + '"' + a + (confirmText ? ' data-confirm="' + esc(confirmText) + '"' : '') + '>' + text + '</button>';
+}
+function form(name, key, inner, extra) { return '<form data-form="' + name + '" data-key="' + esc(key || name) + '"' + (extra || '') + '>' + inner + '</form>'; }
+function submit(text, cls) { return '<button type="submit" class="btn ' + (cls || '') + '">' + text + '</button>'; }
+function invState(i) {
+  if (i.status === 'paid' || i.status === 'void') return i.status;
+  var t = today(); if (i.dueDate < t) return 'overdue'; if (i.dueDate <= addDays(t, 7)) return 'due'; return 'upcoming';
+}
+var INV_WORD = { paid: 'Paid', void: 'Cancelled', overdue: 'Overdue', due: 'Due soon', upcoming: 'Not yet due' };
+function sumByCur(rows, key) { var m = {}; rows.forEach(function (r) { m[r.currency] = (m[r.currency] || 0) + (r[key] || 0); }); var k = Object.keys(m); return k.length ? k.map(function (c) { return money(m[c], c, true); }).join(' · ') : '—'; }
+
+/* ---------- auth screens ---------- */
+function authBox(title, sub, inner) {
+  return '<div class="auth"><div class="box"><img class="logo" src="logo-color.svg" alt="The Kaizen Agency"><div class="card"><h1>' + esc(title) + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + inner + '</div></div></div>';
+}
+function viewLogin() {
+  if (S.token && S.d) { go(''); return ''; }
+  return authBox('Sign in', 'Kaizen CRM and client dashboard.', form('login', 'login',
+    '<label>Email<input name="email" type="email" autocomplete="email" required></label>' +
+    '<label>Password<input name="password" type="password" autocomplete="current-password" required></label>' + submit('Sign in')) +
+    '<p class="below">New client? Use the invite link Kaizen sent you. Forgot your password? Ask your Kaizen contact for a new invite.</p>');
+}
+function viewSetup(r) {
+  return authBox('Create the owner account', 'This is done once. The owner sees everything, including money.', form('setup', 'setup',
+    '<input type="hidden" name="key" value="' + esc(r.parts[1] || '') + '">' +
+    '<label>Your name<input name="name" required maxlength="120"></label><label>Email<input name="email" type="email" required></label>' +
+    '<label>Password<input name="password" type="password" minlength="10" required autocomplete="new-password"><span class="hint">At least 10 characters.</span></label>' + submit('Create owner account')));
+}
+function viewInvite(r) {
+  var token = r.parts[1] || '', inf = S.inviteInfo;
+  if (!inf || inf.token !== token) {
+    S.inviteInfo = { token: token, loading: true };
+    call('inviteInfo', token).then(function (v) { S.inviteInfo = { token: token, v: v }; render(); }, function (e) { S.inviteInfo = { token: token, err: e.message }; render(); });
+    return '<div class="loading">Checking your invite…</div>';
+  }
+  if (inf.loading) return '<div class="loading">Checking your invite…</div>';
+  if (inf.err || !inf.v) return authBox('Invite not valid', 'This link has expired or was already used. Ask Kaizen for a new one.', '<p style="margin-top:14px"><a href="' + link('login') + '">Go to sign in</a></p>');
+  var v = inf.v;
+  return authBox(v.role === 'staff' ? 'Join the Kaizen team' : 'Welcome' + (v.clientName ? ', ' + v.clientName : ''), 'Set a password for <strong>' + esc(v.email) + '</strong>.', form('acceptInvite', 'acceptInvite',
+    '<input type="hidden" name="token" value="' + esc(token) + '"><label>Your name<input name="name" value="' + esc(v.name) + '" required maxlength="120"></label>' +
+    '<label>Password<input name="password" type="password" minlength="10" required autocomplete="new-password"><span class="hint">At least 10 characters.</span></label>' + submit('Set password and open dashboard')));
+}
+function viewAccount() {
+  return head('Your password', 'Change the password you sign in with.') + '<section class="card" style="max-width:460px">' + form('changePassword', 'changePassword',
+    '<div class="stack"><label>Current password<input name="old" type="password" required autocomplete="current-password"></label>' +
+    '<label>New password<input name="new" type="password" minlength="10" required autocomplete="new-password"><span class="hint">At least 10 characters.</span></label><div>' + submit('Change password') + '</div></div>') + '</section>';
+}
+
+/* ======================================================================
+   ADMIN / TEAM
+   ====================================================================== */
+function adminView(r) {
+  var p = r.parts, a = p[0] || '';
+  var ownerOnly = ['invoices', 'invoice', 'accounts', 'quotes', 'quote', 'expenses', 'team', 'settings'];
+  if (ownerOnly.indexOf(a) >= 0 && !isOwner()) return head('Not available', 'Only the owner can open this page.');
+  switch (a) {
+    case '': return viewOverview();
+    case 'clients': return p[1] === 'new' ? viewClientNew() : viewClients(r);
+    case 'client': return viewClient(p[1], r);
+    case 'leads': return viewLeads(r);
+    case 'lead': return viewLead(p[1]);
+    case 'pipeline': return viewPipeline(r);
+    case 'prospect': return viewProspect(p[1]);
+    case 'tasks': return viewTasks(r);
+    case 'task': return viewTask(p[1]);
+    case 'invoices': return p[1] === 'new' ? viewInvoiceNew(r) : viewInvoices(r);
+    case 'invoice': return viewInvoice(p[1], r);
+    case 'accounts': return viewAccounts(r);
+    case 'quotes': return p[1] === 'new' ? viewQuoteNew(r) : viewQuotes();
+    case 'quote': return viewQuote(p[1]);
+    case 'expenses': return viewExpenses(r);
+    case 'team': return viewTeam();
+    case 'settings': return viewSettings();
+    case 'account': return viewAccount();
+    default: return head('Page not found', '<a href="' + link('') + '">Back to overview</a>');
+  }
+}
+
+/* ---------- overview ---------- */
+function viewOverview() {
+  var d = D(), me = d.me, now = today(), week = addDays(now, 7);
+  var active = d.clients.filter(function (c) { return c.status === 'active'; });
+  var newLeads = d.leads.filter(function (l) { return l.status === 'new'; });
+  var dueLeads = d.leads.filter(function (l) { return l.followUpAt && l.followUpAt <= now && l.status !== 'won' && l.status !== 'lost'; });
+  var open = d.prospects.filter(function (p) { return OPEN_STAGES.indexOf(p.stage) >= 0; });
+  var myTasks = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done' && ((t.dueDate && t.dueDate < week) || (!t.dueDate && t.priority === 'high')); })
+    .sort(function (a, b) { return (a.dueDate || '9') < (b.dueDate || '9') ? -1 : 1; }).slice(0, 12);
+  var follow = open.filter(function (p) { return p.nextFollowUp && p.nextFollowUp <= week; }).sort(function (a, b) { return a.nextFollowUp < b.nextFollowUp ? -1 : 1; }).slice(0, 10);
+  var waiting = {}; newLeads.forEach(function (l) { waiting[l.clientId] = (waiting[l.clientId] || 0) + 1; });
+  var fourth;
+  var moneyBlock = '';
+  if (isOwner()) {
+    var mrr = {}; active.forEach(function (c) { var v = c.billingCycle === 'yearly' ? c.retainerMinor / 12 : c.billingCycle === 'quarterly' ? c.retainerMinor / 3 : c.retainerMinor; mrr[c.currency] = (mrr[c.currency] || 0) + v; });
+    var dueInv = d.invoices.filter(function (i) { return i.status === 'open' && i.dueDate <= addDays(now, 30); }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; });
+    var overdue = d.invoices.filter(function (i) { return i.status === 'open' && invState(i) === 'overdue'; });
+    var mrrText = Object.keys(mrr).length ? Object.keys(mrr).map(function (c) { return money(Math.round(mrr[c]), c, true); }).join(' · ') : '—';
+    fourth = stat('Overdue invoices', overdue.length ? sumByCur(overdue, 'amountMinor') : 'Nothing', 'Retainers: ' + esc(mrrText) + ' / month');
+    moneyBlock = '<div class="card" style="margin-top:16px"><div class="card-head"><div><h2>Invoices due in the next 30 days</h2><p>Unpaid, oldest first. Clients see these in their login.</p></div><a class="btn secondary small" href="' + link('invoices') + '">All invoices</a></div>' +
+      (dueInv.length ? invoiceTable(dueInv, true) : '<div class="empty">Nothing due in the next 30 days.</div>') + '</div>';
+  } else fourth = stat('My open tasks', String(d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; }).length));
+  return head('Hello, ' + first(me.name), 'What needs attention today.', '<a class="btn secondary" href="' + link('tasks') + '">My tasks</a><a class="btn" href="' + link('clients/new') + '">Add client</a>') +
+    '<div class="grid-4">' + stat('Active clients', active.length + ' of ' + d.clients.length) + stat('Leads not called yet', String(newLeads.length), dueLeads.length ? dueLeads.length + ' follow-ups due' : '') +
+    stat('Open deals', String(open.length), open.length ? esc(sumByCur(open, 'valueMinor')) + ' / month possible' : '') + fourth + '</div>' +
+    '<div class="grid-2" style="margin-top:16px;align-items:start"><section class="card"><div class="card-head"><h2>My tasks this week</h2><a href="' + link('tasks') + '">All tasks</a></div>' +
+    (myTasks.length ? '<ul class="task-list">' + myTasks.map(function (t) { return taskRow(t, true); }).join('') + '</ul>' : '<p class="muted">Nothing due this week.</p>') + '</section>' +
+    '<section class="card"><div class="card-head"><h2>Sales follow-ups</h2><a href="' + link('pipeline') + '">Pipeline</a></div>' +
+    (follow.length ? '<ul class="task-list">' + follow.map(function (p) { return '<li style="padding:8px 0;border-top:1px solid var(--line-2)"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a><div class="muted" style="font-size:12.5px">' + STAGE_LABEL[p.stage] + ' · <span' + (p.nextFollowUp <= now ? ' style="color:var(--red-ink)"' : '') + '>' + fmtDate(p.nextFollowUp) + '</span>' + (p.ownerId ? ' · ' + esc(userName(p.ownerId)) : '') + '</div></li>'; }).join('') + '</ul>' : '<p class="muted">No follow-ups due this week.</p>') + '</section></div>' +
+    (Object.keys(waiting).length ? '<section class="card" style="margin-top:16px"><div class="card-head"><div><h2>Client leads waiting for a call</h2><p>Remind the client if these sit too long. Fast calls win more admissions and bookings.</p></div><a href="' + link('leads', { status: 'new' }) + '">All new leads</a></div><div class="pill-row">' +
+      Object.keys(waiting).sort(function (a, b) { return waiting[b] - waiting[a]; }).map(function (id) { return '<a class="btn secondary small" href="' + link('leads', { client: id, status: 'new' }) + '">' + esc(clientName(id)) + ': ' + waiting[id] + ' new</a>'; }).join('') + '</div></section>' : '') +
+    moneyBlock;
+}
+
+/* ---------- clients ---------- */
+function viewClients(r) {
+  var q = (r.q.q || '').toLowerCase(), st = r.q.status || '';
+  var list = D().clients.filter(function (c) { return (!q || c.name.toLowerCase().indexOf(q) >= 0) && (!st || c.status === st); }).sort(function (a, b) { return a.name.localeCompare(b.name); });
+  var invs = D().invoices || [];
+  return head('Clients', list.length + (list.length === 1 ? ' client' : ' clients'), '<a class="btn" href="' + link('clients/new') + '">Add client</a>') +
+    '<form class="form-row" data-filter="clients" style="margin-bottom:14px"><label style="max-width:320px">Search<input name="q" value="' + esc(r.q.q || '') + '" placeholder="Client name"></label>' +
+    '<label style="max-width:200px">Status<select name="status"><option value="">All</option>' + opts(['onboarding', 'active', 'paused', 'churned'], st) + '</select></label><button class="btn secondary" type="submit">Filter</button></form>' +
+    '<div class="card" style="padding:0">' + (list.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Client</th><th>Industry</th><th>Country</th><th>Status</th>' + (isOwner() ? '<th class="r">Retainer</th><th>Next due</th>' : '') + '<th>Logins</th></tr></thead><tbody>' +
+      list.map(function (c) {
+        var logins = D().users.filter(function (u) { return u.clientId === c.id && !u.disabled; }).length;
+        var next = invs.filter(function (i) { return i.clientId === c.id && i.status === 'open'; }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; })[0];
+        return '<tr><td style="padding-left:20px"><a href="' + link('client/' + c.id) + '"><strong>' + esc(c.name) + '</strong></a></td><td>' + cap(c.industry) + '</td><td>' + esc((COUNTRIES[c.country] || [c.country])[0]) + '</td><td>' + badge(c.status, cap(c.status)) + '</td>' +
+          (isOwner() ? '<td class="r">' + (c.retainerMinor ? money(c.retainerMinor, c.currency) + ' / ' + c.billingCycle.replace('ly', '') : '—') + '</td><td>' + (next ? fmtDate(next.dueDate) : '—') + '</td>' : '') +
+          '<td>' + (logins || '<span class="muted">None yet</span>') + '</td></tr>';
+      }).join('') + '</tbody></table></div>' : '<div class="empty">No clients match. <a href="' + link('clients/new') + '">Add one</a>.</div>') + '</div>';
+}
+
+function clientFields(c) {
+  c = c || {};
+  var svc = String(c.services || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  var extra = svc.filter(function (s) { return SERVICES.indexOf(s) < 0; });
+  return '<section class="card"><h2 style="margin-bottom:14px">Business</h2><div class="form-grid">' +
+    '<label class="full">Client name<input name="name" required maxlength="120" value="' + esc(c.name) + '"></label>' +
+    '<label>Industry<select name="industry">' + opts(INDUSTRIES, c.industry || 'education') + '</select></label>' +
+    '<label>Country<select name="country">' + opts(Object.keys(COUNTRIES).map(function (k) { return [k, COUNTRIES[k][0]]; }), c.country || 'IN') + '</select></label>' +
+    '<label>City<input name="city" maxlength="80" value="' + esc(c.city) + '"></label>' +
+    '<label>Status<select name="status">' + opts(['onboarding', 'active', 'paused', 'churned'], c.status || 'onboarding') + '</select></label>' +
+    '<label class="full">Notes (team only)<textarea name="notes" maxlength="4000">' + esc(c.notes) + '</textarea></label></div></section>' +
+    '<section class="card"><h2 style="margin-bottom:14px">Main contact</h2><div class="form-grid">' +
+    '<label>Name<input name="contactName" maxlength="120" value="' + esc(c.contactName) + '"></label><label>Email<input name="contactEmail" type="email" maxlength="200" value="' + esc(c.contactEmail) + '"></label>' +
+    '<label>Phone / WhatsApp<input name="contactPhone" maxlength="40" value="' + esc(c.contactPhone) + '"></label></div></section>' +
+    '<section class="card"><h2 style="margin-bottom:12px">Services</h2><div style="display:flex;flex-wrap:wrap;gap:8px 18px">' +
+    SERVICES.map(function (s) { return '<label class="check"><input type="checkbox" name="svc" value="' + esc(s) + '"' + (svc.indexOf(s) >= 0 ? ' checked' : '') + '> ' + esc(s) + '</label>'; }).join('') +
+    '</div><label style="margin-top:12px">Other services (comma separated)<input name="svcOther" value="' + esc(extra.join(', ')) + '"></label></section>';
+}
+function viewClientNew() {
+  return head('Add client', 'You can invite their team once the client is saved.', '', '<a href="' + link('clients') + '">Clients</a>') +
+    form('saveClient', 'newClient', '<div class="stack">' + clientFields() +
+      (isOwner() ? '<section class="card"><h2 style="margin-bottom:14px">Fee (you can change it later)</h2><div class="form-grid"><label>Monthly retainer<input name="retainer" inputmode="decimal" placeholder="0"></label><label>Currency<select name="currency"><option value="">Country default</option>' + opts(CURRENCIES, '') + '</select></label></div></section>' : '') +
+      '<div>' + submit('Save client') + '</div></div>');
+}
+
+function viewClient(id, r) {
+  var c = byId('clients', id);
+  if (!c) return head('Client not found', '<a href="' + link('clients') + '">Back to clients</a>');
+  var tab = r.q.tab || 'overview';
+  var T = [['overview', 'Overview'], ['leads', 'Leads'], ['tasks', 'Tasks & notes'], ['results', 'Results']].concat(isOwner() ? [['billing', 'Plan & invoices']] : []).concat([['logins', 'Client logins']]);
+  var body = tab === 'leads' ? clientLeadsTab(c) : tab === 'tasks' ? clientWorkTab(c) : tab === 'results' ? clientResultsTab(c, r) : tab === 'billing' && isOwner() ? clientBillingTab(c) : tab === 'logins' ? clientLoginsTab(c) : clientOverviewTab(c);
+  return head(c.name, badge(c.status, cap(c.status)) + ' <span class="muted">' + cap(c.industry) + ' · ' + (c.city ? esc(c.city) + ', ' : '') + esc((COUNTRIES[c.country] || [c.country])[0]) + '</span>', '', '<a href="' + link('clients') + '">Clients</a>') +
+    (r.q.created ? '<p class="notice ok" style="margin-bottom:16px">Client saved. Next: ' + (isOwner() ? 'set the fee in <a href="' + link('client/' + id, { tab: 'billing' }) + '">Plan &amp; invoices</a>, then ' : '') + 'invite their team in <a href="' + link('client/' + id, { tab: 'logins' }) + '">Client logins</a>.</p>' : '') +
+    tabs(T.map(function (t) { return [link('client/' + id, { tab: t[0] }), t[1], t[0]]; }), tab, 'Client sections') + body;
+}
+function clientOverviewTab(c) {
+  return form('saveClient', 'editClient', '<input type="hidden" name="id" value="' + esc(c.id) + '"><div class="stack">' + clientFields(c) + '<div>' + submit('Save changes') + '</div></div>') +
+    (isOwner() ? '<div style="margin-top:24px">' + btn('Delete client', 'deleteClient', { id: c.id }, 'danger small', 'Delete ' + c.name + ' with all their leads, invoices, results and logins? This cannot be undone.') + '</div>' : '');
+}
+function clientLeadsTab(c) {
+  var leads = D().leads.filter(function (l) { return l.clientId === c.id; });
+  var k = leadCounts(leads), won = k.won || 0, rate = k.all ? Math.round(won / k.all * 100) : 0;
+  return '<div class="stack"><div class="grid-4">' + stat('Total leads', String(k.all)) + stat('Not called yet', String(k.new || 0)) + stat('Follow-up due', String(k.due)) +
+    stat(wonLabel(c.industry), won + (k.all ? ' <small class="muted">· ' + rate + '%</small>' : '')) + '</div>' +
+    '<section class="card" style="padding:0"><div class="card-head" style="padding:16px 20px 0"><h2>Latest leads</h2><a href="' + link('leads', { client: c.id }) + '">See all and filter</a></div>' + leadTable(sortNewest(leads).slice(0, 25), false, c.industry) + '</section>' +
+    '<div class="grid-2" style="align-items:start"><section class="card"><div class="card-head"><div><h2>Import from a spreadsheet</h2><p>CSV from Meta Lead Ads, Google Sheets or Excel.</p></div></div>' +
+    form('importLeads', 'importLeads', '<input type="hidden" name="clientId" value="' + esc(c.id) + '"><label>CSV file<input type="file" name="file" accept=".csv,text/csv" required></label>' +
+      '<p class="hint" style="margin:6px 0 10px">First row must be column names. We match: <code>name,phone,email,city,interest,source,campaign,notes,date</code>. Meta export names (full_name, phone_number, created_time, id) work too.</p>' + submit('Import leads')) + '</section>' +
+    '<section class="card"><div class="card-head"><div><h2>Send leads in automatically</h2><p>For website forms, Zapier / Make or the WhatsApp replier.</p></div></div>' +
+    '<p style="margin-bottom:8px">' + (c.hasLeadKey ? 'This client has an API key. Creating a new one stops the old one.' : 'No API key yet.') + '</p>' +
+    '<pre class="box">POST ' + esc(API) + '\nContent-Type: text/plain\n\n{"leadKey":"kzl_…","name":"…","phone":"…",\n "source":"meta","externalId":"…"}</pre>' +
+    form('rotateLeadKey', 'rotateLeadKey', '<input type="hidden" name="clientId" value="' + esc(c.id) + '">' + submit(c.hasLeadKey ? 'Create new key' : 'Create API key', 'secondary'), c.hasLeadKey ? ' data-confirm="Create a new key? The old key stops working right away."' : '') + '</section></div></div>';
+}
+function clientWorkTab(c) {
+  var tasks = D().tasks.filter(function (t) { return t.clientId === c.id; });
+  return '<div class="grid-2" style="align-items:start">' + taskMini(tasks, { clientId: c.id }) + notesPanel('client', c.id, 'Team notes (client can\'t see these)', 'e.g. Director prefers WhatsApp. Report due on the 5th.') + '</div>';
+}
+function clientResultsTab(c, r) {
+  var rows = D().metrics.filter(function (m) { return m.clientId === c.id; });
+  var month = new Date(); month.setUTCMonth(month.getUTCMonth() - 1); var ym = month.toISOString().slice(0, 7);
+  return '<div class="stack"><p class="notice info">This is what the client sees under "Your results".</p>' + performance(rows, c.currency, r.q.channel || 'all', link('client/' + c.id, { tab: 'results' })) +
+    '<div class="grid-2" style="align-items:start"><section class="card"><h2 style="margin-bottom:12px">Add or update a month</h2>' +
+    form('saveMetric', 'saveMetric', '<input type="hidden" name="clientId" value="' + esc(c.id) + '"><div class="form-grid">' +
+      '<label>Month<input name="month" type="month" required value="' + ym + '"></label><label>Where<select name="channel">' + opts(['meta', 'google', 'other'], 'meta', CHANNEL) + '</select></label>' +
+      '<label>Enquiries (leads)<input name="leads" inputmode="numeric" required></label><label>Ad spend (' + c.currency + ')<input name="spend" inputmode="decimal" required></label>' +
+      '<label>Sales from ads (' + c.currency + ')<input name="revenue" inputmode="decimal"></label><label>Clicks<input name="clicks" inputmode="numeric"></label></div>' +
+      '<p class="hint" style="margin-top:6px">Saving the same month and channel again replaces it.</p><div style="margin-top:10px">' + submit('Save month') + '</div>') + '</section>' +
+    '<section class="card"><h2 style="margin-bottom:12px">Upload a CSV</h2>' + form('importMetrics', 'importMetrics', '<input type="hidden" name="clientId" value="' + esc(c.id) + '"><label>CSV file<input type="file" name="file" accept=".csv,text/csv" required></label>' +
+      '<p class="hint" style="margin:6px 0 10px">Columns: <code>month,channel,leads,spend,revenue,impressions,clicks</code>. Month like 2026-10, channel meta / google / other, money in ' + c.currency + '.</p>' + submit('Upload')) +
+    (rows.length ? '<h3 style="margin:18px 0 6px">Saved months</h3><table><tbody>' + rows.slice().sort(function (a, b) { return a.month < b.month ? 1 : -1; }).map(function (m) { return '<tr><td>' + fmtMonth(m.month) + '</td><td>' + CHANNEL[m.channel] + '</td><td class="r">' + nf.format(m.leads) + ' leads</td><td class="r">' + btn('Delete', 'deleteMetric', { id: m.id }, 'ghost small', 'Delete this month?') + '</td></tr>'; }).join('') + '</tbody></table>' : '') +
+    '</section></div></div>';
+}
+function clientBillingTab(c) {
+  var invs = D().invoices.filter(function (i) { return i.clientId === c.id; }).sort(function (a, b) { return a.issueDate < b.issueDate ? 1 : -1; });
+  var a = D().agency;
+  return '<div class="stack"><section class="card"><div class="card-head"><div><h2>Plan and billing details</h2><p>Printed on invoices. The client sees the plan and fee in their login.</p></div></div>' +
+    form('savePlan', 'savePlan', '<input type="hidden" name="id" value="' + esc(c.id) + '"><div class="form-grid">' +
+      '<label>Plan name<input name="planName" maxlength="120" value="' + esc(c.planName) + '"></label><label>Fee<input name="retainer" inputmode="decimal" value="' + esc(inputAmount(c.retainerMinor, c.currency)) + '"></label>' +
+      '<label>Currency<select name="currency">' + opts(CURRENCIES, c.currency) + '</select></label><label>Billed<select name="billingCycle">' + opts(['monthly', 'quarterly', 'yearly'], c.billingCycle) + '</select></label>' +
+      '<label>Next invoice date<input name="nextRenewalDate" type="date" value="' + esc(c.nextRenewalDate) + '"></label><label>Legal name on invoice<input name="billingName" maxlength="200" value="' + esc(c.billingName) + '" placeholder="' + esc(c.name) + '"></label>' +
+      '<label class="full">Billing address<textarea name="billingAddress" maxlength="600">' + esc(c.billingAddress) + '</textarea></label>' +
+      '<label>Client tax ID (optional)<input name="taxId" maxlength="40" value="' + esc(c.taxId) + '"></label>' +
+      (a.taxId ? '<label>Tax<div class="form-row"><input name="taxLabel" maxlength="20" value="' + esc(c.taxLabel) + '" placeholder="GST / VAT" style="flex:1"><input name="taxRate" inputmode="decimal" value="' + (c.taxRateBps / 100 || '') + '" placeholder="%" style="width:90px"></div></label>'
+        : '<p class="hint" style="align-self:end">No GST/VAT is added: you are not tax registered (Settings has no tax number).</p>') +
+      '</div><div style="margin-top:12px">' + submit('Save') + '</div>') + '</section>' +
+    '<section class="card"><div class="card-head"><h2>Invoices</h2><div class="pill-row">' + btn('Create next retainer invoice', 'createRetainerInvoice', { id: c.id }, 'secondary small', 'Create the invoice for the period starting ' + fmtDate(c.nextRenewalDate || today()) + '? The client will see it.') +
+    '<a class="btn small" href="' + link('invoices/new', { client: c.id }) + '">One-off invoice</a></div></div>' + (invs.length ? invoiceTable(invs, false) : '<div class="empty">No invoices yet.</div>') + '</section></div>';
+}
+function clientLoginsTab(c) {
+  var users = D().users.filter(function (u) { return u.clientId === c.id; });
+  var invites = (D().invites || []).filter(function (i) { return i.clientId === c.id; });
+  return '<div class="stack"><section class="card"><div class="card-head"><div><h2>Invite someone from ' + esc(c.name) + '</h2><p>They set their own password and only ever see this client\'s data.</p></div></div>' +
+    form('inviteClientUser', 'inviteClientUser', '<input type="hidden" name="clientId" value="' + esc(c.id) + '"><div class="form-row"><label>Name<input name="name" maxlength="120" value="' + esc(c.contactName) + '"></label>' +
+      '<label>Email<input name="email" type="email" required maxlength="200" value="' + esc(c.contactEmail) + '"></label>' + submit('Create invite') + '</div>' +
+      '<label class="check" style="margin-top:10px"><input type="checkbox" name="sendEmail" checked> Also email the link to them (from your Google account)</label>') + '</section>' +
+    '<section class="card"><div class="card-head"><h2>Logins</h2></div>' + (users.length ? '<table><thead><tr><th>Name</th><th>Email</th><th>Last sign-in</th><th></th></tr></thead><tbody>' + users.map(function (u) {
+      return '<tr><td>' + esc(u.name) + (u.disabled ? ' ' + badge('churned', 'Turned off') : '') + '</td><td>' + esc(u.email) + '</td><td>' + (u.lastLoginAt ? fmtDate(u.lastLoginAt) : '<span class="muted">Never</span>') + '</td><td class="r">' +
+        btn(u.disabled ? 'Turn on' : 'Turn off', 'setUserDisabled', { id: u.id, off: u.disabled ? '' : '1' }, 'ghost small', u.disabled ? '' : 'Turn off this login? They will be signed out.') + '</td></tr>';
+    }).join('') + '</tbody></table>' : '<div class="empty">Nobody from this client can sign in yet.</div>') + '</section>' +
+    (invites.length ? '<section class="card"><div class="card-head"><h2>Invites not used yet</h2></div><table><tbody>' + invites.map(function (i) { return '<tr><td>' + esc(i.name || i.email) + '</td><td>' + esc(i.email) + '</td><td>Expires ' + fmtDate(i.expiresAt) + '</td><td class="r">' + btn('Cancel', 'revokeInvite', { id: i.id }, 'ghost small') + '</td></tr>'; }).join('') + '</tbody></table></section>' : '') + '</div>';
+}
+
+/* ---------- leads (shared by admin and portal) ---------- */
+function sortNewest(list) { return list.slice().sort(function (a, b) { return a.createdAt < b.createdAt ? 1 : -1; }); }
+function leadCounts(list) {
+  var k = { all: list.length, due: 0 }, now = today();
+  list.forEach(function (l) { k[l.status] = (k[l.status] || 0) + 1; if (l.followUpAt && l.followUpAt <= now && l.status !== 'won' && l.status !== 'lost') k.due++; });
+  return k;
+}
+function filterLeads(list, q) {
+  var now = today(), s = (q.q || '').toLowerCase();
+  return list.filter(function (l) {
+    if (q.status && l.status !== q.status) return false;
+    if (q.due === '1' && !(l.followUpAt && l.followUpAt <= now && l.status !== 'won' && l.status !== 'lost')) return false;
+    if (s && [l.name, l.phone, l.email, l.interest].join(' ').toLowerCase().indexOf(s) < 0) return false;
+    return true;
+  });
+}
+function leadTabs(counts, q, base, ind, keep) {
+  var T = [['', 'All'], ['new', 'New'], ['due', 'Follow-up due'], ['contacted', 'Contacted'], ['interested', 'Interested'], ['won', wonLabel(ind)], ['lost', 'Not interested']];
+  var cur = q.due === '1' ? 'due' : q.status || '';
+  return tabs(T.map(function (t) {
+    var n = t[0] === '' ? counts.all : counts[t[0]];
+    var qq = Object.assign({}, keep, t[0] === 'due' ? { due: '1' } : { status: t[0] });
+    return [link(base, qq), t[1] + (n ? ' (' + n + ')' : ''), t[0]];
+  }), cur, 'Lead status');
+}
+function leadTable(list, showClient, ind) {
+  if (!list.length) return '<div class="empty">No leads here.</div>';
+  var now = today(), base = isClient() ? 'lead/' : 'lead/';
+  return '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Name</th><th>Phone / email</th>' + (showClient ? '<th>Client</th>' : '') + '<th>Interested in</th><th>From</th><th>Received</th><th>Status</th><th>Follow up</th></tr></thead><tbody>' +
+    list.map(function (l) {
+      var i = showClient ? (byId('clients', l.clientId) || {}).industry : ind;
+      var late = l.followUpAt && l.followUpAt <= now && l.status !== 'won' && l.status !== 'lost';
+      return '<tr><td style="padding-left:20px"><a href="' + link(base + l.id) + '"><strong>' + esc(l.name || 'No name') + '</strong></a></td><td>' + (l.phone ? '<a href="tel:' + tel(l.phone) + '">' + esc(l.phone) + '</a>' : '') + (l.phone && l.email ? '<br>' : '') + (l.email ? '<span class="muted" style="font-size:13px">' + esc(l.email) + '</span>' : '') + '</td>' +
+        (showClient ? '<td>' + esc(clientName(l.clientId)) + '</td>' : '') + '<td>' + (esc(l.interest) || '<span class="muted">—</span>') + '</td><td class="muted">' + esc(LEAD_SOURCES[l.source] || l.source || '—') + '</td><td>' + fmtDate(l.createdAt) + '</td>' +
+        '<td>' + badge(LEAD_KIND[l.status] || '', leadLabel(l.status, i)) + '</td><td>' + (l.followUpAt ? '<span' + (late ? ' style="color:var(--red-ink);font-weight:500"' : '') + '>' + fmtDate(l.followUpAt) + '</span>' : '<span class="muted">—</span>') + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+function addLeadForm(clients, clientId, src) {
+  return '<details class="card" style="margin-bottom:16px"><summary><strong>Add a lead by hand</strong> <span class="muted">(walk-in, phone call, referral)</span></summary>' +
+    form('addLead', 'addLead', '<div class="form-grid" style="margin-top:12px">' +
+      (clients ? '<label>Client<select name="clientId" required><option value="">Choose…</option>' + opts(clients.map(function (c) { return [c.id, c.name]; }), clientId || '') + '</select></label>' : '') +
+      '<label>Name<input name="name" maxlength="120"></label><label>Phone<input name="phone" maxlength="40" inputmode="tel"></label><label>Email<input name="email" type="email" maxlength="200"></label>' +
+      '<label>City<input name="city" maxlength="80"></label><label>Interested in<input name="interest" maxlength="160" placeholder="e.g. MBA course, 2BHK flat"></label>' +
+      '<label>Came from<select name="source">' + opts(Object.keys(LEAD_SOURCES), src, LEAD_SOURCES) + '</select></label><label class="full">Notes<textarea name="notes" maxlength="2000"></textarea></label></div>' +
+      '<p class="hint" style="margin-top:6px">Give at least a name, phone or email.</p><div style="margin-top:10px">' + submit('Add lead', 'small') + '</div>') + '</details>';
+}
+function viewLeads(r) {
+  var q = r.q, cid = q.client || '';
+  var clients = D().clients.filter(function (c) { return c.status !== 'churned'; }).sort(function (a, b) { return a.name.localeCompare(b.name); });
+  var scoped = D().leads.filter(function (l) { return !cid || l.clientId === cid; });
+  var list = sortNewest(filterLeads(scoped, q));
+  if (q.due === '1') list.sort(function (a, b) { return a.followUpAt < b.followUpAt ? -1 : 1; });
+  var ind = cid ? (byId('clients', cid) || {}).industry : 'other';
+  return head('Client leads', 'Enquiries our ads bring in for each client. Clients see and update their own leads too.') + addLeadForm(clients, cid, 'meta') +
+    '<form class="form-row" data-filter="leads" style="margin-bottom:14px"><label style="max-width:260px">Client<select name="client"><option value="">All clients</option>' + opts(clients.map(function (c) { return [c.id, c.name]; }), cid) + '</select></label>' +
+    '<label style="max-width:280px">Search<input name="q" value="' + esc(q.q || '') + '" placeholder="Name, phone, email"></label><button class="btn secondary" type="submit">Filter</button></form>' +
+    leadTabs(leadCounts(scoped), q, 'leads', ind, { client: cid, q: q.q }) + '<div class="card" style="padding:0">' + leadTable(list.slice(0, 300), !cid, ind) + '</div>' +
+    (list.length > 300 ? '<p class="hint" style="margin-top:8px">Showing the latest 300. Use the filters to narrow down.</p>' : '');
+}
+function leadDetail(l, ind) {
+  var st = LEAD_STATUSES.map(function (s) { return btn(leadLabel(s, ind), 'setLeadStatus', { id: l.id, status: s }, 'small ' + (l.status === s ? '' : 'secondary')); }).join('');
+  return '<div class="grid-2" style="align-items:start"><div class="stack"><section class="card"><div class="card-head"><div><h2>' + esc(l.name || 'No name') + '</h2><p>Received ' + fmtDate(l.createdAt) + (l.source ? ' · ' + esc(LEAD_SOURCES[l.source] || l.source) : '') + (l.campaign ? ' · ' + esc(l.campaign) : '') + '</p></div>' + badge(LEAD_KIND[l.status] || '', leadLabel(l.status, ind)) + '</div>' +
+    '<dl class="kv"><dt>Phone</dt><dd>' + (l.phone ? '<a href="tel:' + tel(l.phone) + '">' + esc(l.phone) + '</a>' + wa(l.phone) : '—') + '</dd><dt>Email</dt><dd>' + (l.email ? '<a href="mailto:' + esc(l.email) + '">' + esc(l.email) + '</a>' : '—') + '</dd>' +
+    '<dt>City</dt><dd>' + (esc(l.city) || '—') + '</dd><dt>Interested in</dt><dd>' + (esc(l.interest) || '—') + '</dd>' + (l.notes ? '<dt>Their message</dt><dd style="white-space:pre-line">' + esc(l.notes) + '</dd>' : '') + '</dl></section>' +
+    '<section class="card"><h3 style="margin-bottom:10px">Update status</h3><div class="pill-row">' + st + '</div>' +
+    form('setLeadFollowUp', 'setLeadFollowUp', '<input type="hidden" name="id" value="' + esc(l.id) + '"><div class="form-row" style="margin-top:16px"><label>Call back on<input type="date" name="followUpAt" value="' + esc(l.followUpAt) + '"></label>' + submit('Save date', 'secondary small') + '</div><p class="hint" style="margin-top:6px">Leave empty and save to clear. Leads with a date that has passed show under "Follow-up due".</p>') + '</section>' +
+    '<section class="card"><details><summary>Edit contact details</summary>' + form('editLead', 'editLead', '<input type="hidden" name="id" value="' + esc(l.id) + '"><div class="form-grid">' +
+      '<label>Name<input name="name" value="' + esc(l.name) + '" maxlength="120"></label><label>Phone<input name="phone" value="' + esc(l.phone) + '" maxlength="40"></label><label>Email<input name="email" type="email" value="' + esc(l.email) + '" maxlength="200"></label>' +
+      '<label>City<input name="city" value="' + esc(l.city) + '" maxlength="80"></label><label class="full">Interested in<input name="interest" value="' + esc(l.interest) + '" maxlength="160"></label></div><div style="margin-top:12px">' + submit('Save', 'small') + '</div>') + '</details></section></div>' +
+    notesPanel('lead', l.id, 'Notes & history', 'e.g. Called, asked for fee details. Call again Monday.') + '</div>';
+}
+function viewLead(id) {
+  var l = byId('leads', id);
+  if (!l) return head('Lead not found', '<a href="' + link('leads') + '">Back to leads</a>');
+  var c = byId('clients', l.clientId) || {};
+  return head(l.name || 'Lead', '', '', '<a href="' + link('leads') + '">Client leads</a> · <a href="' + link('client/' + c.id, { tab: 'leads' }) + '">' + esc(c.name) + '</a>') + leadDetail(l, c.industry) +
+    '<div style="margin-top:20px">' + btn('Delete lead', 'deleteLead', { id: l.id }, 'danger small', 'Delete this lead and its notes? This cannot be undone.') + '</div>';
+}
+
+/* ---------- notes ---------- */
+function notesPanel(kind, id, title, placeholder) {
+  var key = kind + ':' + id, list = S.notes[key];
+  return '<section class="card"' + (list ? '' : ' data-notes="' + key + '"') + '><h3 style="margin-bottom:10px">' + esc(title) + '</h3>' +
+    form('addNote', 'addNote', '<input type="hidden" name="kind" value="' + kind + '"><input type="hidden" name="id" value="' + esc(id) + '"><label>Add a note<textarea name="body" maxlength="2000" required placeholder="' + esc(placeholder || '') + '"></textarea></label><div style="margin-top:8px">' + submit('Add note', 'small') + '</div>') +
+    '<ul class="timeline">' + (!list ? '<li class="muted">Loading…</li>' : !list.length ? '<li class="muted">Nothing yet.</li>' : list.map(function (n) {
+      return '<li><div style="white-space:pre-line">' + esc(n.body) + '</div><div class="who">' + esc(n.authorName) + (ROLE_WORD[n.authorRole] ? ' (' + ROLE_WORD[n.authorRole] + ')' : '') + ' · ' + fmtTime(n.createdAt) + '</div></li>';
+    }).join('')) + '</ul></section>';
+}
+function loadNotes(key) {
+  if (S.notesLoading === key) return;
+  S.notesLoading = key;
+  var p = key.split(':');
+  call('getNotes', p[0], p[1]).then(function (list) { S.notes[key] = list; S.notesLoading = null; render(); }, function () { S.notes[key] = []; S.notesLoading = null; render(); });
+}
+
+/* ---------- pipeline ---------- */
+function prospectFields(p, withNote) {
+  p = p || {};
+  var team = D().users.filter(function (u) { return u.role !== 'client' && !u.disabled; });
+  return '<div class="form-grid"><label>Business name<input name="company" value="' + esc(p.company) + '" maxlength="160" placeholder="e.g. Bright Future Institute"></label><label>Contact person<input name="name" value="' + esc(p.name) + '" maxlength="120"></label>' +
+    '<label>Phone / WhatsApp<input name="phone" value="' + esc(p.phone) + '" maxlength="40"></label><label>Email<input name="email" type="email" value="' + esc(p.email) + '" maxlength="200"></label>' +
+    '<label>Industry<select name="industry">' + opts(INDUSTRIES, p.industry || 'education') + '</select></label><label>Country<select name="country">' + opts(Object.keys(COUNTRIES).map(function (k) { return [k, COUNTRIES[k][0]]; }), p.country || 'IN') + '</select></label>' +
+    '<label>Came from<select name="source">' + opts(Object.keys(PROSPECT_SOURCES), p.source || 'referral', PROSPECT_SOURCES) + '</select></label>' +
+    '<label>Handled by<select name="ownerId">' + (p.id ? '<option value="">Nobody</option>' : '') + opts(team.map(function (u) { return [u.id, u.name + (u.id === D().me.id ? ' (me)' : '')]; }), p.id ? p.ownerId : D().me.id) + '</select></label>' +
+    '<label>Expected monthly fee<input name="value" inputmode="decimal" value="' + esc(inputAmount(p.valueMinor, p.currency)) + '" placeholder="0"></label>' +
+    '<label>Currency<select name="currency">' + (p.id ? '' : '<option value="">Country default</option>') + opts(CURRENCIES, p.currency || '') + '</select></label>' +
+    (withNote ? '<label>Next follow-up<input type="date" name="nextFollowUp"></label><label class="full">First note<textarea name="note" maxlength="2000" placeholder="What do they need? Budget? Who referred them?"></textarea></label>' : '') + '</div>';
+}
+function viewPipeline(r) {
+  var d = D(), me = d.me, mine = r.q.mine === '1', show = r.q.show === 'won' || r.q.show === 'lost' ? r.q.show : '';
+  var all = d.prospects.filter(function (p) { return !mine || p.ownerId === me.id; });
+  var open = all.filter(function (p) { return OPEN_STAGES.indexOf(p.stage) >= 0; });
+  var now = today(), due = open.filter(function (p) { return p.nextFollowUp && p.nextFollowUp <= now; });
+  var won = all.filter(function (p) { return p.stage === 'won'; }), lost = all.filter(function (p) { return p.stage === 'lost'; });
+  var m0 = now.slice(0, 7), wonMonth = won.filter(function (p) { return String(p.updatedAt).slice(0, 7) === m0; });
+  var rate = won.length + lost.length ? Math.round(won.length / (won.length + lost.length) * 100) : 0;
+  var closed = show ? all.filter(function (p) { return p.stage === show; }).sort(function (a, b) { return a.updatedAt < b.updatedAt ? 1 : -1; }) : [];
+  return head('Sales pipeline', 'Businesses we are talking to about becoming clients.', '<a class="btn secondary" href="' + link('pipeline', mine ? {} : { mine: '1' }) + '">' + (mine ? "Show everyone's" : 'Only mine') + '</a>') +
+    '<div class="grid-4" style="margin-bottom:16px">' + stat('Open deals', String(open.length)) + stat('Possible monthly fees', esc(sumByCur(open, 'valueMinor')), '', 'font-size:18px') +
+    stat('Follow-ups due', String(due.length), '', due.length ? 'color:var(--red-ink)' : '') + stat('Won this month', wonMonth.length + ' <span class="muted" style="font-size:13px">' + (wonMonth.length ? esc(sumByCur(wonMonth, 'valueMinor')) : '') + '</span>', 'Win rate ' + rate + '% overall', 'font-size:18px') + '</div>' +
+    '<details class="card" style="margin-bottom:16px"><summary><strong>Add a prospect</strong> <span class="muted">(a business that might hire us)</span></summary>' + form('saveProspect', 'addProspect', '<div style="margin-top:12px">' + prospectFields(null, true) + '</div><div style="margin-top:12px">' + submit('Add to pipeline') + '</div>') + '</details>' +
+    '<div class="board" aria-label="Pipeline board">' + OPEN_STAGES.map(function (st) {
+      var rows = open.filter(function (p) { return p.stage === st; }).sort(function (a, b) { return (a.nextFollowUp || '9') < (b.nextFollowUp || '9') ? -1 : 1; });
+      return '<section class="board-col"><h3><span>' + STAGE_LABEL[st] + '</span><span class="muted">' + rows.length + '</span></h3><p class="sub">' + STAGE_HINT[st] + (rows.length ? ' · ' + esc(sumByCur(rows, 'valueMinor')) : '') + '</p>' +
+        rows.map(function (p) {
+          var late = p.nextFollowUp && p.nextFollowUp <= now;
+          return '<a class="deal" href="' + link('prospect/' + p.id) + '"><div class="t">' + esc(p.company || p.name) + '</div><div class="m">' + (p.company && p.name ? esc(p.name) + ' · ' : '') + cap(p.industry) + (p.valueMinor ? ' · ' + money(p.valueMinor, p.currency, true) + '/mo' : '') + '</div>' +
+            '<div class="m">' + (p.nextFollowUp ? '<span' + (late ? ' class="late"' : '') + '>Follow up ' + fmtDate(p.nextFollowUp) + '</span>' : '<span class="muted">No follow-up set</span>') + (p.ownerId ? ' · ' + esc(first(userName(p.ownerId))) : '') + '</div></a>';
+        }).join('') + '</section>';
+    }).join('') + '</div>' +
+    tabs([[link('pipeline', { show: 'won', mine: mine ? '1' : '' }), 'Won (' + won.length + ')', 'won'], [link('pipeline', { show: 'lost', mine: mine ? '1' : '' }), 'Lost (' + lost.length + ')', 'lost']], show, 'Closed deals').replace('class="tabs"', 'class="tabs" style="margin-top:24px"') +
+    (show ? '<div class="card" style="padding:0">' + (closed.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Business</th><th>Came from</th><th>Fee</th><th>Handled by</th><th>' + (show === 'lost' ? 'Why lost' : 'Client') + '</th><th>Updated</th></tr></thead><tbody>' +
+      closed.map(function (p) { return '<tr><td style="padding-left:20px"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a></td><td class="muted">' + esc(PROSPECT_SOURCES[p.source] || p.source) + '</td><td>' + (p.valueMinor ? money(p.valueMinor, p.currency) : '—') + '</td><td>' + (esc(userName(p.ownerId)) || '—') + '</td><td>' + (show === 'lost' ? (esc(p.lostReason) || '<span class="muted">—</span>') : p.clientId ? '<a href="' + link('client/' + p.clientId) + '">Open client</a>' : '<span class="muted">Not set up yet</span>') + '</td><td>' + fmtDate(p.updatedAt) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<div class="empty">None yet.</div>') + '</div>' : '');
+}
+function viewProspect(id) {
+  var p = byId('prospects', id);
+  if (!p) return head('Not found', '<a href="' + link('pipeline') + '">Back to the pipeline</a>');
+  var tasks = D().tasks.filter(function (t) { return t.prospectId === p.id; });
+  var quotes = (D().quotes || []).filter(function (q) { return q.prospectId === p.id; });
+  var moves = STAGES.filter(function (s) { return s !== 'won' && s !== 'lost'; }).map(function (s) { return btn(STAGE_LABEL[s], 'setStage', { id: p.id, stage: s }, 'small ' + (p.stage === s ? '' : 'secondary')); }).join('');
+  return head(p.company || p.name, badge(STAGE_KIND[p.stage] || '', STAGE_LABEL[p.stage]) + ' <span class="muted">' + cap(p.industry) + ' · ' + esc((COUNTRIES[p.country] || [p.country])[0]) + (p.ownerId ? ' · handled by ' + esc(userName(p.ownerId)) : '') + '</span>',
+    p.clientId ? '<a class="btn" href="' + link('client/' + p.clientId) + '">Open client</a>' : btn('Won: make them a client', 'convertProspect', { id: p.id }, '', 'Mark as won and create a client from this prospect?'), '<a href="' + link('pipeline') + '">Sales pipeline</a>') +
+    '<div class="grid-2" style="align-items:start"><div class="stack"><section class="card"><dl class="kv"><dt>Contact</dt><dd>' + (esc(p.name) || '—') + '</dd><dt>Phone</dt><dd>' + (p.phone ? '<a href="tel:' + tel(p.phone) + '">' + esc(p.phone) + '</a>' + wa(p.phone) : '—') + '</dd>' +
+    '<dt>Email</dt><dd>' + (p.email ? '<a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a>' : '—') + '</dd><dt>Came from</dt><dd>' + esc(PROSPECT_SOURCES[p.source] || p.source || '—') + '</dd>' +
+    '<dt>Expected fee</dt><dd>' + (p.valueMinor ? money(p.valueMinor, p.currency) + ' / month' : '—') + '</dd><dt>Added</dt><dd>' + fmtDate(p.createdAt) + '</dd>' + (p.stage === 'lost' && p.lostReason ? '<dt>Why lost</dt><dd>' + esc(p.lostReason) + '</dd>' : '') + '</dl></section>' +
+    '<section class="card"><h3 style="margin-bottom:10px">Move to</h3><div class="pill-row">' + moves + '</div>' +
+    form('setProspectFollowUp', 'setProspectFollowUp', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div class="form-row" style="margin-top:16px"><label>Next follow-up<input type="date" name="nextFollowUp" value="' + esc(p.nextFollowUp) + '"></label>' + submit('Save date', 'secondary small') + '</div>') +
+    (p.stage !== 'lost' && !p.clientId ? '<details style="margin-top:14px"><summary>They said no</summary>' + form('loseProspect', 'loseProspect', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div class="form-row" style="margin-top:8px"><label>Reason<input name="reason" maxlength="300" placeholder="e.g. Budget too low, chose another agency"></label>' + submit('Mark as lost', 'danger small') + '</div>') + '</details>' : '') + '</section>' +
+    taskMini(tasks, { prospectId: p.id }) +
+    (isOwner() ? '<section class="card"><div class="card-head"><h3>Quotations</h3><a href="' + link('quotes/new', { prospect: p.id }) + '">New quotation</a></div>' + (quotes.length ? '<ul style="margin:0;padding-left:18px">' + quotes.map(function (q) { return '<li><a href="' + link('quote/' + q.id) + '">' + esc(q.number) + '</a> · ' + esc(q.title) + ' · ' + money(q.totalMinor, q.currency) + ' · ' + QUOTE_LABEL[q.status] + '</li>'; }).join('') + '</ul>' : '<p class="muted">None yet.</p>') + '</section>' : '') +
+    '<section class="card"><details><summary>Edit details</summary>' + form('saveProspect', 'editProspect', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div style="margin-top:12px">' + prospectFields(p) + '</div><div style="margin-top:12px">' + submit('Save', 'small') + '</div>') + '</details></section></div>' +
+    notesPanel('prospect', p.id, 'Notes & history', 'e.g. Met the director. Wants a proposal for 3 months of Meta ads.') + '</div>' +
+    '<div style="margin-top:20px">' + btn('Delete prospect', 'deleteProspect', { id: p.id }, 'danger small', 'Delete this prospect, its notes and tasks? This cannot be undone.') + '</div>';
+}
+
+/* ---------- tasks ---------- */
+function bucket(t) {
+  if (t.status === 'done') return 'done';
+  if (!t.dueDate) return 'nodate';
+  var now = today();
+  if (t.dueDate < now) return 'overdue';
+  if (t.dueDate === now) return 'today';
+  if (t.dueDate < addDays(now, 7)) return 'week';
+  return 'later';
+}
+var BUCKET = { overdue: 'Overdue', today: 'Today', week: 'Next 7 days', later: 'Later', nodate: 'No date', done: 'Done' };
+function taskRow(t, links) {
+  var done = t.status === 'done', b = bucket(t), p = t.prospectId ? byId('prospects', t.prospectId) : null;
+  return '<li class="task-row"><button type="button" class="tick' + (done ? ' on' : '') + '" data-act="setTaskStatus" data-id="' + esc(t.id) + '" data-status="' + (done ? 'todo' : 'done') + '">' + (done ? '✓' : '') + '<span class="sr">' + (done ? 'Reopen' : 'Mark done') + '</span></button>' +
+    '<div style="min-width:0"><a href="' + link('task/' + t.id) + '"' + (done ? ' class="task-done"' : '') + '><strong>' + esc(t.title) + '</strong></a><div class="muted" style="font-size:12.5px">' +
+    (t.status === 'doing' ? 'In progress · ' : '') + (t.priority === 'high' ? '<span style="color:var(--red-ink)">Urgent · </span>' : '') +
+    (t.dueDate ? '<span' + (b === 'overdue' ? ' style="color:var(--red-ink);font-weight:500"' : '') + '>Due ' + fmtDate(t.dueDate) + ' · </span>' : '') + (esc(userName(t.assigneeId)) || 'Not assigned') +
+    (links && t.clientId ? ' · <a href="' + link('client/' + t.clientId, { tab: 'tasks' }) + '">' + esc(clientName(t.clientId)) + '</a>' : '') +
+    (links && !t.clientId && p ? ' · <a href="' + link('prospect/' + p.id) + '">' + esc(p.company || p.name) + '</a>' : '') + '</div></div></li>';
+}
+function taskMini(tasks, preset) {
+  var open = tasks.filter(function (t) { return t.status !== 'done'; }), done = tasks.length - open.length;
+  return '<section class="card"><div class="card-head"><h3>Tasks</h3><a href="' + link('tasks', { client: preset.clientId, prospect: preset.prospectId, add: '1' }) + '">Add task</a></div>' +
+    (open.length ? '<ul class="task-list">' + open.map(function (t) { return taskRow(t, false); }).join('') + '</ul>' : '<p class="muted">Nothing open.</p>') + (done ? '<p class="hint" style="margin-top:8px">' + done + ' done.</p>' : '') + '</section>';
+}
+function taskFields(t, preset) {
+  t = t || {}; preset = preset || {};
+  var d = D(), me = d.me.id;
+  var team = d.users.filter(function (u) { return u.role !== 'client' && !u.disabled; });
+  var prospects = d.prospects.filter(function (p) { return OPEN_STAGES.indexOf(p.stage) >= 0 || p.id === t.prospectId; });
+  return '<div class="form-grid"><label class="full">What needs doing<input name="title" required maxlength="200" value="' + esc(t.title) + '" placeholder="e.g. Send October report to Northstar"></label>' +
+    '<label>Who does it<select name="assigneeId"><option value="">Nobody yet</option>' + opts(team.map(function (u) { return [u.id, u.name + (u.id === me ? ' (me)' : '')]; }), t.id ? t.assigneeId : me) + '</select></label>' +
+    '<label>Due date<input type="date" name="dueDate" value="' + esc(t.dueDate) + '"></label><label>Priority<select name="priority">' + opts(['low', 'normal', 'high'], t.priority || 'normal', PRIORITY) + '</select></label>' +
+    '<label>For client<select name="clientId"><option value="">None</option>' + opts(d.clients.filter(function (c) { return c.status !== 'churned'; }).map(function (c) { return [c.id, c.name]; }), t.clientId || preset.clientId || '') + '</select></label>' +
+    '<label>For prospect<select name="prospectId"><option value="">None</option>' + opts(prospects.map(function (p) { return [p.id, p.company || p.name]; }), t.prospectId || preset.prospectId || '') + '</select></label>' +
+    '<label class="full">Details<textarea name="details" maxlength="4000">' + esc(t.details) + '</textarea></label></div>';
+}
+function viewTasks(r) {
+  var d = D(), me = d.me.id, q = r.q, view = q.view === 'done' ? 'done' : 'open', who = q.who || me;
+  var list = d.tasks.filter(function (t) {
+    if (who === 'all') { /* everyone */ } else if (who === 'none') { if (t.assigneeId) return false; } else if (t.assigneeId !== who) return false;
+    if (q.client && t.clientId !== q.client) return false;
+    if (q.prospect && t.prospectId !== q.prospect) return false;
+    if (view === 'done') return t.status === 'done' && t.completedAt >= new Date(Date.now() - 30 * 86400000).toISOString();
+    return t.status !== 'done';
+  });
+  list.sort(view === 'done' ? function (a, b) { return a.completedAt < b.completedAt ? 1 : -1; } : function (a, b) { return (a.dueDate || '9') < (b.dueDate || '9') ? -1 : (a.dueDate || '9') > (b.dueDate || '9') ? 1 : (a.priority === 'high' ? -1 : 1); });
+  var groups = view === 'done' ? [['done', list]] : ['overdue', 'today', 'week', 'later', 'nodate'].map(function (k) { return [k, list.filter(function (t) { return bucket(t) === k; })]; }).filter(function (g) { return g[1].length; });
+  var keep = function (x) { return link('tasks', Object.assign({ who: q.who, client: q.client, prospect: q.prospect, view: q.view }, x)); };
+  var team = d.users.filter(function (u) { return u.role !== 'client' && !u.disabled && u.id !== me; });
+  var scope = q.client ? clientName(q.client) : q.prospect ? ((byId('prospects', q.prospect) || {}).company || (byId('prospects', q.prospect) || {}).name) : '';
+  return head('Tasks', scope ? 'For ' + esc(scope) : 'Who is doing what, and by when.') +
+    '<details class="card" style="margin-bottom:16px"' + (q.add || q.client || q.prospect ? ' open' : '') + '><summary><strong>Add a task</strong></summary>' + form('saveTask', 'addTask', '<div style="margin-top:12px">' + taskFields(null, { clientId: q.client, prospectId: q.prospect }) + '</div><div style="margin-top:12px">' + submit('Add task') + '</div>') + '</details>' +
+    '<div class="form-row" style="margin-bottom:6px;justify-content:space-between"><nav class="tabs" style="margin-bottom:0;border-bottom:0" aria-label="Whose tasks">' +
+    '<a href="' + keep({ who: '' }) + '"' + (who === me ? ' aria-current="page"' : '') + '>My tasks</a><a href="' + keep({ who: 'all' }) + '"' + (who === 'all' ? ' aria-current="page"' : '') + '>Everyone</a><a href="' + keep({ who: 'none' }) + '"' + (who === 'none' ? ' aria-current="page"' : '') + '>Not assigned</a>' +
+    team.map(function (u) { return '<a href="' + keep({ who: u.id }) + '"' + (who === u.id ? ' aria-current="page"' : '') + '>' + esc(first(u.name)) + '</a>'; }).join('') + '</nav>' +
+    '<nav class="tabs" style="margin-bottom:0;border-bottom:0" aria-label="Open or done"><a href="' + keep({ view: '' }) + '"' + (view === 'open' ? ' aria-current="page"' : '') + '>Open</a><a href="' + keep({ view: 'done' }) + '"' + (view === 'done' ? ' aria-current="page"' : '') + '>Done (30 days)</a></nav></div>' +
+    (q.client || q.prospect ? '<p class="hint" style="margin-bottom:10px">Filtered. <a href="' + link('tasks') + '">Show all tasks</a></p>' : '') +
+    (groups.length ? '<div class="stack">' + groups.map(function (g) { return '<section class="card"><h3 style="margin-bottom:6px' + (g[0] === 'overdue' ? ';color:var(--red-ink)' : '') + '">' + BUCKET[g[0]] + ' <span class="muted" style="font-weight:400">' + g[1].length + '</span></h3><ul class="task-list">' + g[1].map(function (t) { return taskRow(t, true); }).join('') + '</ul></section>'; }).join('') + '</div>'
+      : '<div class="card"><div class="empty">' + (view === 'done' ? 'Nothing finished in the last 30 days.' : 'Nothing to do here.') + '</div></div>');
+}
+function viewTask(id) {
+  var t = byId('tasks', id);
+  if (!t) return head('Task not found', '<a href="' + link('tasks') + '">Back to tasks</a>');
+  var p = t.prospectId ? byId('prospects', t.prospectId) : null;
+  return head(t.title, '<span class="muted">Added ' + fmtDate(t.createdAt) + (t.createdById ? ' by ' + esc(userName(t.createdById)) : '') + (t.completedAt ? ' · done ' + fmtDate(t.completedAt) : '') +
+    (t.clientId ? ' · <a href="' + link('client/' + t.clientId, { tab: 'tasks' }) + '">' + esc(clientName(t.clientId)) + '</a>' : '') + (p ? ' · <a href="' + link('prospect/' + p.id) + '">' + esc(p.company || p.name) + '</a>' : '') + '</span>', '', '<a href="' + link('tasks') + '">Tasks</a>') +
+    '<section class="card" style="margin-bottom:16px"><h3 style="margin-bottom:10px">Status</h3><div class="pill-row">' + ['todo', 'doing', 'done'].map(function (s) { return btn(TASK_LABEL[s], 'setTaskStatus', { id: t.id, status: s }, 'small ' + (t.status === s ? '' : 'secondary')); }).join('') + '</div></section>' +
+    '<section class="card">' + form('saveTask', 'editTask', '<input type="hidden" name="id" value="' + esc(t.id) + '">' + taskFields(t) + '<div style="margin-top:12px">' + submit('Save') + '</div>') + '</section>' +
+    '<div style="margin-top:20px">' + btn('Delete task', 'deleteTask', { id: t.id }, 'danger small', 'Delete this task?') + '</div>';
+}
+
+/* ---------- invoices ---------- */
+function invoiceTable(list, showClient) {
+  var base = isClient() ? 'invoice/' : 'invoice/';
+  return '<div class="table-wrap"><table><thead><tr><th>Invoice</th>' + (showClient ? '<th>Client</th>' : '') + '<th>For</th><th>Due</th><th class="r">Amount</th><th>Status</th></tr></thead><tbody>' +
+    list.map(function (i) {
+      var s = invState(i);
+      return '<tr><td><a href="' + link(base + i.id) + '">' + esc(i.number) + '</a></td>' + (showClient ? '<td><a href="' + link('client/' + i.clientId, { tab: 'billing' }) + '">' + esc(clientName(i.clientId)) + '</a></td>' : '') +
+        '<td class="muted">' + (i.kind === 'retainer' && i.periodStart ? 'Monthly service, ' + fmtDate(i.periodStart) + ' – ' + fmtDate(i.periodEnd) : esc(i.description)) + '</td><td>' + fmtDate(i.dueDate) + '</td><td class="r">' + money(i.amountMinor, i.currency) + '</td><td>' + badge(s, INV_WORD[s]) + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+function accountsNav(cur) {
+  return tabs([[link('accounts'), 'Profit & loss', 'accounts'], [link('invoices'), 'Invoices', 'invoices'], [link('quotes'), 'Quotations', 'quotes'], [link('expenses'), 'Expenses', 'expenses']], cur, 'Accounts').replace('class="tabs"', 'class="tabs no-print"');
+}
+function viewInvoices(r) {
+  var st = r.q.status || 'open';
+  var all = D().invoices.slice().sort(function (a, b) { return a.dueDate < b.dueDate ? (st === 'open' ? -1 : 1) : (st === 'open' ? 1 : -1); });
+  var list = all.filter(function (i) { return st === 'all' || i.status === st; });
+  return head('Invoices', 'Monthly retainers and one-off invoices for every client.', '<a class="btn" href="' + link('invoices/new') + '">New invoice</a>') + accountsNav('invoices') +
+    tabs([['open', 'Unpaid'], ['paid', 'Paid'], ['void', 'Cancelled'], ['all', 'All']].map(function (t) { return [link('invoices', { status: t[0] }), t[1], t[0]]; }), st, 'Invoice status') +
+    '<div class="card" style="padding:0">' + (list.length ? invoiceTable(list, true) : '<div class="empty">No invoices here.</div>') + '</div>';
+}
+function lineInputs(n) {
+  var rows = ''; for (var i = 0; i < n; i++) rows += '<input name="d" maxlength="200"' + (i ? '' : ' required') + ' aria-label="Description"><input name="q" inputmode="numeric" value="1" aria-label="Quantity"><input name="a" inputmode="decimal"' + (i ? '' : ' required') + ' aria-label="Rate">';
+  return '<div class="line-items"><span class="h">Description</span><span class="h">Qty</span><span class="h">Rate (before tax)</span>' + rows + '</div>';
+}
+function viewInvoiceNew(r) {
+  var clients = D().clients.filter(function (c) { return c.status !== 'churned'; }).sort(function (a, b) { return a.name.localeCompare(b.name); });
+  return head('New invoice', 'For one-off work such as setup fees, creatives or extra ad budget. Monthly retainers are created from the client\'s plan.', '', '<a href="' + link('invoices') + '">Invoices</a>') +
+    form('createInvoice', 'createInvoice', '<div class="stack"><section class="card"><div class="form-grid"><label class="full">Client<select name="clientId" required><option value="">Choose a client</option>' +
+      opts(clients.map(function (c) { return [c.id, c.name + ' · ' + c.currency]; }), r.q.client || '') + '</select><span class="hint">The client\'s billing currency is used.</span></label>' +
+      '<label>Invoice title<input name="title" maxlength="200" placeholder="e.g. Campaign setup"></label><label>Due date<input name="dueDate" type="date" required value="' + addDays(today(), 7) + '"></label></div></section>' +
+      '<section class="card"><h2 style="margin-bottom:12px">Lines</h2>' + lineInputs(5) + '<p class="hint" style="margin-top:8px">Leave unused lines empty.</p><label style="margin-top:14px">Note on the invoice (optional)<textarea name="notes" maxlength="1000"></textarea></label></section><div>' + submit('Create invoice') + '</div></div>');
+}
+function invoiceDoc(inv, client, agency, receipt) {
+  var s = invState(inv), m = function (v) { return money(v, inv.currency); };
+  var items = inv.items && inv.items.length ? inv.items : [{ description: inv.description, quantity: 1, unitMinor: inv.subtotalMinor || inv.amountMinor }];
+  return '<article class="invoice"><header class="inv-head"><div><img src="logo-color.svg" alt="' + esc(agency.name) + '" class="inv-logo"><div class="inv-from"><strong>' + esc(agency.name) + '</strong>' + (agency.address ? '<div class="pre">' + esc(agency.address) + '</div>' : '') +
+    esc([agency.email, agency.phone].filter(Boolean).join(' · ')) + (agency.taxId ? '<div>' + esc(agency.taxIdLabel) + ': ' + esc(agency.taxId) + '</div>' : '') + '</div></div>' +
+    '<div class="inv-meta"><h1>' + (receipt ? 'Payment receipt' : inv.taxRateBps > 0 ? 'Tax invoice' : 'Invoice') + '</h1><dl><dt>' + (receipt ? 'For invoice' : 'Invoice no.') + '</dt><dd>' + esc(inv.number) + '</dd>' +
+    (receipt ? '<dt>Paid on</dt><dd>' + fmtDate(inv.paidAt) + '</dd><dt>Amount received</dt><dd>' + m(inv.amountMinor) + '</dd>' : '<dt>Issued</dt><dd>' + fmtDate(inv.issueDate) + '</dd><dt>Due</dt><dd>' + fmtDate(inv.dueDate) + '</dd>') + '</dl>' + badge(s, INV_WORD[s]) + '</div></header>' +
+    '<section class="inv-to"><div class="muted">' + (receipt ? 'Received from' : 'Bill to') + '</div><strong>' + esc(client.billingName || client.name) + '</strong>' + (client.billingAddress ? '<div class="pre">' + esc(client.billingAddress) + '</div>' : '<div>' + esc([client.city, (COUNTRIES[client.country] || [''])[0]].filter(Boolean).join(', ')) + '</div>') +
+    (client.taxId ? '<div>Tax ID: ' + esc(client.taxId) + '</div>' : '') + (client.contactName ? '<div class="muted">Attn: ' + esc(client.contactName) + (client.contactEmail ? ' · ' + esc(client.contactEmail) : '') + '</div>' : '') + '</section>' +
+    (inv.periodStart ? '<p class="muted" style="margin-bottom:10px">Service period: ' + fmtDate(inv.periodStart) + ' – ' + fmtDate(inv.periodEnd) + '</p>' : '') +
+    '<table class="inv-lines"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead><tbody>' +
+    items.map(function (i) { return '<tr><td>' + esc(i.description) + '</td><td class="r">' + i.quantity + '</td><td class="r">' + m(i.unitMinor) + '</td><td class="r">' + m(i.quantity * i.unitMinor) + '</td></tr>'; }).join('') +
+    '</tbody><tfoot><tr><td colspan="3" class="r">Subtotal</td><td class="r">' + m(inv.subtotalMinor || inv.amountMinor) + '</td></tr>' + (inv.taxRateBps > 0 ? '<tr><td colspan="3" class="r">' + esc(inv.taxLabel) + ' @ ' + (inv.taxRateBps / 100) + '%</td><td class="r">' + m(inv.taxMinor) + '</td></tr>' : '') +
+    '<tr class="inv-total"><td colspan="3" class="r">Total (' + inv.currency + ')</td><td class="r">' + m(inv.amountMinor) + '</td></tr></tfoot></table>' +
+    (inv.status === 'paid' ? '<p class="notice ok" style="margin-top:16px">Paid on ' + fmtDate(inv.paidAt) + ' (bank transfer / offline, recorded by us)' + (inv.paidRef ? ' · Ref ' + esc(inv.paidRef) : '') + '. Thank you.</p>' : '') +
+    (inv.notes ? '<p class="pre" style="margin-top:16px">' + esc(inv.notes) + '</p>' : '') +
+    (inv.status === 'open' ? (agency.bankDetails ? '<div style="margin-top:16px"><div class="muted">Pay by bank transfer</div><div class="pre">' + esc(agency.bankDetails) + '</div></div>' : '<p class="muted" style="margin-top:16px">To pay by bank transfer, ask ' + esc(agency.name) + (agency.email ? ' at ' + esc(agency.email) : '') + ' for account details.</p>') : '') +
+    '<footer class="inv-foot muted">Thank you for working with ' + esc(agency.name) + '.</footer></article>';
+}
+function viewInvoice(id, r) {
+  var inv = byId('invoices', id);
+  if (!inv) return head('Invoice not found', '<a href="' + link('invoices') + '">Back to invoices</a>');
+  var c = byId('clients', inv.clientId) || {}, receipt = r.q.receipt === '1' && inv.status === 'paid';
+  return '<div class="crumb no-print"><a href="' + link('invoices') + '">Invoices</a> · <a href="' + link('client/' + c.id, { tab: 'billing' }) + '">' + esc(c.name) + '</a></div>' +
+    '<div class="inv-actions"><button type="button" class="btn secondary" data-act="print">Download PDF / Print</button>' +
+    (inv.status === 'paid' ? '<a class="btn secondary" href="' + link('invoice/' + id, receipt ? {} : { receipt: '1' }) + '">' + (receipt ? 'Show invoice' : 'Show payment receipt') + '</a>' : '') +
+    (inv.status === 'open' ? '<details><summary class="btn secondary">Record payment</summary><div class="card" style="margin-top:8px;max-width:360px">' + form('markInvoicePaid', 'markInvoicePaid', '<input type="hidden" name="id" value="' + esc(id) + '"><label>Bank / UTR reference<input name="ref" maxlength="120" placeholder="Optional"></label><div style="margin-top:10px">' + submit('Mark paid', 'small') + '</div>') + '</div></details>' +
+      btn('Cancel invoice', 'voidInvoice', { id: id }, 'danger', 'Cancel this invoice? The client will no longer see it.') : '') + '</div>' + invoiceDoc(inv, c, D().agency, receipt);
+}
+
+/* ---------- accounts ---------- */
+function period(p) {
+  var now = new Date();
+  if (/^\d{4}$/.test(p || '')) return { from: p + '-01-01', to: (+p + 1) + '-01-01', label: p, key: p };
+  var m = /^\d{4}-\d{2}$/.test(p || '') ? p : now.toISOString().slice(0, 7);
+  var y = +m.slice(0, 4), mo = +m.slice(5, 7), next = new Date(Date.UTC(y, mo, 1)).toISOString().slice(0, 10);
+  return { from: m + '-01', to: next, label: new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, mo - 1, 1))), key: m };
+}
+function viewAccounts(r) {
+  var P = period(r.q.period), d = D(), inR = function (x) { return x >= P.from && x < P.to; };
+  var income = {}, tax = {}, spent = {}, unpaid = {}, cats = {}, per = {};
+  var add = function (o, c, v) { o[c] = (o[c] || 0) + v; };
+  var row = function (id) { return per[id] || (per[id] = { income: {}, spent: {} }); };
+  d.invoices.forEach(function (i) {
+    if (i.status === 'open') add(unpaid, i.currency, i.amountMinor);
+    if (i.status === 'paid' && inR(i.paidAt)) { add(income, i.currency, i.amountMinor - i.taxMinor); add(tax, i.currency, i.taxMinor); add(row(i.clientId).income, i.currency, i.amountMinor - i.taxMinor); }
+  });
+  d.expenses.forEach(function (e) { if (!inR(e.date)) return; add(spent, e.currency, e.amountMinor); cats[e.category] = cats[e.category] || {}; add(cats[e.category], e.currency, e.amountMinor); if (e.clientId) add(row(e.clientId).spent, e.currency, e.amountMinor); });
+  var curs = Object.keys(Object.assign({}, income, spent)).sort();
+  var list = function (o) { var k = Object.keys(o); return k.length ? k.map(function (c) { return money(o[c], c); }).join(' · ') : '—'; };
+  var now = new Date(), months = [];
+  for (var i = 0; i < 12; i++) { var dd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)); months.push(period(dd.toISOString().slice(0, 7))); }
+  var years = [String(now.getUTCFullYear()), String(now.getUTCFullYear() - 1)];
+  var clientRows = Object.keys(per).map(function (id) { var x = per[id], cs = Object.keys(Object.assign({}, x.income, x.spent)).sort(); return { id: id, name: clientName(id) || '(deleted client)', rows: cs.map(function (c) { var a = x.income[c] || 0, b = x.spent[c] || 0; return { c: c, a: a, b: b, p: a - b }; }) }; }).sort(function (a, b) { return a.name.localeCompare(b.name); });
+  return head('Accounts', 'Only you (the owner) can see this page.') + accountsNav('accounts') +
+    '<form class="form-row" data-filter="accounts" style="margin-bottom:16px"><label style="max-width:240px">Period<select name="period">' + months.map(function (m) { return '<option value="' + m.key + '"' + (m.key === P.key ? ' selected' : '') + '>' + m.label + '</option>'; }).join('') +
+    years.map(function (y) { return '<option value="' + y + '"' + (y === P.key ? ' selected' : '') + '>Whole of ' + y + '</option>'; }).join('') + '</select></label><button class="btn secondary" type="submit">Show</button></form>' +
+    (curs.length ? '<div class="grid-3" style="margin-bottom:16px">' + curs.map(function (c) {
+      var p = (income[c] || 0) - (spent[c] || 0);
+      return '<section class="card"><div class="card-head"><h2>' + c + '</h2><span class="muted">' + esc(P.label) + '</span></div><dl class="kv"><dt>Money in</dt><dd class="num">' + money(income[c] || 0, c) + '</dd><dt>Money out</dt><dd class="num">' + money(spent[c] || 0, c) + '</dd>' +
+        '<dt><strong>Profit</strong></dt><dd class="num"><strong style="color:' + (p < 0 ? 'var(--red-ink)' : 'var(--emerald-ink)') + '">' + money(p, c) + '</strong></dd></dl>' + (tax[c] ? '<p class="hint" style="margin-top:8px">Plus ' + money(tax[c], c) + ' tax collected (not counted as income).</p>' : '') + '</section>';
+    }).join('') + '</div>' : '<div class="card" style="margin-bottom:16px"><div class="empty">No payments or expenses in ' + esc(P.label) + '.</div></div>') +
+    '<p class="hint" style="margin-bottom:16px">Money in = invoices paid in this period. Money out = expenses dated in this period. Different currencies are never added together. Still unpaid right now: ' + esc(list(unpaid)) + ' (<a href="' + link('invoices') + '">see invoices</a>).</p>' +
+    '<div class="grid-2" style="align-items:start"><section class="card" style="padding:0"><div class="card-head" style="padding:16px 20px 0"><h2>Profit per client</h2></div>' +
+    (clientRows.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Client</th><th class="r">Paid to us</th><th class="r">Spent on them</th><th class="r">Profit</th></tr></thead><tbody>' + clientRows.map(function (cr) {
+      return cr.rows.map(function (x, i) { return '<tr><td style="padding-left:20px">' + (i ? '' : '<a href="' + link('client/' + cr.id, { tab: 'billing' }) + '">' + esc(cr.name) + '</a>') + '</td><td class="r num">' + money(x.a, x.c) + '</td><td class="r num">' + money(x.b, x.c) + '</td><td class="r num"' + (x.p < 0 ? ' style="color:var(--red-ink)"' : '') + '>' + money(x.p, x.c) + '</td></tr>'; }).join('');
+    }).join('') + '</tbody></table></div>' : '<div class="empty">Nothing in this period.</div>') + '<p class="hint" style="padding:8px 20px 16px">To count a cost against a client (freelancer, ad spend you paid), pick the client when adding the expense.</p></section>' +
+    '<section class="card"><div class="card-head"><h2>Where the money went</h2><a href="' + link('expenses', { period: P.key.length === 7 ? P.key : '' }) + '">All expenses</a></div>' + (Object.keys(cats).length ? '<dl class="kv">' + Object.keys(cats).map(function (k) { return '<dt>' + esc(EXPENSE_CATS[k] || k) + '</dt><dd class="num">' + esc(list(cats[k])) + '</dd>'; }).join('') + '</dl>' : '<p class="muted">No expenses in this period.</p>') + '</section></div>';
+}
+function viewExpenses(r) {
+  var P = period(r.q.period && r.q.period.length === 7 ? r.q.period : ''), d = D();
+  var rows = d.expenses.filter(function (e) { return e.date >= P.from && e.date < P.to; }).sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  var tot = {}; rows.forEach(function (e) { tot[e.currency] = (tot[e.currency] || 0) + e.amountMinor; });
+  var y = +P.key.slice(0, 4), mo = +P.key.slice(5, 7), prev = new Date(Date.UTC(y, mo - 2, 1)).toISOString().slice(0, 7), next = new Date(Date.UTC(y, mo, 1)).toISOString().slice(0, 7);
+  return head('Expenses', 'Everything the agency pays for: freelancers, tools, salaries, rent.') + accountsNav('expenses') +
+    '<details class="card" style="margin-bottom:16px"' + (rows.length ? '' : ' open') + '><summary><strong>Add an expense</strong></summary>' + form('addExpense', 'addExpense', '<div class="form-grid" style="margin-top:12px">' +
+      '<label>Date<input type="date" name="date" required value="' + today() + '"></label><label>Category<select name="category">' + opts(Object.keys(EXPENSE_CATS), 'software', EXPENSE_CATS) + '</select></label>' +
+      '<label class="full">What for<input name="description" required maxlength="200" placeholder="e.g. Canva Pro, November"></label><label>Paid to<input name="paidTo" maxlength="120"></label>' +
+      '<label>For client (optional)<select name="clientId"><option value="">Agency cost (no client)</option>' + opts(d.clients.map(function (c) { return [c.id, c.name]; }), '') + '</select></label>' +
+      '<label>Amount<input name="amount" required inputmode="decimal"></label><label>Currency<select name="currency">' + opts(CURRENCIES, 'INR') + '</select></label></div><div style="margin-top:12px">' + submit('Save expense') + '</div>') + '</details>' +
+    '<div class="form-row" style="margin-bottom:10px;align-items:center"><a class="btn secondary small" href="' + link('expenses', { period: prev }) + '">← Earlier</a><strong>' + esc(P.label) + '</strong>' + (next <= today().slice(0, 7) ? '<a class="btn secondary small" href="' + link('expenses', { period: next }) + '">Later →</a>' : '') +
+    '<span class="muted" style="margin-left:auto">Total: ' + (Object.keys(tot).length ? Object.keys(tot).map(function (c) { return money(tot[c], c); }).join(' · ') : '—') + '</span></div>' +
+    '<div class="card" style="padding:0">' + (rows.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Date</th><th>What for</th><th>Category</th><th>Paid to</th><th>Client</th><th class="r">Amount</th><th></th></tr></thead><tbody>' + rows.map(function (e) {
+      return '<tr><td style="padding-left:20px">' + fmtDate(e.date) + '</td><td>' + esc(e.description) + '</td><td class="muted">' + esc(EXPENSE_CATS[e.category] || e.category) + '</td><td>' + (esc(e.paidTo) || '<span class="muted">—</span>') + '</td><td>' + (e.clientId ? esc(clientName(e.clientId)) : '<span class="muted">Agency</span>') + '</td><td class="r num">' + money(e.amountMinor, e.currency) + '</td><td class="r">' + btn('Delete', 'deleteExpense', { id: e.id }, 'danger small', 'Delete this expense?') + '</td></tr>';
+    }).join('') + '</tbody></table></div>' : '<div class="empty">No expenses in ' + esc(P.label) + '.</div>') + '</div>';
+}
+function viewQuotes() {
+  var list = D().quotes.slice().sort(function (a, b) { return a.createdAt < b.createdAt ? 1 : -1; }), now = today();
+  return head('Quotations', 'Price offers for new or existing clients. An accepted quotation becomes an invoice in one click.', '<a class="btn" href="' + link('quotes/new') + '">New quotation</a>') + accountsNav('quotes') +
+    '<div class="card" style="padding:0">' + (list.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Number</th><th>For</th><th>Title</th><th class="r">Total</th><th>Valid until</th><th>Status</th></tr></thead><tbody>' + list.map(function (q) {
+      var p = q.prospectId ? byId('prospects', q.prospectId) : null, exp = q.status !== 'accepted' && q.status !== 'declined' && q.validUntil < now;
+      return '<tr><td style="padding-left:20px"><a href="' + link('quote/' + q.id) + '"><strong>' + esc(q.number) + '</strong></a></td><td>' + esc(clientName(q.clientId) || (p ? p.company || p.name : q.toName)) + '</td><td>' + esc(q.title) + '</td><td class="r num">' + money(q.totalMinor, q.currency) + '</td>' +
+        '<td' + (exp ? ' style="color:var(--red-ink)"' : '') + '>' + fmtDate(q.validUntil) + (exp ? ' (expired)' : '') + '</td><td>' + badge(QUOTE_KIND[q.status], QUOTE_LABEL[q.status]) + (q.invoiceId ? ' · <a href="' + link('invoice/' + q.invoiceId) + '">invoice</a>' : '') + '</td></tr>';
+    }).join('') + '</tbody></table></div>' : '<div class="empty">No quotations yet.</div>') + '</div>';
+}
+function viewQuoteNew(r) {
+  var d = D(), pre = r.q.prospect ? byId('prospects', r.q.prospect) : null;
+  var prospects = d.prospects.filter(function (p) { return p.stage !== 'lost' && !p.clientId; });
+  return head('New quotation', 'Fill in one: an existing client, or a prospect from the sales pipeline.', '', '<a href="' + link('quotes') + '">Quotations</a>') +
+    form('saveQuote', 'saveQuote', '<div class="stack"><section class="card"><div class="form-grid">' +
+      '<label>For client<select name="clientId"><option value="">None</option>' + opts(d.clients.filter(function (c) { return c.status !== 'churned'; }).map(function (c) { return [c.id, c.name + ' · ' + c.currency]; }), r.q.client || '') + '</select></label>' +
+      '<label>Or for prospect<select name="prospectId"><option value="">None</option>' + opts(prospects.map(function (p) { return [p.id, p.company || p.name]; }), r.q.prospect || '') + '</select></label>' +
+      '<label>Currency (prospects only)<select name="currency">' + opts(CURRENCIES, pre ? pre.currency : 'INR') + '</select><span class="hint">For a client, their billing currency is used.</span></label>' +
+      '<label>Valid for (days)<input name="validDays" inputmode="numeric" value="15"></label><label class="full">Title<input name="title" maxlength="200" placeholder="e.g. Admissions campaign, 3 months"></label>' +
+      '<label>Addressed to (optional)<input name="toName" maxlength="200" placeholder="Defaults to the business name"></label><label>Address (optional)<textarea name="toAddress" maxlength="600" rows="2"></textarea></label></div></section>' +
+      '<section class="card"><h2 style="margin-bottom:12px">Lines</h2>' + lineInputs(6) + '<p class="hint" style="margin-top:8px">Leave unused lines empty. No GST/VAT is added while the agency is not tax registered.</p>' +
+      '<label style="margin-top:14px">Terms / notes (optional)<textarea name="notes" maxlength="2000" placeholder="e.g. 50% advance, ad budget paid directly by the client to Meta."></textarea></label></section><div>' + submit('Create quotation') + '</div></div>');
+}
+function viewQuote(id) {
+  var q = byId('quotes', id);
+  if (!q) return head('Quotation not found', '<a href="' + link('quotes') + '">Back to quotations</a>');
+  var a = D().agency, m = function (v) { return money(v, q.currency); }, p = q.prospectId ? byId('prospects', q.prospectId) : null;
+  var canInv = !q.invoiceId && (q.clientId || (p && p.clientId));
+  return '<div class="crumb no-print"><a href="' + link('quotes') + '">Quotations</a>' + (q.clientId ? ' · <a href="' + link('client/' + q.clientId) + '">' + esc(clientName(q.clientId)) + '</a>' : p ? ' · <a href="' + link('prospect/' + p.id) + '">' + esc(p.company || p.name) + '</a>' : '') + '</div>' +
+    '<div class="inv-actions"><button type="button" class="btn secondary" data-act="print">Download PDF / Print</button>' +
+    (q.invoiceId ? '' : ['sent', 'accepted', 'declined'].filter(function (s) { return s !== q.status; }).map(function (s) { return btn('Mark ' + QUOTE_LABEL[s].toLowerCase(), 'setQuoteStatus', { id: id, status: s }, 'secondary'); }).join('')) +
+    (canInv ? btn('Turn into invoice', 'quoteToInvoice', { id: id }, '', 'Create an invoice from this quotation? The client will see it in their login.') : '') +
+    (q.invoiceId ? '<a class="btn" href="' + link('invoice/' + q.invoiceId) + '">Open invoice</a>' : '') + (!q.invoiceId && !canInv ? '<span class="hint">To invoice it, first mark the prospect as won in the pipeline.</span>' : '') + '</div>' +
+    '<article class="invoice"><header class="inv-head"><div><img src="logo-color.svg" alt="' + esc(a.name) + '" class="inv-logo"><div class="inv-from"><strong>' + esc(a.name) + '</strong>' + (a.address ? '<div class="pre">' + esc(a.address) + '</div>' : '') + esc([a.email, a.phone].filter(Boolean).join(' · ')) + (a.taxId ? '<div>' + esc(a.taxIdLabel) + ': ' + esc(a.taxId) + '</div>' : '') + '</div></div>' +
+    '<div class="inv-meta"><h1>Quotation</h1><dl><dt>Quotation no.</dt><dd>' + esc(q.number) + '</dd><dt>Date</dt><dd>' + fmtDate(q.createdAt) + '</dd><dt>Valid until</dt><dd>' + fmtDate(q.validUntil) + '</dd></dl><span class="badge no-print">' + QUOTE_LABEL[q.status] + '</span></div></header>' +
+    '<section class="inv-to"><div class="muted">Prepared for</div><strong>' + esc(q.toName) + '</strong>' + (q.toAddress ? '<div class="pre">' + esc(q.toAddress) + '</div>' : '') + '</section><h2 style="font-size:17px;margin-bottom:10px">' + esc(q.title) + '</h2>' +
+    '<table class="inv-lines"><thead><tr><th>Description</th><th class="r">Qty</th><th class="r">Rate</th><th class="r">Amount</th></tr></thead><tbody>' + q.items.map(function (i) { return '<tr><td>' + esc(i.description) + '</td><td class="r">' + i.quantity + '</td><td class="r">' + m(i.unitMinor) + '</td><td class="r">' + m(i.quantity * i.unitMinor) + '</td></tr>'; }).join('') +
+    '</tbody><tfoot><tr><td colspan="3" class="r">Subtotal</td><td class="r">' + m(q.subtotalMinor) + '</td></tr>' + (q.taxRateBps > 0 ? '<tr><td colspan="3" class="r">' + esc(q.taxLabel) + ' @ ' + (q.taxRateBps / 100) + '%</td><td class="r">' + m(q.taxMinor) + '</td></tr>' : '') +
+    '<tr class="inv-total"><td colspan="3" class="r">Total (' + q.currency + ')</td><td class="r">' + m(q.totalMinor) + '</td></tr></tfoot></table>' + (q.notes ? '<p class="pre" style="margin-top:16px">' + esc(q.notes) + '</p>' : '') +
+    '<footer class="inv-foot muted">This is a quotation, not a bill. Prices are valid until ' + fmtDate(q.validUntil) + '.</footer></article>' +
+    (q.invoiceId ? '' : '<div class="no-print" style="margin-top:20px">' + btn('Delete quotation', 'deleteQuote', { id: id }, 'danger small', 'Delete this quotation?') + '</div>');
+}
+
+/* ---------- team & settings ---------- */
+function viewTeam() {
+  var d = D(), staff = d.users.filter(function (u) { return u.role !== 'client'; }), inv = (d.invites || []).filter(function (i) { return i.role === 'staff'; });
+  return head('Team', 'Team members see clients, leads, pipeline and tasks. They never see invoices, fees, expenses or profit.') +
+    '<section class="card" style="margin-bottom:16px"><h2 style="margin-bottom:12px">Invite a team member</h2>' + form('inviteStaff', 'inviteStaff', '<div class="form-row"><label>Name<input name="name" maxlength="120"></label><label>Email<input name="email" type="email" required maxlength="200"></label>' + submit('Create invite') + '</div>' +
+      '<label class="check" style="margin-top:10px"><input type="checkbox" name="sendEmail" checked> Also email the link to them</label>') + '</section>' +
+    '<section class="card"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Last sign-in</th><th></th></tr></thead><tbody>' + staff.map(function (u) {
+      return '<tr><td>' + esc(u.name) + (u.disabled ? ' ' + badge('churned', 'Turned off') : '') + '</td><td>' + esc(u.email) + '</td><td>' + (u.role === 'admin' ? 'Owner' : 'Team') + '</td><td>' + (u.lastLoginAt ? fmtDate(u.lastLoginAt) : '<span class="muted">Never</span>') + '</td><td class="r">' +
+        (u.role === 'staff' ? btn(u.disabled ? 'Turn on' : 'Turn off', 'setUserDisabled', { id: u.id, off: u.disabled ? '' : '1' }, 'ghost small', u.disabled ? '' : 'Turn off this login? They will be signed out.') : '') + '</td></tr>';
+    }).join('') + '</tbody></table>' + (inv.length ? '<h3 style="margin:18px 0 6px">Invites not used yet</h3><table><tbody>' + inv.map(function (i) { return '<tr><td>' + esc(i.name || i.email) + '</td><td>' + esc(i.email) + '</td><td>Expires ' + fmtDate(i.expiresAt) + '</td><td class="r">' + btn('Cancel', 'revokeInvite', { id: i.id }, 'ghost small') + '</td></tr>'; }).join('') + '</tbody></table>' : '') + '</section>';
+}
+function viewSettings() {
+  var a = D().agency;
+  return head('Settings', 'Your agency details, printed on invoices and quotations.') + '<section class="card" style="max-width:760px">' + form('saveSettings', 'saveSettings', '<div class="form-grid">' +
+    '<label>Agency name<input name="agencyName" maxlength="120" value="' + esc(a.name) + '"></label><label>Invoice number prefix<input name="invoicePrefix" maxlength="8" value="' + esc(a.invoicePrefix) + '"><span class="hint">Invoices look like ' + esc(a.invoicePrefix) + '-2026-0001.</span></label>' +
+    '<label>Email on invoices<input name="agencyEmail" type="email" maxlength="200" value="' + esc(a.email) + '"></label><label>Phone<input name="agencyPhone" maxlength="40" value="' + esc(a.phone) + '"></label>' +
+    '<label class="full">Address<textarea name="agencyAddress" maxlength="600">' + esc(a.address) + '</textarea></label>' +
+    '<label class="full">Bank details for clients<textarea name="bankDetails" maxlength="800" placeholder="Account name, bank, account number, IFSC / IBAN">' + esc(a.bankDetails) + '</textarea><span class="hint">Shown on unpaid invoices.</span></label>' +
+    '<label>Tax number (GSTIN / VAT)<input name="agencyTaxId" maxlength="40" value="' + esc(a.taxId) + '"><span class="hint">Leave empty while not registered: no tax is ever added then.</span></label><label>Tax number label<input name="agencyTaxIdLabel" maxlength="20" value="' + esc(a.taxIdLabel) + '"></label>' +
+    '</div><div style="margin-top:12px">' + submit('Save settings') + '</div>') + '</section>';
+}
+
+/* ---------- results report (shared) ---------- */
+function totals(rows, channel) {
+  var by = {};
+  rows.forEach(function (r) { if (channel && channel !== 'all' && r.channel !== channel) return; var t = by[r.month] || (by[r.month] = { month: r.month, leads: 0, spend: 0, revenue: 0, clicks: 0 }); t.leads += r.leads; t.spend += r.spendMinor; t.revenue += r.revenueMinor; t.clicks += r.clicks; });
+  return Object.keys(by).sort().map(function (k) { var t = by[k]; t.cpl = t.leads ? Math.round(t.spend / t.leads) : null; t.roas = t.spend && t.revenue ? t.revenue / t.spend : null; return t; });
+}
+function pct(a, b) { if (a == null || b == null || b === 0) return null; return (a - b) / b; }
+function deltaStat(label, value, d, goodUp, explain) {
+  var cls = 'delta', text = '';
+  if (d != null && isFinite(d)) { var up = d > 0; cls += Math.abs(d) < 0.005 ? '' : up === goodUp ? ' good' : ' bad'; text = Math.abs(d) < 0.005 ? 'Same as last month' : (up ? '▲ Up ' : '▼ Down ') + Math.abs(d * 100).toFixed(1) + '% from last month'; }
+  return '<div class="stat"><div class="label">' + esc(label) + '</div><div class="value">' + value + '</div><div class="' + cls + '">' + (text || '&nbsp;') + '</div><div class="explain">' + esc(explain) + '</div></div>';
+}
+function chart(title, pts, kind, fmt) {
+  if (!pts.length) return '<h3>' + esc(title) + '</h3><div class="empty">No data yet.</div>';
+  var W = 520, H = 210, L = 56, R = 12, T = 22, B = 26, iw = W - L - R, ih = H - T - B;
+  var vals = pts.map(function (p) { return p.v || 0; }), mx = Math.max.apply(null, vals.concat([0])) * 1.08;
+  var pw = mx > 0 ? Math.pow(10, Math.floor(Math.log10(mx))) : 1, n = mx / pw; mx = mx <= 0 ? 1 : (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * pw;
+  var step = iw / pts.length, x = function (i) { return L + step * i + step / 2; }, y = function (v) { return T + ih - v / mx * ih; };
+  var s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(title) + '"><g class="grid">' + [0, 0.5, 1].map(function (f) { var t = mx * f; return '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(t) + '" y2="' + y(t) + '"/><text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + esc(fmt(t)) + '</text>'; }).join('') + '</g>';
+  if (kind === 'bar') s += pts.map(function (p, i) { if (p.v == null) return ''; var w = Math.min(28, step * 0.55); return '<rect class="bar" x="' + (x(i) - w / 2) + '" width="' + w + '" y="' + y(p.v) + '" height="' + Math.max(0, T + ih - y(p.v)) + '" rx="3"><title>' + fmtMonth(p.m) + ': ' + esc(fmt(p.v)) + '</title></rect>'; }).join('');
+  else s += '<polyline class="line" points="' + pts.map(function (p, i) { return p.v == null ? '' : x(i) + ',' + y(p.v); }).filter(Boolean).join(' ') + '"/>' + pts.map(function (p, i) { return p.v == null ? '' : '<circle class="dot" cx="' + x(i) + '" cy="' + y(p.v) + '" r="3.5"><title>' + fmtMonth(p.m) + ': ' + esc(fmt(p.v)) + '</title></circle>'; }).join('');
+  var li = -1; pts.forEach(function (p, i) { if (p.v != null) li = i; });
+  if (li >= 0) s += '<text class="vlabel" x="' + x(li) + '" y="' + (y(pts[li].v) - 8) + '" text-anchor="middle">' + esc(fmt(pts[li].v)) + '</text>';
+  s += '<line class="axis" x1="' + L + '" x2="' + (W - R) + '" y1="' + (T + ih) + '" y2="' + (T + ih) + '"/>' + pts.map(function (p, i) { return '<text x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmtMonth(p.m).split(' ')[0] + '</text>'; }).join('') + '</svg>';
+  return '<figure style="margin:0"><figcaption><h3 style="margin-bottom:6px">' + esc(title) + '</h3></figcaption>' + s + '</figure>';
+}
+function performance(rows, cur, channel, base) {
+  var chans = Object.keys(rows.reduce(function (o, r) { o[r.channel] = 1; return o; }, {}));
+  var t = totals(rows, channel).slice(-12), c = t[t.length - 1], p = t[t.length - 2];
+  if (!c) return '<div class="card"><div class="empty">No results yet. Your Kaizen team adds them every month.</div></div>';
+  var one = plain(1, cur), cm = function (v) { return money(Math.round(v), cur, true); };
+  var change = p && p.leads ? (c.leads === p.leads ? ', the same as last month' : ', ' + nf.format(Math.abs(c.leads - p.leads)) + ' ' + (c.leads > p.leads ? 'more' : 'fewer') + ' than ' + fmtMonth(p.month).split(' ')[0]) : '';
+  var sep = base.indexOf('?') >= 0 ? '&' : '?';
+  return '<div class="stack">' + (chans.length > 1 ? tabs(['all'].concat(chans).map(function (ch) { return [base + sep + 'channel=' + ch, ch === 'all' ? 'All ads' : CHANNEL[ch] || ch, ch]; }), channel, 'Where the ads ran').replace('class="tabs"', 'class="tabs" style="margin-bottom:0"') : '') +
+    '<div class="card"><p class="summary">In <strong>' + fmtMonth(c.month) + '</strong> your ads brought in <strong>' + nf.format(c.leads) + ' enquiries</strong>' + change + '. ' + (c.cpl != null ? 'On average each enquiry cost <strong>' + money(c.cpl, cur) + '</strong>. ' : '') +
+    'You spent <strong>' + money(c.spend, cur) + '</strong> on ads' + (c.roas != null ? ', and for every ' + one + ' spent you made about <strong>' + plain(c.roas, cur) + '</strong> in sales.' : '.') + '</p></div>' +
+    '<div class="grid-4">' + deltaStat('Enquiries (leads)', nf.format(c.leads), pct(c.leads, p && p.leads), true, 'People who filled your form or messaged you from the ads.') +
+    deltaStat('Cost per enquiry', c.cpl != null ? money(c.cpl, cur) : '—', pct(c.cpl, p && p.cpl), false, 'Ad spend divided by enquiries. Lower is better.') +
+    deltaStat('Spent on ads', money(c.spend, cur, true), pct(c.spend, p && p.spend), true, 'Paid to Meta / Google this month (our fee is separate).') +
+    deltaStat('Sales for every ' + one + ' spent', c.roas != null ? plain(c.roas, cur) : '—', pct(c.roas, p && p.roas), true, 'Sales from these ads ÷ ad spend. Higher is better. Also called ROAS.') + '</div>' +
+    '<div class="grid-2"><div class="card">' + chart('Enquiries each month', t.map(function (x) { return { m: x.month, v: x.leads }; }), 'bar', function (v) { return nf.format(Math.round(v)); }) + '</div>' +
+    '<div class="card">' + chart('Cost per enquiry (lower is better)', t.map(function (x) { return { m: x.month, v: x.cpl }; }), 'line', cm) + '</div>' +
+    '<div class="card">' + chart('Spent on ads', t.map(function (x) { return { m: x.month, v: x.spend }; }), 'bar', cm) + '</div>' +
+    '<div class="card">' + chart('Sales for every ' + one + ' spent (higher is better)', t.map(function (x) { return { m: x.month, v: x.roas }; }), 'line', function (v) { return plain(v, cur); }) + '</div></div>' +
+    '<div class="card"><div class="card-head"><h2>Month by month</h2><p>Sales are the figures you shared with us, matched to the ads.</p></div><div class="table-wrap"><table><thead><tr><th>Month</th><th class="r">Enquiries</th><th class="r">Spent on ads</th><th class="r">Cost per enquiry</th><th class="r">Sales from ads</th><th class="r">Sales per ' + one + '</th><th class="r">Ad clicks</th></tr></thead><tbody>' +
+    t.slice().reverse().map(function (x) { return '<tr><td>' + fmtMonth(x.month) + '</td><td class="r">' + nf.format(x.leads) + '</td><td class="r">' + money(x.spend, cur) + '</td><td class="r">' + (x.cpl != null ? money(x.cpl, cur) : '—') + '</td><td class="r">' + (x.revenue ? money(x.revenue, cur) : '—') + '</td><td class="r">' + (x.roas != null ? plain(x.roas, cur) : '—') + '</td><td class="r">' + (x.clicks ? nf.format(x.clicks) : '—') + '</td></tr>'; }).join('') +
+    '</tbody></table></div></div></div>';
+}
+
+/* ======================================================================
+   CLIENT PORTAL
+   ====================================================================== */
+function portalView(r) {
+  var p = r.parts;
+  switch (p[0] || '') {
+    case '': return portalHome();
+    case 'leads': return portalLeads(r);
+    case 'lead': return portalLead(p[1]);
+    case 'results': return head('Your results', 'How your ads are doing, month by month.') + performance(D().metrics, D().client.currency, r.q.channel || 'all', link('results'));
+    case 'invoices': return portalInvoices();
+    case 'invoice': return portalInvoice(p[1], r);
+    case 'account': return viewAccount();
+    default: return head('Page not found', '<a href="' + link('') + '">Back home</a>');
+  }
+}
+function portalHome() {
+  var d = D(), c = d.client, open = d.invoices.filter(function (i) { return i.status === 'open'; }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; });
+  var overdue = open.filter(function (i) { return invState(i) === 'overdue'; }), next = open[0], k = leadCounts(d.leads);
+  return head('Hello, ' + first(d.me.name), esc(c.name)) +
+    (overdue.length ? '<p class="notice err" style="margin-bottom:16px">' + (overdue.length === 1 ? 'One invoice is' : overdue.length + ' invoices are') + ' past the due date. Please pay so your ads keep running. <a href="' + link('invoices') + '">See invoices</a></p>' : '') +
+    (k.new || k.due ? '<p class="notice info" style="margin-bottom:16px">' + (k.new ? (k.new === 1 ? '1 new enquiry is' : k.new + ' new enquiries are') + ' waiting for a call. ' : '') + (k.due ? (k.due === 1 ? '1 person needs' : k.due + ' people need') + ' a call back today. ' : '') + '<a href="' + link('leads', k.new ? { status: 'new' } : { due: '1' }) + '">Open your leads</a></p>' : '') +
+    '<div class="grid-2" style="margin-bottom:16px"><section class="card"><div class="card-head"><h2>Next bill</h2>' + (next ? badge(invState(next), INV_WORD[invState(next)]) : '') + '</div>' +
+    (next ? '<p style="font-family:var(--font-head);font-size:26px;font-weight:600" class="num">' + money(next.amountMinor, next.currency) + '</p><p class="muted" style="margin-bottom:14px">Pay by ' + fmtDate(next.dueDate) + ' · ' + (next.kind === 'retainer' && next.periodStart ? 'Monthly service, ' + fmtDate(next.periodStart) + ' to ' + fmtDate(next.periodEnd) : esc(next.description)) + ' · <a href="' + link('invoice/' + next.id) + '">View invoice</a></p>' +
+      '<p class="notice info" style="font-size:13.5px">Please pay by bank transfer. The details are on the <a href="' + link('invoice/' + next.id) + '">invoice</a>.</p>' : '<p class="muted">Nothing to pay right now. You\'re all up to date.</p>') + '</section>' +
+    '<section class="card"><div class="card-head"><h2>What Kaizen does for you</h2></div><dl class="kv"><dt>Plan</dt><dd>' + esc(c.planName) + '</dd><dt>Our fee</dt><dd>' + (c.retainerMinor ? money(c.retainerMinor, c.currency) + ' / ' + c.billingCycle.replace('ly', '') : '—') + '</dd><dt>Services</dt><dd>' + (esc(c.services) || '—') + '</dd></dl></section></div>' +
+    '<div class="card-head"><h2>Your results</h2><a href="' + link('results') + '">See all results</a></div>' + performance(d.metrics, c.currency, 'all', link('results'));
+}
+function portalLeads(r) {
+  var d = D(), ind = d.client.industry, q = r.q, k = leadCounts(d.leads), list = sortNewest(filterLeads(d.leads, q));
+  if (q.due === '1') list.sort(function (a, b) { return a.followUpAt < b.followUpAt ? -1 : 1; });
+  return head('Your leads', 'People who enquired about your business. Call them, then open the lead and mark what happened. This shows us which ads bring real customers.') +
+    (k.new ? '<p class="notice info" style="margin-bottom:16px">' + (k.new === 1 ? '1 new enquiry is' : k.new + ' new enquiries are') + ' waiting for a call. People are most likely to say yes when you call them quickly.</p>' : '') +
+    addLeadForm(null, '', 'walk_in') + '<form class="form-row" data-filter="leads" style="margin-bottom:14px"><label style="max-width:300px">Search<input name="q" value="' + esc(q.q || '') + '" placeholder="Name, phone, email"></label><button class="btn secondary" type="submit">Search</button></form>' +
+    leadTabs(k, q, 'leads', ind, { q: q.q }) + '<div class="card" style="padding:0">' + leadTable(list.slice(0, 300), false, ind) + '</div>';
+}
+function portalLead(id) {
+  var l = byId('leads', id);
+  if (!l) return head('Lead not found', '<a href="' + link('leads') + '">Back to your leads</a>');
+  return head(l.name || 'Lead', '', '', '<a href="' + link('leads') + '">Your leads</a>') + leadDetail(l, D().client.industry);
+}
+function portalInvoices() {
+  var list = D().invoices.slice().sort(function (a, b) { return a.dueDate < b.dueDate ? 1 : -1; });
+  return head('Invoices & payments', 'Every bill from Kaizen. Open one to download it as a PDF.') + '<div class="card" style="padding:0">' + (list.length ? invoiceTable(list, false) : '<div class="empty">No invoices yet.</div>') + '</div>';
+}
+function portalInvoice(id, r) {
+  var inv = byId('invoices', id);
+  if (!inv) return head('Invoice not found', '<a href="' + link('invoices') + '">Back to invoices</a>');
+  var receipt = r.q.receipt === '1' && inv.status === 'paid';
+  return '<div class="crumb no-print"><a href="' + link('invoices') + '">Invoices &amp; payments</a></div><div class="inv-actions"><button type="button" class="btn secondary" data-act="print">Download PDF / Print</button>' +
+    (inv.status === 'paid' ? '<a class="btn secondary" href="' + link('invoice/' + id, receipt ? {} : { receipt: '1' }) + '">' + (receipt ? 'Show invoice' : 'Show payment receipt') + '</a>' : '') + '</div>' + invoiceDoc(inv, D().client, D().agency, receipt);
+}
+
+/* ======================================================================
+   ACTIONS
+   ====================================================================== */
+function readFile(input) {
+  return new Promise(function (res, rej) { var f = input && input.files && input.files[0]; if (!f) return rej(new Error('Choose a CSV file.')); if (f.size > 3000000) return rej(new Error('Keep the file under 3 MB.')); var rd = new FileReader(); rd.onload = function () { res(String(rd.result)); }; rd.onerror = function () { rej(new Error('Could not read the file.')); }; rd.readAsText(f); });
+}
+function lines(fd) { var d = fd.getAll('d'), q = fd.getAll('q'), a = fd.getAll('a'); return d.map(function (x, i) { return { description: x, quantity: q[i] || '1', amount: a[i] || '' }; }).filter(function (x) { return x.description.trim() || x.amount.trim(); }); }
+function services(fd) { return fd.getAll('svc').concat(String(fd.get('svcOther') || '').split(',')).map(function (s) { return String(s).trim(); }).filter(Boolean).join(', '); }
+function signedIn(res) { saveAuth(res.token, res.user.role); S.d = null; render(); return load().then(function () { go(''); }); }
+function refreshNotes(kind, id) { delete S.notes[kind + ':' + id]; }
+
+var FORMS = {
+  login: function (o) { return call('login', o.email, o.password).then(signedIn); },
+  setup: function (o) { return call('setupOwner', o.key, o.name, o.email, o.password).then(signedIn); },
+  acceptInvite: function (o) { return call('acceptInvite', o.token, o.name, o.password).then(signedIn); },
+  changePassword: function (o) { return call('changePassword', o.old, o['new']).then(function () { return 'Password changed.'; }); },
+  saveClient: function (o, fd) {
+    var data = Object.assign({}, o, { services: services(fd) });
+    return call('saveClient', data).then(function (c) { upsert('clients', c); if (!o.id) go('client/' + c.id, { created: '1' }); else return 'Saved.'; });
+  },
+  savePlan: function (o) { return call('savePlan', o).then(function (c) { upsert('clients', c); return 'Saved.'; }); },
+  inviteClientUser: function (o) { return call('inviteClientUser', o.clientId, o.email, o.name, !!o.sendEmail).then(function (r) { upsert('invites', r.invite); return { ok: (r.emailed ? 'Invite emailed. ' : '') + 'Send this link to ' + o.email + ' on WhatsApp too. It works once and expires in 7 days.', link: r.link }; }); },
+  inviteStaff: function (o) { return call('inviteStaff', o.email, o.name, !!o.sendEmail).then(function (r) { upsert('invites', r.invite); return { ok: (r.emailed ? 'Invite emailed. ' : '') + 'Send this link to ' + o.email + '. It works once and expires in 7 days.', link: r.link }; }); },
+  addLead: function (o) { return call('addLead', o).then(function (l) { upsert('leads', l); return 'Lead added.'; }); },
+  editLead: function (o) { return call('editLead', o.id, o).then(function (l) { upsert('leads', l); return 'Saved.'; }); },
+  setLeadFollowUp: function (o) { return call('setLeadFollowUp', o.id, o.followUpAt).then(function (l) { upsert('leads', l); refreshNotes('lead', l.id); return 'Saved.'; }); },
+  addNote: function (o) { return call('addNote', o.kind, o.id, o.body).then(function (n) { var k = o.kind + ':' + o.id; S.notes[k] = [n].concat(S.notes[k] || []); return 'Note added.'; }); },
+  importLeads: function (o, fd, f) { return readFile(f.querySelector('[name=file]')).then(function (t) { return call('importLeads', o.clientId, t); }).then(function (r) { S.d.leads = S.d.leads.filter(function (l) { return l.clientId !== o.clientId; }).concat(r.leads); return 'Imported ' + r.added + ' leads.' + (r.duplicates ? ' ' + r.duplicates + ' were already there.' : '') + (r.errors.length ? ' ' + r.errors.length + ' lines skipped (' + r.errors.slice(0, 2).join(' ') + ')' : ''); }); },
+  rotateLeadKey: function (o) { return call('rotateLeadKey', o.clientId).then(function (r) { upsert('clients', Object.assign({}, byId('clients', o.clientId), r.client)); return { ok: 'New API key. Copy it now; it won\'t be shown again. Any old key stops working.', link: r.key }; }); },
+  saveMetric: function (o) { return call('saveMetric', o).then(function (m) { upsert('metrics', m); return 'Saved.'; }); },
+  importMetrics: function (o, fd, f) { return readFile(f.querySelector('[name=file]')).then(function (t) { return call('importMetrics', o.clientId, t); }).then(function (r) { S.d.metrics = S.d.metrics.filter(function (m) { return m.clientId !== o.clientId; }).concat(r.metrics); return 'Saved ' + r.saved + ' rows.' + (r.errors.length ? ' Skipped: ' + r.errors.slice(0, 3).join(' ') : ''); }); },
+  saveProspect: function (o) { return call('saveProspect', o).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); return o.id ? 'Saved.' : 'Added to the pipeline.'; }); },
+  setProspectFollowUp: function (o) { return call('setProspectFollowUp', o.id, o.nextFollowUp).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); return 'Saved.'; }); },
+  loseProspect: function (o) { return call('setStage', o.id, 'lost', o.reason).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); return 'Marked as lost.'; }); },
+  saveTask: function (o) { return call('saveTask', o).then(function (t) { upsert('tasks', t); return o.id ? 'Saved.' : 'Task added.'; }); },
+  createInvoice: function (o, fd) { return call('createInvoice', { clientId: o.clientId, title: o.title, dueDate: o.dueDate, notes: o.notes, items: lines(fd) }).then(function (i) { upsert('invoices', i); go('invoice/' + i.id); }); },
+  markInvoicePaid: function (o) { return call('markInvoicePaid', o.id, o.ref).then(function (i) { upsert('invoices', i); return 'Marked as paid. The client sees it as paid now.'; }); },
+  saveQuote: function (o, fd) { return call('saveQuote', { clientId: o.clientId, prospectId: o.prospectId, currency: o.currency, validDays: o.validDays, title: o.title, toName: o.toName, toAddress: o.toAddress, notes: o.notes, items: lines(fd) }).then(function (q) { upsert('quotes', q); go('quote/' + q.id); }); },
+  addExpense: function (o) { return call('addExpense', o).then(function (e) { upsert('expenses', e); return 'Expense saved.'; }); },
+  saveSettings: function (o) { return call('saveSettings', o).then(function (a) { S.d.agency = a; return 'Saved.'; }); },
+};
+var ACTS = {
+  logout: function () { return call('logout').catch(function () {}).then(function () { saveAuth('', ''); S.d = null; S.notes = {}; go('login'); }); },
+  print: function () { window.print(); },
+  deleteClient: function (b) { return call('deleteClient', b.id).then(function () { return load().then(function () { go('clients'); }); }); },
+  setUserDisabled: function (b) { return call('setUserDisabled', b.id, !!b.off).then(function (u) { upsert('users', u); }); },
+  revokeInvite: function (b) { return call('revokeInvite', b.id).then(function () { drop('invites', b.id); }); },
+  setLeadStatus: function (b) { return call('setLeadStatus', b.id, b.status).then(function (l) { upsert('leads', l); refreshNotes('lead', l.id); }); },
+  deleteLead: function (b) { return call('deleteLead', b.id).then(function () { drop('leads', b.id); go('leads'); }); },
+  deleteMetric: function (b) { return call('deleteMetric', b.id).then(function () { drop('metrics', b.id); }); },
+  setStage: function (b) { return call('setStage', b.id, b.stage).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); }); },
+  convertProspect: function (b) { return call('convertProspect', b.id).then(function (r) { upsert('prospects', r.prospect); upsert('clients', r.client); S.d.tasks = r.tasks; if (r.quotes) S.d.quotes = r.quotes; go('client/' + r.client.id, { created: '1' }); }); },
+  deleteProspect: function (b) { return call('deleteProspect', b.id).then(function () { drop('prospects', b.id); S.d.tasks = S.d.tasks.filter(function (t) { return t.prospectId !== b.id || t.clientId; }); go('pipeline'); }); },
+  setTaskStatus: function (b) { return call('setTaskStatus', b.id, b.status).then(function (t) { upsert('tasks', t); }); },
+  deleteTask: function (b) { return call('deleteTask', b.id).then(function () { drop('tasks', b.id); go('tasks'); }); },
+  createRetainerInvoice: function (b) { return call('createRetainerInvoice', b.id).then(function (r) { upsert('invoices', r.invoice); upsert('clients', r.client); go('invoice/' + r.invoice.id); }); },
+  voidInvoice: function (b) { return call('voidInvoice', b.id).then(function (i) { upsert('invoices', i); return 'Invoice cancelled.'; }); },
+  setQuoteStatus: function (b) { return call('setQuoteStatus', b.id, b.status).then(function (q) { upsert('quotes', q); }); },
+  quoteToInvoice: function (b) { return call('quoteToInvoice', b.id).then(function (r) { upsert('quotes', r.quote); upsert('invoices', r.invoice); go('invoice/' + r.invoice.id); }); },
+  deleteQuote: function (b) { return call('deleteQuote', b.id).then(function () { drop('quotes', b.id); go('quotes'); }); },
+  deleteExpense: function (b) { return call('deleteExpense', b.id).then(function () { drop('expenses', b.id); return 'Deleted.'; }); },
+};
+function done(key, res) {
+  if (res === undefined) { S.msg = null; render(); return; }
+  S.msg = typeof res === 'string' ? { key: key, ok: res } : Object.assign({ key: key }, res);
+  render();
+}
+app.addEventListener('submit', function (e) {
+  var f = e.target;
+  if (f.hasAttribute('data-filter')) {
+    e.preventDefault();
+    var r = route(), q = Object.assign({}, r.q); new FormData(f).forEach(function (v, k) { q[k] = v; });
+    if (f.getAttribute('data-filter') === 'leads') { delete q.status; delete q.due; }
+    go(r.parts.join('/'), q); return;
+  }
+  var name = f.getAttribute('data-form');
+  if (!name || !FORMS[name]) return;
+  e.preventDefault();
+  var c = f.getAttribute('data-confirm'); if (c && !window.confirm(c)) return;
+  var fd = new FormData(f), o = {}; fd.forEach(function (v, k) { if (typeof v === 'string') o[k] = v; });
+  var b = f.querySelector('[type=submit]'), txt = b ? b.innerHTML : '';
+  if (b) { b.disabled = true; b.innerHTML = 'Saving…'; }
+  var key = f.getAttribute('data-key');
+  S.msg = null;
+  Promise.resolve().then(function () { return FORMS[name](o, fd, f); }).then(function (res) {
+    if (res === undefined) return;
+    done(key, res);
+    if (/^add|^save|^invite|^create/.test(name) && !o.id && (res && res.link === undefined)) { var nf2 = app.querySelector('[data-key="' + key + '"]'); if (nf2 && nf2.reset && name !== 'saveSettings' && name !== 'savePlan') nf2.reset(); }
+  }, function (err) {
+    if (document.body.contains(f)) { if (b) { b.disabled = false; b.innerHTML = txt; } var old = f.querySelector('.notice'); if (old) old.remove(); f.insertAdjacentHTML('beforeend', '<p class="notice err" role="alert" style="margin-top:10px">' + esc(err.message) + '</p>'); }
+    else showToast(err.message, true);
+  });
+});
+app.addEventListener('click', function (e) {
+  var cp = e.target.closest('[data-copy]');
+  if (cp) { if (navigator.clipboard) navigator.clipboard.writeText(cp.getAttribute('data-copy')); cp.textContent = 'Copied'; return; }
+  var el = e.target.closest('[data-act]');
+  if (!el) return;
+  var act = el.getAttribute('data-act'); if (!ACTS[act]) return;
+  e.preventDefault();
+  var c = el.getAttribute('data-confirm'); if (c && !window.confirm(c)) return;
+  var data = {}; Array.prototype.slice.call(el.attributes).forEach(function (a) { if (a.name.indexOf('data-') === 0) data[a.name.slice(5)] = a.value; });
+  el.disabled = true;
+  S.msg = null;
+  Promise.resolve().then(function () { return ACTS[act](data, el); }).then(function (res) {
+    if (typeof res === 'string') showToast(res, false);
+    if (route().parts.length || true) render();
+  }, function (err) { el.disabled = false; showToast(err.message, true); });
+});
+
+boot();
+})();
+</script>
+</body>
+</html>
