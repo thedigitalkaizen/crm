@@ -285,6 +285,9 @@ details[open] > summary { margin-bottom: 12px; }
 @keyframes kzbusy { 0% { transform: scaleX(.05); } 50% { transform: scaleX(.7); } 100% { transform: scaleX(.05); translate: 100% 0; } }
 @media (prefers-reduced-motion: reduce) { .busy-bar { animation: none; } }
 .pill-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.area-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px 16px; }
+.check.area { align-items: flex-start; }
+.check.area .hint { display: block; font-weight: 400; }
 code { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; background: var(--line-2); padding: 1px 5px; border-radius: 4px; }
 pre.box { white-space: pre-wrap; font-size: 12.5px; background: var(--bg); padding: 10px; border-radius: 8px; margin: 0 0 10px; overflow-x: auto; }
 </style>
@@ -352,6 +355,19 @@ function saveAuth(token, role) { S.token = token || ''; S.role = role || ''; try
 var D = function () { return S.d || {}; };
 var isOwner = function () { return S.role === 'admin'; };
 var isClient = function () { return S.role === 'client'; };
+/* team access areas (the owner has all of them; Team and Settings are owner only) */
+var AREA_INFO = [['clients', 'Clients', 'Client details, contacts, team notes and client logins'], ['leads', 'Client leads', 'Every client\'s leads, CSV imports and the lead API key'],
+  ['results', 'Results', 'Monthly ad results that clients see'], ['pipeline', 'Sales pipeline', 'Prospects, follow-ups, turning them into clients'],
+  ['tasks', 'Tasks', 'Team tasks and to-dos'], ['billing', 'Billing', 'Client fees, invoices, quotations, marking payments'], ['accounts', 'Accounts', 'Profit & loss and expenses (includes billing)']];
+var ALL_AREAS = AREA_INFO.map(function (a) { return a[0]; });
+var TEAMS = [['delivery', 'Account managers', ['clients', 'leads', 'results', 'tasks']], ['sales', 'Sales team', ['pipeline', 'tasks']], ['billing', 'Billing team', ['billing']],
+  ['finance', 'Accounts / finance', ['billing', 'accounts']], ['all', 'Full team (no Team or Settings)', ALL_AREAS], ['custom', 'Custom', []]];
+function can(a) { var m = D().me; return !!m && (m.role === 'admin' || (m.perms || []).indexOf(a) >= 0); }
+function teamName(perms) {
+  var k = (perms || []).slice().sort().join(',');
+  var t = TEAMS.filter(function (x) { return x[0] !== 'custom' && x[2].slice().sort().join(',') === k; })[0];
+  return t ? t[1] : 'Custom: ' + (perms || []).map(function (a) { return (AREA_INFO.filter(function (x) { return x[0] === a; })[0] || [a, a])[1]; }).join(', ');
+}
 
 /* ---------- server calls ---------- */
 function rid() { var a = ''; while (a.length < 24) a += Math.random().toString(36).slice(2); return 'r' + Date.now().toString(36) + a.slice(0, 20); }
@@ -449,13 +465,14 @@ function shell(content, r) {
   var p = '/' + r.parts.join('/');
   var links = isClient()
     ? [['', 'Home'], ['leads', 'Your leads'], ['results', 'Your results'], ['invoices', 'Invoices & payments']]
-    : [['', 'Overview'], ['clients', 'Clients'], ['leads', 'Client leads'], ['pipeline', 'Sales pipeline'], ['tasks', 'Tasks']]
-      .concat(isOwner() ? [['invoices', 'Invoices'], ['accounts', 'Accounts'], ['team', 'Team'], ['settings', 'Settings']] : []);
+    : [['', 'Overview'], ['clients', 'Clients', can('clients') || can('billing')], ['leads', 'Client leads', can('leads')], ['pipeline', 'Sales pipeline', can('pipeline')],
+      ['tasks', 'Tasks', can('tasks')], ['invoices', 'Invoices', can('billing')], ['accounts', 'Accounts', can('accounts')], ['team', 'Team', isOwner()], ['settings', 'Settings', isOwner()]]
+      .filter(function (l) { return l.length < 3 || l[2]; });
   var alias = { client: 'clients', lead: 'leads', prospect: 'pipeline', task: 'tasks', invoice: isClient() ? 'invoices' : (r.q.from === 'accounts' ? 'accounts' : 'invoices'), quotes: 'accounts', quote: 'accounts', expenses: 'accounts' };
   var top = alias[r.parts[0]] || r.parts[0] || '';
   var nav = links.map(function (l) { return '<a href="' + link(l[0]) + '"' + (top === l[0] ? ' aria-current="page"' : '') + '>' + esc(l[1]) + '</a>'; }).join('');
   var me = D().me || {};
-  var sub = isClient() ? (D().client || {}).name : isOwner() ? 'Owner' : 'Team';
+  var sub = isClient() ? (D().client || {}).name : isOwner() ? 'Owner' : teamName(me.perms).replace(/^Custom: .*/, 'Team');
   return '<div class="shell"><aside class="side"><div class="brand"><img src="logo-on-dark.svg" alt="The Kaizen Agency"><p class="tag">' + (isClient() ? 'Client dashboard' : 'Agency CRM') + '</p></div>' +
     '<nav aria-label="Main">' + nav + '</nav><div class="foot"><div><div class="who">' + esc(me.name) + '</div><div>' + esc(sub) + '</div></div>' +
     '<a href="' + link('account') + '" style="color:#c9cfe0;font-size:13px;display:block;margin-top:6px">Password</a>' +
@@ -523,8 +540,9 @@ function viewAccount() {
    ====================================================================== */
 function adminView(r) {
   var p = r.parts, a = p[0] || '';
-  var ownerOnly = ['invoices', 'invoice', 'accounts', 'quotes', 'quote', 'expenses', 'team', 'settings'];
-  if (ownerOnly.indexOf(a) >= 0 && !isOwner()) return head('Not available', 'Only the owner can open this page.');
+  var need = { clients: p[1] === 'new' ? 'clients' : 'clients|billing', client: 'clients|billing|leads|results|tasks', leads: 'leads', lead: 'leads', pipeline: 'pipeline', prospect: 'pipeline', tasks: 'tasks', task: 'tasks',
+    invoices: 'billing', invoice: 'billing', quotes: 'billing', quote: 'billing', accounts: 'accounts', expenses: 'accounts', team: 'owner', settings: 'owner' }[a];
+  if (need && !need.split('|').some(function (x) { return x === 'owner' ? isOwner() : can(x); })) return head('Not available', 'Your login does not include this part of the CRM. Ask the owner if you need it.');
   switch (a) {
     case '': return viewOverview();
     case 'clients': return p[1] === 'new' ? viewClientNew() : viewClients(r);
@@ -550,36 +568,47 @@ function adminView(r) {
 
 /* ---------- overview ---------- */
 function viewOverview() {
-  var d = D(), me = d.me, now = today(), week = addDays(now, 7);
+  var d = D(), me = d.me, now = today(), week = addDays(now, 7), stats = [], blocks = [];
   var active = d.clients.filter(function (c) { return c.status === 'active'; });
-  var newLeads = d.leads.filter(function (l) { return l.status === 'new'; });
-  var dueLeads = d.leads.filter(function (l) { return l.followUpAt && l.followUpAt <= now && l.status !== 'won' && l.status !== 'lost'; });
-  var open = d.prospects.filter(function (p) { return OPEN_STAGES.indexOf(p.stage) >= 0; });
-  var myTasks = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done' && ((t.dueDate && t.dueDate < week) || (!t.dueDate && t.priority === 'high')); })
-    .sort(function (a, b) { return (a.dueDate || '9') < (b.dueDate || '9') ? -1 : 1; }).slice(0, 12);
-  var follow = open.filter(function (p) { return p.nextFollowUp && p.nextFollowUp <= week; }).sort(function (a, b) { return a.nextFollowUp < b.nextFollowUp ? -1 : 1; }).slice(0, 10);
-  var waiting = {}; newLeads.forEach(function (l) { waiting[l.clientId] = (waiting[l.clientId] || 0) + 1; });
-  var fourth;
-  var moneyBlock = '';
-  if (isOwner()) {
+  if (can('clients')) stats.push(stat('Active clients', active.length + ' of ' + d.clients.length));
+  if (can('leads')) {
+    var newLeads = d.leads.filter(function (l) { return l.status === 'new'; });
+    var dueLeads = d.leads.filter(function (l) { return l.followUpAt && l.followUpAt <= now && l.status !== 'won' && l.status !== 'lost'; });
+    stats.push(stat('Leads not called yet', String(newLeads.length), dueLeads.length ? dueLeads.length + ' follow-ups due' : ''));
+    var waiting = {}; newLeads.forEach(function (l) { waiting[l.clientId] = (waiting[l.clientId] || 0) + 1; });
+    if (Object.keys(waiting).length) blocks.push('<section class="card"><div class="card-head"><div><h2>Client leads waiting for a call</h2><p>Remind the client if these sit too long. Fast calls win more admissions and bookings.</p></div><a href="' + link('leads', { status: 'new' }) + '">All new leads</a></div><div class="pill-row">' +
+      Object.keys(waiting).sort(function (a, b) { return waiting[b] - waiting[a]; }).map(function (id) { return '<a class="btn secondary small" href="' + link('leads', { client: id, status: 'new' }) + '">' + esc(clientName(id)) + ': ' + waiting[id] + ' new</a>'; }).join('') + '</div></section>');
+  }
+  if (can('pipeline')) {
+    var open = d.prospects.filter(function (p) { return OPEN_STAGES.indexOf(p.stage) >= 0; });
+    stats.push(stat('Open deals', String(open.length), open.length ? esc(sumByCur(open, 'valueMinor')) + ' / month possible' : ''));
+    var follow = open.filter(function (p) { return p.nextFollowUp && p.nextFollowUp <= week; }).sort(function (a, b) { return a.nextFollowUp < b.nextFollowUp ? -1 : 1; }).slice(0, 10);
+    blocks.push('<section class="card"><div class="card-head"><h2>Sales follow-ups</h2><a href="' + link('pipeline') + '">Pipeline</a></div>' +
+      (follow.length ? '<ul class="task-list">' + follow.map(function (p) { return '<li style="padding:8px 0;border-top:1px solid var(--line-2)"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a><div class="muted" style="font-size:12.5px">' + STAGE_LABEL[p.stage] + ' · <span' + (p.nextFollowUp <= now ? ' style="color:var(--red-ink)"' : '') + '>' + fmtDate(p.nextFollowUp) + '</span>' + (p.ownerId ? ' · ' + esc(userName(p.ownerId)) : '') + '</div></li>'; }).join('') + '</ul>' : '<p class="muted">No follow-ups due this week.</p>') + '</section>');
+  }
+  if (can('tasks')) {
+    var myTasks = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done' && ((t.dueDate && t.dueDate < week) || (!t.dueDate && t.priority === 'high')); })
+      .sort(function (a, b) { return (a.dueDate || '9') < (b.dueDate || '9') ? -1 : 1; }).slice(0, 12);
+    if (!isOwner()) stats.push(stat('My open tasks', String(d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; }).length)));
+    blocks.unshift('<section class="card"><div class="card-head"><h2>My tasks this week</h2><a href="' + link('tasks') + '">All tasks</a></div>' +
+      (myTasks.length ? '<ul class="task-list">' + myTasks.map(function (t) { return taskRow(t, true); }).join('') + '</ul>' : '<p class="muted">Nothing due this week.</p>') + '</section>');
+  }
+  if (can('billing')) {
     var mrr = {}; active.forEach(function (c) { var v = c.billingCycle === 'yearly' ? c.retainerMinor / 12 : c.billingCycle === 'quarterly' ? c.retainerMinor / 3 : c.retainerMinor; mrr[c.currency] = (mrr[c.currency] || 0) + v; });
     var dueInv = d.invoices.filter(function (i) { return i.status === 'open' && i.dueDate <= addDays(now, 30); }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; });
     var overdue = d.invoices.filter(function (i) { return i.status === 'open' && invState(i) === 'overdue'; });
     var mrrText = Object.keys(mrr).length ? Object.keys(mrr).map(function (c) { return money(Math.round(mrr[c]), c, true); }).join(' · ') : '—';
-    fourth = stat('Overdue invoices', overdue.length ? sumByCur(overdue, 'amountMinor') : 'Nothing', 'Retainers: ' + esc(mrrText) + ' / month');
-    moneyBlock = '<div class="card" style="margin-top:16px"><div class="card-head"><div><h2>Invoices due in the next 30 days</h2><p>Unpaid, oldest first. Clients see these in their login.</p></div><a class="btn secondary small" href="' + link('invoices') + '">All invoices</a></div>' +
-      (dueInv.length ? invoiceTable(dueInv, true) : '<div class="empty">Nothing due in the next 30 days.</div>') + '</div>';
-  } else fourth = stat('My open tasks', String(d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; }).length));
-  return head('Hello, ' + first(me.name), 'What needs attention today.', '<a class="btn secondary" href="' + link('tasks') + '">My tasks</a><a class="btn" href="' + link('clients/new') + '">Add client</a>') +
-    '<div class="grid-4">' + stat('Active clients', active.length + ' of ' + d.clients.length) + stat('Leads not called yet', String(newLeads.length), dueLeads.length ? dueLeads.length + ' follow-ups due' : '') +
-    stat('Open deals', String(open.length), open.length ? esc(sumByCur(open, 'valueMinor')) + ' / month possible' : '') + fourth + '</div>' +
-    '<div class="grid-2" style="margin-top:16px;align-items:start"><section class="card"><div class="card-head"><h2>My tasks this week</h2><a href="' + link('tasks') + '">All tasks</a></div>' +
-    (myTasks.length ? '<ul class="task-list">' + myTasks.map(function (t) { return taskRow(t, true); }).join('') + '</ul>' : '<p class="muted">Nothing due this week.</p>') + '</section>' +
-    '<section class="card"><div class="card-head"><h2>Sales follow-ups</h2><a href="' + link('pipeline') + '">Pipeline</a></div>' +
-    (follow.length ? '<ul class="task-list">' + follow.map(function (p) { return '<li style="padding:8px 0;border-top:1px solid var(--line-2)"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a><div class="muted" style="font-size:12.5px">' + STAGE_LABEL[p.stage] + ' · <span' + (p.nextFollowUp <= now ? ' style="color:var(--red-ink)"' : '') + '>' + fmtDate(p.nextFollowUp) + '</span>' + (p.ownerId ? ' · ' + esc(userName(p.ownerId)) : '') + '</div></li>'; }).join('') + '</ul>' : '<p class="muted">No follow-ups due this week.</p>') + '</section></div>' +
-    (Object.keys(waiting).length ? '<section class="card" style="margin-top:16px"><div class="card-head"><div><h2>Client leads waiting for a call</h2><p>Remind the client if these sit too long. Fast calls win more admissions and bookings.</p></div><a href="' + link('leads', { status: 'new' }) + '">All new leads</a></div><div class="pill-row">' +
-      Object.keys(waiting).sort(function (a, b) { return waiting[b] - waiting[a]; }).map(function (id) { return '<a class="btn secondary small" href="' + link('leads', { client: id, status: 'new' }) + '">' + esc(clientName(id)) + ': ' + waiting[id] + ' new</a>'; }).join('') + '</div></section>' : '') +
-    moneyBlock;
+    stats.push(stat('Overdue invoices', overdue.length ? sumByCur(overdue, 'amountMinor') : 'Nothing', 'Retainers: ' + esc(mrrText) + ' / month'));
+    if (!can('clients')) stats.unshift(stat('Unpaid invoices', String(d.invoices.filter(function (i) { return i.status === 'open'; }).length)));
+    blocks.push('<section class="card" style="grid-column:1/-1"><div class="card-head"><div><h2>Invoices due in the next 30 days</h2><p>Unpaid, oldest first. Clients see these in their login.</p></div><a class="btn secondary small" href="' + link('invoices') + '">All invoices</a></div>' +
+      (dueInv.length ? invoiceTable(dueInv, true) : '<div class="empty">Nothing due in the next 30 days.</div>') + '</section>');
+  }
+  var right = (can('tasks') ? '<a class="btn secondary" href="' + link('tasks') + '">My tasks</a>' : '') + (can('clients') ? '<a class="btn" href="' + link('clients/new') + '">Add client</a>' : '') +
+    (!can('clients') && can('billing') ? '<a class="btn" href="' + link('invoices/new') + '">New invoice</a>' : '');
+  return head('Hello, ' + first(me.name), 'What needs attention today.', right) +
+    (stats.length ? '<div class="grid-4">' + stats.slice(0, 4).join('') + '</div>' : '') +
+    (blocks.length ? '<div class="grid-2" style="margin-top:16px;align-items:start">' + blocks.join('') + '</div>' : '') +
+    (!stats.length && !blocks.length ? '<div class="card"><div class="empty">Your login has no CRM areas yet. Ask the owner to give you access.</div></div>' : '');
 }
 
 /* ---------- clients ---------- */
@@ -587,16 +616,16 @@ function viewClients(r) {
   var q = (r.q.q || '').toLowerCase(), st = r.q.status || '';
   var list = D().clients.filter(function (c) { return (!q || c.name.toLowerCase().indexOf(q) >= 0) && (!st || c.status === st); }).sort(function (a, b) { return a.name.localeCompare(b.name); });
   var invs = D().invoices || [];
-  return head('Clients', list.length + (list.length === 1 ? ' client' : ' clients'), '<a class="btn" href="' + link('clients/new') + '">Add client</a>') +
+  return head('Clients', list.length + (list.length === 1 ? ' client' : ' clients'), can('clients') ? '<a class="btn" href="' + link('clients/new') + '">Add client</a>' : '') +
     '<form class="form-row" data-filter="clients" style="margin-bottom:14px"><label style="max-width:320px">Search<input name="q" value="' + esc(r.q.q || '') + '" placeholder="Client name"></label>' +
     '<label style="max-width:200px">Status<select name="status"><option value="">All</option>' + opts(['onboarding', 'active', 'paused', 'churned'], st) + '</select></label><button class="btn secondary" type="submit">Filter</button></form>' +
-    '<div class="card" style="padding:0">' + (list.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Client</th><th>Industry</th><th>Country</th><th>Status</th>' + (isOwner() ? '<th class="r">Retainer</th><th>Next due</th>' : '') + '<th>Logins</th></tr></thead><tbody>' +
+    '<div class="card" style="padding:0">' + (list.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Client</th><th>Industry</th><th>Country</th><th>Status</th>' + (can('billing') ? '<th class="r">Retainer</th><th>Next due</th>' : '') + '' + (can('clients') ? '<th>Logins</th>' : '') + '</tr></thead><tbody>' +
       list.map(function (c) {
         var logins = D().users.filter(function (u) { return u.clientId === c.id && !u.disabled; }).length;
         var next = invs.filter(function (i) { return i.clientId === c.id && i.status === 'open'; }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; })[0];
         return '<tr><td style="padding-left:20px"><a href="' + link('client/' + c.id) + '"><strong>' + esc(c.name) + '</strong></a></td><td>' + cap(c.industry) + '</td><td>' + esc((COUNTRIES[c.country] || [c.country])[0]) + '</td><td>' + badge(c.status, cap(c.status)) + '</td>' +
-          (isOwner() ? '<td class="r">' + (c.retainerMinor ? money(c.retainerMinor, c.currency) + ' / ' + c.billingCycle.replace('ly', '') : '—') + '</td><td>' + (next ? fmtDate(next.dueDate) : '—') + '</td>' : '') +
-          '<td>' + (logins || '<span class="muted">None yet</span>') + '</td></tr>';
+          (can('billing') ? '<td class="r">' + (c.retainerMinor ? money(c.retainerMinor, c.currency) + ' / ' + c.billingCycle.replace('ly', '') : '—') + '</td><td>' + (next ? fmtDate(next.dueDate) : '—') + '</td>' : '') +
+          (can('clients') ? '<td>' + (logins || '<span class="muted">None yet</span>') + '</td>' : '') + '</tr>';
       }).join('') + '</tbody></table></div>' : '<div class="empty">No clients match. <a href="' + link('clients/new') + '">Add one</a>.</div>') + '</div>';
 }
 
@@ -621,18 +650,19 @@ function clientFields(c) {
 function viewClientNew() {
   return head('Add client', 'You can invite their team once the client is saved.', '', '<a href="' + link('clients') + '">Clients</a>') +
     form('saveClient', 'newClient', '<div class="stack">' + clientFields() +
-      (isOwner() ? '<section class="card"><h2 style="margin-bottom:14px">Fee (you can change it later)</h2><div class="form-grid"><label>Monthly retainer<input name="retainer" inputmode="decimal" placeholder="0"></label><label>Currency<select name="currency"><option value="">Country default</option>' + opts(CURRENCIES, '') + '</select></label></div></section>' : '') +
+      (can('billing') ? '<section class="card"><h2 style="margin-bottom:14px">Fee (you can change it later)</h2><div class="form-grid"><label>Monthly retainer<input name="retainer" inputmode="decimal" placeholder="0"></label><label>Currency<select name="currency"><option value="">Country default</option>' + opts(CURRENCIES, '') + '</select></label></div></section>' : '') +
       '<div>' + submit('Save client') + '</div></div>');
 }
 
 function viewClient(id, r) {
   var c = byId('clients', id);
   if (!c) return head('Client not found', '<a href="' + link('clients') + '">Back to clients</a>');
-  var tab = r.q.tab || 'overview';
-  var T = [['overview', 'Overview'], ['leads', 'Leads'], ['tasks', 'Tasks & notes'], ['results', 'Results']].concat(isOwner() ? [['billing', 'Plan & invoices']] : []).concat([['logins', 'Client logins']]);
-  var body = tab === 'leads' ? clientLeadsTab(c) : tab === 'tasks' ? clientWorkTab(c) : tab === 'results' ? clientResultsTab(c, r) : tab === 'billing' && isOwner() ? clientBillingTab(c) : tab === 'logins' ? clientLoginsTab(c) : clientOverviewTab(c);
+  var T = [['overview', 'Overview', can('clients')], ['leads', 'Leads', can('leads')], ['tasks', 'Tasks & notes', can('clients') || can('tasks')], ['results', 'Results', can('results')],
+    ['billing', 'Plan & invoices', can('billing')], ['logins', 'Client logins', can('clients')]].filter(function (t) { return t[2]; });
+  var tab = T.some(function (t) { return t[0] === r.q.tab; }) ? r.q.tab : T.length ? T[0][0] : '';
+  var body = tab === 'leads' ? clientLeadsTab(c) : tab === 'tasks' ? clientWorkTab(c) : tab === 'results' ? clientResultsTab(c, r) : tab === 'billing' ? clientBillingTab(c) : tab === 'logins' ? clientLoginsTab(c) : tab === 'overview' ? clientOverviewTab(c) : '';
   return head(c.name, badge(c.status, cap(c.status)) + ' <span class="muted">' + cap(c.industry) + ' · ' + (c.city ? esc(c.city) + ', ' : '') + esc((COUNTRIES[c.country] || [c.country])[0]) + '</span>', '', '<a href="' + link('clients') + '">Clients</a>') +
-    (r.q.created ? '<p class="notice ok" style="margin-bottom:16px">Client saved. Next: ' + (isOwner() ? 'set the fee in <a href="' + link('client/' + id, { tab: 'billing' }) + '">Plan &amp; invoices</a>, then ' : '') + 'invite their team in <a href="' + link('client/' + id, { tab: 'logins' }) + '">Client logins</a>.</p>' : '') +
+    (r.q.created ? '<p class="notice ok" style="margin-bottom:16px">Client saved. Next: ' + (can('billing') ? 'set the fee in <a href="' + link('client/' + id, { tab: 'billing' }) + '">Plan &amp; invoices</a>, then ' : '') + 'invite their team in <a href="' + link('client/' + id, { tab: 'logins' }) + '">Client logins</a>.</p>' : '') +
     tabs(T.map(function (t) { return [link('client/' + id, { tab: t[0] }), t[1], t[0]]; }), tab, 'Client sections') + body;
 }
 function clientOverviewTab(c) {
@@ -655,7 +685,7 @@ function clientLeadsTab(c) {
 }
 function clientWorkTab(c) {
   var tasks = D().tasks.filter(function (t) { return t.clientId === c.id; });
-  return '<div class="grid-2" style="align-items:start">' + taskMini(tasks, { clientId: c.id }) + notesPanel('client', c.id, 'Team notes (client can\'t see these)', 'e.g. Director prefers WhatsApp. Report due on the 5th.') + '</div>';
+  return '<div class="grid-2" style="align-items:start">' + (can('tasks') ? taskMini(tasks, { clientId: c.id }) : '') + (can('clients') ? notesPanel('client', c.id, 'Team notes (client can\'t see these)', 'e.g. Director prefers WhatsApp. Report due on the 5th.') : '') + '</div>';
 }
 function clientResultsTab(c, r) {
   var rows = D().metrics.filter(function (m) { return m.clientId === c.id; });
@@ -834,7 +864,7 @@ function viewPipeline(r) {
     }).join('') + '</div>' +
     tabs([[link('pipeline', { show: 'won', mine: mine ? '1' : '' }), 'Won (' + won.length + ')', 'won'], [link('pipeline', { show: 'lost', mine: mine ? '1' : '' }), 'Lost (' + lost.length + ')', 'lost']], show, 'Closed deals').replace('class="tabs"', 'class="tabs" style="margin-top:24px"') +
     (show ? '<div class="card" style="padding:0">' + (closed.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Business</th><th>Came from</th><th>Fee</th><th>Handled by</th><th>' + (show === 'lost' ? 'Why lost' : 'Client') + '</th><th>Updated</th></tr></thead><tbody>' +
-      closed.map(function (p) { return '<tr><td style="padding-left:20px"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a></td><td class="muted">' + esc(PROSPECT_SOURCES[p.source] || p.source) + '</td><td>' + (p.valueMinor ? money(p.valueMinor, p.currency) : '—') + '</td><td>' + (esc(userName(p.ownerId)) || '—') + '</td><td>' + (show === 'lost' ? (esc(p.lostReason) || '<span class="muted">—</span>') : p.clientId ? '<a href="' + link('client/' + p.clientId) + '">Open client</a>' : '<span class="muted">Not set up yet</span>') + '</td><td>' + fmtDate(p.updatedAt) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<div class="empty">None yet.</div>') + '</div>' : '');
+      closed.map(function (p) { return '<tr><td style="padding-left:20px"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a></td><td class="muted">' + esc(PROSPECT_SOURCES[p.source] || p.source) + '</td><td>' + (p.valueMinor ? money(p.valueMinor, p.currency) : '—') + '</td><td>' + (esc(userName(p.ownerId)) || '—') + '</td><td>' + (show === 'lost' ? (esc(p.lostReason) || '<span class="muted">—</span>') : p.clientId ? (can('clients') ? '<a href="' + link('client/' + p.clientId) + '">Open client</a>' : 'Now a client') : '<span class="muted">Not set up yet</span>') + '</td><td>' + fmtDate(p.updatedAt) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<div class="empty">None yet.</div>') + '</div>' : '');
 }
 function viewProspect(id) {
   var p = byId('prospects', id);
@@ -843,15 +873,15 @@ function viewProspect(id) {
   var quotes = (D().quotes || []).filter(function (q) { return q.prospectId === p.id; });
   var moves = STAGES.filter(function (s) { return s !== 'won' && s !== 'lost'; }).map(function (s) { return btn(STAGE_LABEL[s], 'setStage', { id: p.id, stage: s }, 'small ' + (p.stage === s ? '' : 'secondary')); }).join('');
   return head(p.company || p.name, badge(STAGE_KIND[p.stage] || '', STAGE_LABEL[p.stage]) + ' <span class="muted">' + cap(p.industry) + ' · ' + esc((COUNTRIES[p.country] || [p.country])[0]) + (p.ownerId ? ' · handled by ' + esc(userName(p.ownerId)) : '') + '</span>',
-    p.clientId ? '<a class="btn" href="' + link('client/' + p.clientId) + '">Open client</a>' : btn('Won: make them a client', 'convertProspect', { id: p.id }, '', 'Mark as won and create a client from this prospect?'), '<a href="' + link('pipeline') + '">Sales pipeline</a>') +
+    p.clientId ? (can('clients') ? '<a class="btn" href="' + link('client/' + p.clientId) + '">Open client</a>' : badge('paid', 'Now a client')) : btn('Won: make them a client', 'convertProspect', { id: p.id }, '', 'Mark as won and create a client from this prospect?'), '<a href="' + link('pipeline') + '">Sales pipeline</a>') +
     '<div class="grid-2" style="align-items:start"><div class="stack"><section class="card"><dl class="kv"><dt>Contact</dt><dd>' + (esc(p.name) || '—') + '</dd><dt>Phone</dt><dd>' + (p.phone ? '<a href="tel:' + tel(p.phone) + '">' + esc(p.phone) + '</a>' + wa(p.phone) : '—') + '</dd>' +
     '<dt>Email</dt><dd>' + (p.email ? '<a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a>' : '—') + '</dd><dt>Came from</dt><dd>' + esc(PROSPECT_SOURCES[p.source] || p.source || '—') + '</dd>' +
     '<dt>Expected fee</dt><dd>' + (p.valueMinor ? money(p.valueMinor, p.currency) + ' / month' : '—') + '</dd><dt>Added</dt><dd>' + fmtDate(p.createdAt) + '</dd>' + (p.stage === 'lost' && p.lostReason ? '<dt>Why lost</dt><dd>' + esc(p.lostReason) + '</dd>' : '') + '</dl></section>' +
     '<section class="card"><h3 style="margin-bottom:10px">Move to</h3><div class="pill-row">' + moves + '</div>' +
     form('setProspectFollowUp', 'setProspectFollowUp', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div class="form-row" style="margin-top:16px"><label>Next follow-up<input type="date" name="nextFollowUp" value="' + esc(p.nextFollowUp) + '"></label>' + submit('Save date', 'secondary small') + '</div>') +
     (p.stage !== 'lost' && !p.clientId ? '<details style="margin-top:14px"><summary>They said no</summary>' + form('loseProspect', 'loseProspect', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div class="form-row" style="margin-top:8px"><label>Reason<input name="reason" maxlength="300" placeholder="e.g. Budget too low, chose another agency"></label>' + submit('Mark as lost', 'danger small') + '</div>') + '</details>' : '') + '</section>' +
-    taskMini(tasks, { prospectId: p.id }) +
-    (isOwner() ? '<section class="card"><div class="card-head"><h3>Quotations</h3><a href="' + link('quotes/new', { prospect: p.id }) + '">New quotation</a></div>' + (quotes.length ? '<ul style="margin:0;padding-left:18px">' + quotes.map(function (q) { return '<li><a href="' + link('quote/' + q.id) + '">' + esc(q.number) + '</a> · ' + esc(q.title) + ' · ' + money(q.totalMinor, q.currency) + ' · ' + QUOTE_LABEL[q.status] + '</li>'; }).join('') + '</ul>' : '<p class="muted">None yet.</p>') + '</section>' : '') +
+    (can('tasks') ? taskMini(tasks, { prospectId: p.id }) : '') +
+    (can('billing') ? '<section class="card"><div class="card-head"><h3>Quotations</h3><a href="' + link('quotes/new', { prospect: p.id }) + '">New quotation</a></div>' + (quotes.length ? '<ul style="margin:0;padding-left:18px">' + quotes.map(function (q) { return '<li><a href="' + link('quote/' + q.id) + '">' + esc(q.number) + '</a> · ' + esc(q.title) + ' · ' + money(q.totalMinor, q.currency) + ' · ' + QUOTE_LABEL[q.status] + '</li>'; }).join('') + '</ul>' : '<p class="muted">None yet.</p>') + '</section>' : '') +
     '<section class="card"><details><summary>Edit details</summary>' + form('saveProspect', 'editProspect', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div style="margin-top:12px">' + prospectFields(p) + '</div><div style="margin-top:12px">' + submit('Save', 'small') + '</div>') + '</details></section></div>' +
     notesPanel('prospect', p.id, 'Notes & history', 'e.g. Met the director. Wants a proposal for 3 months of Meta ads.') + '</div>' +
     '<div style="margin-top:20px">' + btn('Delete prospect', 'deleteProspect', { id: p.id }, 'danger small', 'Delete this prospect, its notes and tasks? This cannot be undone.') + '</div>';
@@ -940,7 +970,7 @@ function invoiceTable(list, showClient) {
     }).join('') + '</tbody></table></div>';
 }
 function accountsNav(cur) {
-  return tabs([[link('accounts'), 'Profit & loss', 'accounts'], [link('invoices'), 'Invoices', 'invoices'], [link('quotes'), 'Quotations', 'quotes'], [link('expenses'), 'Expenses', 'expenses']], cur, 'Accounts').replace('class="tabs"', 'class="tabs no-print"');
+  return tabs([[link('accounts'), 'Profit & loss', 'accounts', can('accounts')], [link('invoices'), 'Invoices', 'invoices', 1], [link('quotes'), 'Quotations', 'quotes', 1], [link('expenses'), 'Expenses', 'expenses', can('accounts')]].filter(function (t) { return t[3]; }), cur, 'Accounts').replace('class="tabs"', 'class="tabs no-print"');
 }
 function viewInvoices(r) {
   var st = r.q.status || 'open';
@@ -1016,7 +1046,7 @@ function viewAccounts(r) {
   for (var i = 0; i < 12; i++) { var dd = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)); months.push(period(dd.toISOString().slice(0, 7))); }
   var years = [String(now.getUTCFullYear()), String(now.getUTCFullYear() - 1)];
   var clientRows = Object.keys(per).map(function (id) { var x = per[id], cs = Object.keys(Object.assign({}, x.income, x.spent)).sort(); return { id: id, name: clientName(id) || '(deleted client)', rows: cs.map(function (c) { var a = x.income[c] || 0, b = x.spent[c] || 0; return { c: c, a: a, b: b, p: a - b }; }) }; }).sort(function (a, b) { return a.name.localeCompare(b.name); });
-  return head('Accounts', 'Only you (the owner) can see this page.') + accountsNav('accounts') +
+  return head('Accounts', 'Profit and loss. Only the owner and people with the Accounts area see this page.') + accountsNav('accounts') +
     '<form class="form-row" data-filter="accounts" style="margin-bottom:16px"><label style="max-width:240px">Period<select name="period">' + months.map(function (m) { return '<option value="' + m.key + '"' + (m.key === P.key ? ' selected' : '') + '>' + m.label + '</option>'; }).join('') +
     years.map(function (y) { return '<option value="' + y + '"' + (y === P.key ? ' selected' : '') + '>Whole of ' + y + '</option>'; }).join('') + '</select></label><button class="btn secondary" type="submit">Show</button></form>' +
     (curs.length ? '<div class="grid-3" style="margin-bottom:16px">' + curs.map(function (c) {
@@ -1091,15 +1121,29 @@ function viewQuote(id) {
 }
 
 /* ---------- team & settings ---------- */
+function areaBoxes(cur) {
+  return '<div class="area-grid">' + AREA_INFO.map(function (a) {
+    return '<label class="check area"><input type="checkbox" name="perm" value="' + a[0] + '"' + (cur.indexOf(a[0]) >= 0 ? ' checked' : '') + '> <span><strong>' + esc(a[1]) + '</strong><span class="hint">' + esc(a[2]) + '</span></span></label>';
+  }).join('') + '</div>';
+}
+function teamSelect(cur) {
+  var k = cur.slice().sort().join(','), sel = (TEAMS.filter(function (t) { return t[0] !== 'custom' && t[2].slice().sort().join(',') === k; })[0] || ['custom'])[0];
+  return '<label style="max-width:320px">Team<select name="team" data-team>' + TEAMS.map(function (t) { return '<option value="' + t[0] + '"' + (t[0] === sel ? ' selected' : '') + '>' + esc(t[1]) + '</option>'; }).join('') + '</select></label>';
+}
 function viewTeam() {
   var d = D(), staff = d.users.filter(function (u) { return u.role !== 'client'; }), inv = (d.invites || []).filter(function (i) { return i.role === 'staff'; });
-  return head('Team', 'Team members see clients, leads, pipeline and tasks. They never see invoices, fees, expenses or profit.') +
-    '<section class="card" style="margin-bottom:16px"><h2 style="margin-bottom:12px">Invite a team member</h2>' + form('inviteStaff', 'inviteStaff', '<div class="form-row"><label>Name<input name="name" maxlength="120"></label><label>Email<input name="email" type="email" required maxlength="200"></label>' + submit('Create invite') + '</div>' +
-      '<label class="check" style="margin-top:10px"><input type="checkbox" name="sendEmail" checked> Also email the link to them</label>') + '</section>' +
-    '<section class="card"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Last sign-in</th><th></th></tr></thead><tbody>' + staff.map(function (u) {
-      return '<tr><td>' + esc(u.name) + (u.disabled ? ' ' + badge('churned', 'Turned off') : '') + '</td><td>' + esc(u.email) + '</td><td>' + (u.role === 'admin' ? 'Owner' : 'Team') + '</td><td>' + (u.lastLoginAt ? fmtDate(u.lastLoginAt) : '<span class="muted">Never</span>') + '</td><td class="r">' +
+  var start = TEAMS[0][2];
+  return head('Team', 'Pick a team for each person, or tick exactly what they can open. Only you see Team and Settings, and only you can change access.') +
+    '<section class="card" style="margin-bottom:16px"><h2 style="margin-bottom:12px">Invite a team member</h2>' + form('inviteStaff', 'inviteStaff', '<div class="form-row"><label>Name<input name="name" maxlength="120"></label><label>Email<input name="email" type="email" required maxlength="200"></label></div>' +
+      '<div style="margin-top:12px">' + teamSelect(start) + '</div><p class="hint" style="margin:10px 0 6px">What they can open:</p>' + areaBoxes(start) +
+      '<label class="check" style="margin-top:10px"><input type="checkbox" name="sendEmail" checked> Also email the link to them</label><div style="margin-top:12px">' + submit('Create invite') + '</div>') + '</section>' +
+    '<section class="card"><table><thead><tr><th>Name</th><th>Email</th><th>Access</th><th>Last sign-in</th><th></th></tr></thead><tbody>' + staff.map(function (u) {
+      var acc = u.role === 'admin' ? 'Owner: everything' : esc(teamName(u.perms));
+      return '<tr><td>' + esc(u.name) + (u.disabled ? ' ' + badge('churned', 'Turned off') : '') + '</td><td>' + esc(u.email) + '</td><td>' + acc +
+        (u.role === 'staff' ? '<details style="margin-top:6px"><summary class="hint" style="cursor:pointer">Change access</summary>' + form('setUserPerms', 'perm-' + u.id, '<input type="hidden" name="id" value="' + esc(u.id) + '"><div style="margin-top:8px">' + teamSelect(u.perms || []) + '</div><div style="margin-top:8px">' + areaBoxes(u.perms || []) + '</div><div style="margin-top:10px">' + submit('Save access', 'small') + '</div>') + '</details>' : '') +
+        '</td><td>' + (u.lastLoginAt ? fmtDate(u.lastLoginAt) : '<span class="muted">Never</span>') + '</td><td class="r">' +
         (u.role === 'staff' ? btn(u.disabled ? 'Turn on' : 'Turn off', 'setUserDisabled', { id: u.id, off: u.disabled ? '' : '1' }, 'ghost small', u.disabled ? '' : 'Turn off this login? They will be signed out.') : '') + '</td></tr>';
-    }).join('') + '</tbody></table>' + (inv.length ? '<h3 style="margin:18px 0 6px">Invites not used yet</h3><table><tbody>' + inv.map(function (i) { return '<tr><td>' + esc(i.name || i.email) + '</td><td>' + esc(i.email) + '</td><td>Expires ' + fmtDate(i.expiresAt) + '</td><td class="r">' + btn('Cancel', 'revokeInvite', { id: i.id }, 'ghost small') + '</td></tr>'; }).join('') + '</tbody></table>' : '') + '</section>';
+    }).join('') + '</tbody></table>' + (inv.length ? '<h3 style="margin:18px 0 6px">Invites not used yet</h3><table><tbody>' + inv.map(function (i) { return '<tr><td>' + esc(i.name || i.email) + '</td><td>' + esc(i.email) + '</td><td>' + esc(teamName(String(i.perms || '').split(',').filter(Boolean))) + '</td><td>Expires ' + fmtDate(i.expiresAt) + '</td><td class="r">' + btn('Cancel', 'revokeInvite', { id: i.id }, 'ghost small') + '</td></tr>'; }).join('') + '</tbody></table>' : '') + '</section>';
 }
 function viewSettings() {
   var a = D().agency;
@@ -1236,7 +1280,7 @@ var FORMS = {
   },
   savePlan: function (o) { return call('savePlan', o).then(function (c) { upsert('clients', c); return 'Saved.'; }); },
   inviteClientUser: function (o) { return call('inviteClientUser', o.clientId, o.email, o.name, !!o.sendEmail).then(function (r) { upsert('invites', r.invite); return { ok: (r.emailed ? 'Invite emailed. ' : '') + 'Send this link to ' + o.email + ' on WhatsApp too. It works once and expires in 7 days.', link: r.link }; }); },
-  inviteStaff: function (o) { return call('inviteStaff', o.email, o.name, !!o.sendEmail).then(function (r) { upsert('invites', r.invite); return { ok: (r.emailed ? 'Invite emailed. ' : '') + 'Send this link to ' + o.email + '. It works once and expires in 7 days.', link: r.link }; }); },
+  inviteStaff: function (o, fd) { return call('inviteStaff', o.email, o.name, !!o.sendEmail, fd.getAll('perm')).then(function (r) { upsert('invites', r.invite); return { ok: (r.emailed ? 'Invite emailed. ' : '') + 'Send this link to ' + o.email + '. It works once and expires in 7 days.', link: r.link }; }); },
   addLead: function (o) { return call('addLead', o).then(function (l) { upsert('leads', l); return 'Lead added.'; }); },
   editLead: function (o) { return call('editLead', o.id, o).then(function (l) { upsert('leads', l); return 'Saved.'; }); },
   setLeadFollowUp: function (o) { return call('setLeadFollowUp', o.id, o.followUpAt).then(function (l) { upsert('leads', l); refreshNotes('lead', l.id); return 'Saved.'; }); },
@@ -1253,6 +1297,7 @@ var FORMS = {
   markInvoicePaid: function (o) { return call('markInvoicePaid', o.id, o.ref).then(function (i) { upsert('invoices', i); return 'Marked as paid. The client sees it as paid now.'; }); },
   saveQuote: function (o, fd) { return call('saveQuote', { clientId: o.clientId, prospectId: o.prospectId, currency: o.currency, validDays: o.validDays, title: o.title, toName: o.toName, toAddress: o.toAddress, notes: o.notes, items: lines(fd) }).then(function (q) { upsert('quotes', q); go('quote/' + q.id); }); },
   addExpense: function (o) { return call('addExpense', o).then(function (e) { upsert('expenses', e); return 'Expense saved.'; }); },
+  setUserPerms: function (o, fd) { return call('setUserPerms', o.id, fd.getAll('perm')).then(function (u) { upsert('users', u); showToast('Access saved for ' + u.name + '. It applies the next time they open or refresh the CRM.', false); }); },
   saveSettings: function (o) { return call('saveSettings', o).then(function (a) { S.d.agency = a; return 'Saved.'; }); },
 };
 var ACTS = {
@@ -1265,7 +1310,7 @@ var ACTS = {
   deleteLead: function (b) { return call('deleteLead', b.id).then(function () { drop('leads', b.id); go('leads'); }); },
   deleteMetric: function (b) { return call('deleteMetric', b.id).then(function () { drop('metrics', b.id); }); },
   setStage: function (b) { return call('setStage', b.id, b.stage).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); }); },
-  convertProspect: function (b) { return call('convertProspect', b.id).then(function (r) { upsert('prospects', r.prospect); upsert('clients', r.client); S.d.tasks = r.tasks; if (r.quotes) S.d.quotes = r.quotes; go('client/' + r.client.id, { created: '1' }); }); },
+  convertProspect: function (b) { return call('convertProspect', b.id).then(function (r) { upsert('prospects', r.prospect); upsert('clients', r.client); if (r.tasks) S.d.tasks = r.tasks; if (r.quotes) S.d.quotes = r.quotes; if (can('clients')) go('client/' + r.client.id, { created: '1' }); else return 'Won. ' + r.client.name + ' is now a client.'; }); },
   deleteProspect: function (b) { return call('deleteProspect', b.id).then(function () { drop('prospects', b.id); S.d.tasks = S.d.tasks.filter(function (t) { return t.prospectId !== b.id || t.clientId; }); go('pipeline'); }); },
   setTaskStatus: function (b) { return call('setTaskStatus', b.id, b.status).then(function (t) { upsert('tasks', t); }); },
   deleteTask: function (b) { return call('deleteTask', b.id).then(function () { drop('tasks', b.id); go('tasks'); }); },
@@ -1306,6 +1351,19 @@ app.addEventListener('submit', function (e) {
     if (document.body.contains(f)) { if (b) { b.disabled = false; b.innerHTML = txt; } var old = f.querySelector('.notice'); if (old) old.remove(); f.insertAdjacentHTML('beforeend', '<p class="notice err" role="alert" style="margin-top:10px">' + esc(err.message) + '</p>'); }
     else showToast(err.message, true);
   });
+});
+app.addEventListener('change', function (e) {
+  var f = e.target.form; if (!f) return;
+  if (e.target.hasAttribute('data-team')) {
+    var t = TEAMS.filter(function (x) { return x[0] === e.target.value; })[0];
+    if (t && t[0] !== 'custom') f.querySelectorAll('[name=perm]').forEach(function (b) { b.checked = t[2].indexOf(b.value) >= 0; });
+  } else if (e.target.name === 'perm') {
+    if (e.target.value === 'accounts' && e.target.checked) f.querySelector('[name=perm][value=billing]').checked = true;
+    if (e.target.value === 'billing' && !e.target.checked) f.querySelector('[name=perm][value=accounts]').checked = false;
+    var cur = [].slice.call(f.querySelectorAll('[name=perm]:checked')).map(function (b) { return b.value; }).sort().join(',');
+    var m = TEAMS.filter(function (x) { return x[0] !== 'custom' && x[2].slice().sort().join(',') === cur; })[0];
+    var sel = f.querySelector('[data-team]'); if (sel) sel.value = m ? m[0] : 'custom';
+  }
 });
 app.addEventListener('click', function (e) {
   var cp = e.target.closest('[data-copy]');
