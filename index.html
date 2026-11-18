@@ -290,6 +290,84 @@ details[open] > summary { margin-bottom: 12px; }
 .check.area .hint { display: block; font-weight: 400; }
 code { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; background: var(--line-2); padding: 1px 5px; border-radius: 4px; }
 pre.box { white-space: pre-wrap; font-size: 12.5px; background: var(--bg); padding: 10px; border-radius: 8px; margin: 0 0 10px; overflow-x: auto; }
+/* overview + review */
+.ic { flex-shrink: 0; vertical-align: -3px; }
+.card-head h2 { display: flex; align-items: center; gap: 8px; }
+.card-head h2 .ic { color: var(--royal); }
+.hero { background: var(--navy); color: #fff; border-radius: 14px; padding: 26px 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+.hero h1 { color: #fff; font-size: 28px; margin: 2px 0 6px; }
+.hero-date { color: #8f98b5; font-size: 13.5px; margin: 0; }
+.hero-sub { color: #c9cfe0; margin: 0; }
+.hero-sub strong { color: #fff; }
+.hero-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 13px; border-radius: 8px; border: 1px solid rgba(255,255,255,.18); color: #fff; font-size: 13.5px; font-weight: 500; text-decoration: none; background: rgba(255,255,255,.06); }
+.hero-btn:hover { background: rgba(255,255,255,.14); }
+.hero-btn:first-child { background: var(--royal); border-color: var(--royal); }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.kpi { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; color: var(--ink); text-decoration: none; transition: border-color .15s; }
+.kpi:hover { border-color: var(--royal); }
+.kpi-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.kpi-ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--royal-soft); color: var(--royal-ink); }
+.kpi-ic.green { background: var(--emerald-soft); color: var(--emerald-ink); }
+.kpi-val { font-family: var(--font-head); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.kpi-val small { font-size: 13px; color: var(--ink-3); font-weight: 500; }
+.kpi-label { font-size: 13.5px; color: var(--ink-2); margin-top: 2px; }
+.kpi-sub { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+.pos { color: var(--emerald-ink); }
+.neg { color: var(--red-ink); }
+.meter { height: 8px; border-radius: 99px; background: var(--line-2); overflow: hidden; }
+.meter span { display: block; height: 100%; border-radius: 99px; background: var(--royal); }
+.meter span.green { background: var(--emerald); }
+.meter span.red { background: var(--red-ink); }
+.todo { list-style: none; margin: 0; padding: 0; }
+.todo li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line-2); }
+.todo li:first-child { border-top: 0; padding-top: 0; }
+.todo-ic { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; flex-shrink: 0; background: var(--royal-soft); color: var(--royal-ink); }
+.todo li.red .todo-ic { background: var(--red-soft); color: var(--red-ink); }
+.todo li.amber .todo-ic { background: var(--amber-soft); color: var(--amber-ink); }
+.todo a { flex: 1; min-width: 0; color: var(--ink); text-decoration: none; display: flex; flex-direction: column; }
+.todo a strong { font-weight: 500; }
+.todo a span { font-size: 12.5px; color: var(--ink-3); }
+.todo a:hover strong { color: var(--royal-ink); }
+.todo .go { color: var(--ink-3); }
+.allclear { display: flex; gap: 14px; align-items: center; color: var(--emerald-ink); padding: 6px 0; }
+.allclear p { color: var(--ink-2); margin: 0; }
+.start { margin-bottom: 16px; }
+.start-pct { font-family: var(--font-head); font-size: 22px; font-weight: 600; color: var(--emerald-ink); }
+.steps { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+.steps li { display: flex; gap: 10px; align-items: center; font-size: 14px; }
+.steps li.done { color: var(--ink-3); }
+.steps .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; flex-shrink: 0; }
+.steps li.done .dot { background: var(--emerald); border-color: var(--emerald); color: #fff; }
+.glance { display: grid; gap: 14px; }
+.glance-row { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 5px; color: var(--ink-2); }
+.glance-row strong { color: var(--ink); font-weight: 600; }
+.month-nav { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+.month-nav strong { font-family: var(--font-head); font-size: 17px; }
+.scorecard { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.score-cell { border: 1px solid var(--line-2); border-radius: 9px; padding: 12px 14px; }
+.sc-label { font-size: 12.5px; color: var(--ink-2); }
+.sc-val { font-family: var(--font-head); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.sc-delta { font-size: 12px; color: var(--ink-3); }
+.review-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; background: var(--bg); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+.review-sum span { display: block; font-size: 12.5px; color: var(--ink-3); }
+.review-sum strong { font-family: var(--font-head); font-size: 16px; }
+.review-sum .ic { color: var(--amber-ink); }
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.person { border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.person-head { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--royal-soft); color: var(--royal-ink); display: grid; place-items: center; font-family: var(--font-head); font-weight: 600; flex-shrink: 0; }
+.score { margin-left: auto; text-align: right; }
+.score-n { display: block; font-family: var(--font-head); font-size: 30px; font-weight: 600; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.crown { color: var(--amber-ink); }
+.parts { margin: 12px 0 0; }
+.parts dt { font-size: 12.5px; color: var(--ink-3); margin-top: 8px; }
+.parts dd { margin: 0; display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+.parts .pts { color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.trend { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line-2); font-size: 12.5px; }
+@media (max-width: 960px) { .kpis, .scorecard { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .hero { padding: 20px; } .hero h1 { font-size: 23px; } .steps, .review-sum { grid-template-columns: 1fr; } }
+@media (max-width: 460px) { .kpis { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -466,7 +544,7 @@ function shell(content, r) {
   var links = isClient()
     ? [['', 'Home'], ['leads', 'Your leads'], ['results', 'Your results'], ['invoices', 'Invoices & payments']]
     : [['', 'Overview'], ['clients', 'Clients', can('clients') || can('billing')], ['leads', 'Client leads', can('leads')], ['pipeline', 'Sales pipeline', can('pipeline')],
-      ['tasks', 'Tasks', can('tasks')], ['invoices', 'Invoices', can('billing')], ['accounts', 'Accounts', can('accounts')], ['team', 'Team', isOwner()], ['settings', 'Settings', isOwner()]]
+      ['tasks', 'Tasks', can('tasks')], ['review', 'Review', canReview()], ['invoices', 'Invoices', can('billing')], ['accounts', 'Accounts', can('accounts')], ['team', 'Team', isOwner()], ['settings', 'Settings', isOwner()]]
       .filter(function (l) { return l.length < 3 || l[2]; });
   var alias = { client: 'clients', lead: 'leads', prospect: 'pipeline', task: 'tasks', invoice: isClient() ? 'invoices' : (r.q.from === 'accounts' ? 'accounts' : 'invoices'), quotes: 'accounts', quote: 'accounts', expenses: 'accounts' };
   var top = alias[r.parts[0]] || r.parts[0] || '';
@@ -559,6 +637,7 @@ function adminView(r) {
     case 'quotes': return p[1] === 'new' ? viewQuoteNew(r) : viewQuotes();
     case 'quote': return viewQuote(p[1]);
     case 'expenses': return viewExpenses(r);
+    case 'review': return viewReview(r);
     case 'team': return viewTeam();
     case 'settings': return viewSettings();
     case 'account': return viewAccount();
@@ -566,50 +645,255 @@ function adminView(r) {
   }
 }
 
+/* ---------- shared bits for overview + review ---------- */
+var ICON = {
+  clients: '<path d="M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19"/><circle cx="10" cy="7.5" r="3.5"/><path d="M20 19v-1.3a3 3 0 0 0-2.3-2.9M15.5 4.3a3.5 3.5 0 0 1 0 6.4"/>',
+  leads: '<path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>',
+  deals: '<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',
+  money: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M7 9.5v5M17 9.5v5"/>',
+  task: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+  bell: '<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+  star: '<path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+};
+function icon(name, size) { return '<svg class="ic" width="' + (size || 18) + '" height="' + (size || 18) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[name] + '</svg>'; }
+function ymOf(s) { return String(s || '').slice(0, 7); }
+function ymShift(ym, n) { var y = +ym.slice(0, 4), m = +ym.slice(5, 7) - 1 + n; return new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 7); }
+function lastMonths(n) { var cur = today().slice(0, 7), out = []; for (var i = n - 1; i >= 0; i--) out.push(ymShift(cur, -i)); return out; }
+function spark(vals, color) {
+  var W = 96, H = 30, max = Math.max.apply(null, vals.concat([1])), step = W / Math.max(1, vals.length - 1);
+  var pts = vals.map(function (v, i) { return (i * step).toFixed(1) + ',' + (H - 3 - (v / max) * (H - 6)).toFixed(1); });
+  return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true"><polyline points="' + pts.join(' ') + '" fill="none" stroke="' + (color || 'var(--royal)') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="' + pts[pts.length - 1].split(',')[0] + '" cy="' + pts[pts.length - 1].split(',')[1] + '" r="2.6" fill="' + (color || 'var(--royal)') + '"/></svg>';
+}
+function kpi(ic, tone, label, value, sub, sparkVals, href) {
+  return '<a class="kpi" href="' + href + '"><div class="kpi-top"><span class="kpi-ic ' + tone + '">' + icon(ic) + '</span>' + (sparkVals ? spark(sparkVals, tone === 'green' ? 'var(--emerald)' : 'var(--royal)') : '') + '</div>' +
+    '<div class="kpi-val">' + value + '</div><div class="kpi-label">' + esc(label) + '</div>' + (sub ? '<div class="kpi-sub">' + sub + '</div>' : '') + '</a>';
+}
+function bar(pct, tone) { pct = Math.max(0, Math.min(100, Math.round(pct))); return '<div class="meter"><span class="' + (tone || '') + '" style="width:' + pct + '%"></span></div>'; }
+function moneyByCur(rows, key) { var m = {}; rows.forEach(function (r) { m[r.currency] = (m[r.currency] || 0) + (r[key] || 0); }); return m; }
+function moneyText(m) { var k = Object.keys(m); return k.length ? k.map(function (c) { return money(m[c], c, true); }).join(' · ') : '—'; }
+function mainCur(m) { var k = Object.keys(m).sort(function (a, b) { return m[b] - m[a]; }); return k[0]; }
+
 /* ---------- overview ---------- */
 function viewOverview() {
-  var d = D(), me = d.me, now = today(), week = addDays(now, 7), stats = [], blocks = [];
-  var active = d.clients.filter(function (c) { return c.status === 'active'; });
-  if (can('clients')) stats.push(stat('Active clients', active.length + ' of ' + d.clients.length));
-  if (can('leads')) {
-    var newLeads = d.leads.filter(function (l) { return l.status === 'new'; });
-    var dueLeads = d.leads.filter(function (l) { return l.followUpAt && l.followUpAt <= now && l.status !== 'won' && l.status !== 'lost'; });
-    stats.push(stat('Leads not called yet', String(newLeads.length), dueLeads.length ? dueLeads.length + ' follow-ups due' : ''));
-    var waiting = {}; newLeads.forEach(function (l) { waiting[l.clientId] = (waiting[l.clientId] || 0) + 1; });
-    if (Object.keys(waiting).length) blocks.push('<section class="card"><div class="card-head"><div><h2>Client leads waiting for a call</h2><p>Remind the client if these sit too long. Fast calls win more admissions and bookings.</p></div><a href="' + link('leads', { status: 'new' }) + '">All new leads</a></div><div class="pill-row">' +
-      Object.keys(waiting).sort(function (a, b) { return waiting[b] - waiting[a]; }).map(function (id) { return '<a class="btn secondary small" href="' + link('leads', { client: id, status: 'new' }) + '">' + esc(clientName(id)) + ': ' + waiting[id] + ' new</a>'; }).join('') + '</div></section>');
+  var d = D(), me = d.me, now = today(), ym = now.slice(0, 7), months = lastMonths(6), hr = new Date().getHours();
+  var hello = (hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening') + ', ' + first(me.name);
+  var dateText = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
+  var todo = [], kpis = [];
+
+  /* things that need someone today */
+  if (can('billing')) {
+    var overdue = d.invoices.filter(function (i) { return i.status === 'open' && invState(i) === 'overdue'; });
+    overdue.slice(0, 4).forEach(function (i) { todo.push({ tone: 'red', ic: 'money', t: 'Chase ' + esc(clientName(i.clientId)) + ' for ' + money(i.amountMinor, i.currency), s: 'Invoice ' + esc(i.number) + ' was due ' + fmtDate(i.dueDate), href: link('invoice/' + i.id) }); });
+    var paidNow = d.invoices.filter(function (i) { return i.status === 'paid' && ymOf(i.paidAt) === ym; });
+    var cm = moneyByCur(paidNow, 'amountMinor'), mc = mainCur(cm) || (d.clients[0] || {}).currency || 'INR';
+    kpis.push(kpi('money', 'green', 'Collected in ' + fmtMonth(ym).split(' ')[0], Object.keys(cm).length ? moneyText(cm) : money(0, mc, true),
+      overdue.length ? '<span class="neg">' + overdue.length + ' overdue · ' + esc(sumByCur(overdue, 'amountMinor')) + '</span>' : '<span class="pos">Nothing overdue</span>',
+      months.map(function (m) { return d.invoices.filter(function (i) { return i.status === 'paid' && ymOf(i.paidAt) === m && i.currency === mc; }).reduce(function (n, i) { return n + i.amountMinor; }, 0); }), link('invoices')));
+  }
+  if (can('tasks')) {
+    var mine = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; });
+    mine.filter(function (t) { return t.dueDate && t.dueDate <= now; }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; }).slice(0, 5).forEach(function (t) {
+      todo.push({ tone: t.dueDate < now ? 'red' : 'amber', ic: 'task', t: esc(t.title), s: (t.dueDate < now ? 'Overdue since ' + fmtDate(t.dueDate) : 'Due today') + (t.clientId ? ' · ' + esc(clientName(t.clientId)) : ''), href: link('task/' + t.id), tick: t.id });
+    });
   }
   if (can('pipeline')) {
     var open = d.prospects.filter(function (p) { return OPEN_STAGES.indexOf(p.stage) >= 0; });
-    stats.push(stat('Open deals', String(open.length), open.length ? esc(sumByCur(open, 'valueMinor')) + ' / month possible' : ''));
-    var follow = open.filter(function (p) { return p.nextFollowUp && p.nextFollowUp <= week; }).sort(function (a, b) { return a.nextFollowUp < b.nextFollowUp ? -1 : 1; }).slice(0, 10);
-    blocks.push('<section class="card"><div class="card-head"><h2>Sales follow-ups</h2><a href="' + link('pipeline') + '">Pipeline</a></div>' +
-      (follow.length ? '<ul class="task-list">' + follow.map(function (p) { return '<li style="padding:8px 0;border-top:1px solid var(--line-2)"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a><div class="muted" style="font-size:12.5px">' + STAGE_LABEL[p.stage] + ' · <span' + (p.nextFollowUp <= now ? ' style="color:var(--red-ink)"' : '') + '>' + fmtDate(p.nextFollowUp) + '</span>' + (p.ownerId ? ' · ' + esc(userName(p.ownerId)) : '') + '</div></li>'; }).join('') + '</ul>' : '<p class="muted">No follow-ups due this week.</p>') + '</section>');
+    open.filter(function (p) { return p.nextFollowUp && p.nextFollowUp <= now; }).slice(0, 4).forEach(function (p) {
+      todo.push({ tone: 'royal', ic: 'deals', t: 'Follow up with ' + esc(p.company || p.name), s: STAGE_LABEL[p.stage] + ' · planned for ' + fmtDate(p.nextFollowUp), href: link('prospect/' + p.id) });
+    });
+    var won = d.prospects.filter(function (p) { return p.stage === 'won'; });
+    kpis.push(kpi('deals', 'royal', 'Open deals', open.length + (open.length ? ' <small>' + esc(sumByCur(open, 'valueMinor')) + '/mo</small>' : ''),
+      won.filter(function (p) { return ymOf(p.updatedAt) === ym; }).length + ' won this month', months.map(function (m) { return won.filter(function (p) { return ymOf(p.updatedAt) === m; }).length; }), link('pipeline')));
   }
+  if (can('leads')) {
+    var waiting = {}; d.leads.forEach(function (l) { if (l.status === 'new') waiting[l.clientId] = (waiting[l.clientId] || 0) + 1; });
+    Object.keys(waiting).sort(function (a, b) { return waiting[b] - waiting[a]; }).slice(0, 3).forEach(function (id) {
+      todo.push({ tone: 'amber', ic: 'bell', t: esc(clientName(id)) + ' has ' + waiting[id] + ' lead' + (waiting[id] === 1 ? '' : 's') + ' not called', s: 'Nudge the client: fast calls win more customers', href: link('leads', { client: id, status: 'new' }) });
+    });
+    var thisM = d.leads.filter(function (l) { return ymOf(l.createdAt) === ym; }), prevM = d.leads.filter(function (l) { return ymOf(l.createdAt) === ymShift(ym, -1); });
+    var ch = prevM.length ? Math.round((thisM.length - prevM.length) / prevM.length * 100) : null;
+    kpis.push(kpi('leads', 'royal', 'Leads delivered this month', nf.format(thisM.length), ch == null ? 'For all clients' : '<span class="' + (ch >= 0 ? 'pos' : 'neg') + '">' + (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch) + '% vs last month</span>',
+      months.map(function (m) { return d.leads.filter(function (l) { return ymOf(l.createdAt) === m; }).length; }), link('leads')));
+  }
+  if (can('clients') || can('billing')) {
+    var active = d.clients.filter(function (c) { return c.status === 'active'; }), onb = d.clients.filter(function (c) { return c.status === 'onboarding'; });
+    kpis.unshift(kpi('clients', 'royal', 'Active clients', String(active.length), onb.length ? onb.length + ' onboarding' : d.clients.length + ' in total',
+      months.map(function (m) { return d.clients.filter(function (c) { return ymOf(c.createdAt) <= m && c.status !== 'churned'; }).length; }), link('clients')));
+  }
+  if (can('tasks') && kpis.length < 4) {
+    var mineOpen = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; });
+    kpis.push(kpi('task', 'royal', 'My open tasks', String(mineOpen.length), d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status === 'done' && ymOf(t.completedAt) === ym; }).length + ' finished this month',
+      months.map(function (m) { return d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status === 'done' && ymOf(t.completedAt) === m; }).length; }), link('tasks')));
+  }
+
+  /* quick actions */
+  var quick = [[can('clients'), 'clients/new', 'Add client'], [can('pipeline'), 'pipeline', 'Add prospect'], [can('tasks'), 'tasks?add=1', 'Add task'], [can('billing'), 'invoices/new', 'New invoice'], [isOwner(), 'team', 'Invite team']]
+    .filter(function (x) { return x[0]; }).map(function (x) { return '<a class="hero-btn" href="#/' + x[1] + '">' + icon('plus', 15) + esc(x[2]) + '</a>'; }).join('');
+  var count = todo.length;
+  var hero = '<section class="hero"><div><p class="hero-date">' + esc(dateText) + '</p><h1>' + esc(hello) + '</h1><p class="hero-sub">' +
+    (count ? 'You have <strong>' + count + ' thing' + (count === 1 ? '' : 's') + '</strong> to handle today.' : 'All clear for today. Nice work.') + '</p></div>' +
+    (quick ? '<div class="hero-actions">' + quick + '</div>' : '') + '</section>';
+
+  /* getting started (owner, while the CRM is still empty) */
+  var start = '';
+  if (isOwner()) {
+    var steps = [[!!(d.agency.bankDetails && d.agency.email), 'Add your agency details and bank account', 'settings'], [d.users.some(function (u) { return u.role === 'staff'; }) || (d.invites || []).some(function (i) { return i.role === 'staff'; }), 'Invite your team and choose what each can see', 'team'],
+      [d.clients.length > 0, 'Add your first client', 'clients/new'], [d.prospects.length > 0, 'Put a prospect in the sales pipeline', 'pipeline'], [d.users.some(function (u) { return u.role === 'client'; }), 'Give a client their own login', 'clients'],
+      [d.invoices.length > 0, 'Send your first invoice', 'invoices/new']];
+    var doneN = steps.filter(function (s) { return s[0]; }).length;
+    if (doneN < steps.length) start = '<section class="card start"><div class="card-head"><div><h2>Set up your CRM</h2><p>' + doneN + ' of ' + steps.length + ' done. Takes about 10 minutes.</p></div><span class="start-pct">' + Math.round(doneN / steps.length * 100) + '%</span></div>' + bar(doneN / steps.length * 100, 'green') +
+      '<ol class="steps">' + steps.map(function (s) { return '<li class="' + (s[0] ? 'done' : '') + '"><span class="dot">' + (s[0] ? icon('check', 14) : '') + '</span>' + (s[0] ? '<span>' + esc(s[1]) + '</span>' : '<a href="#/' + s[2] + '">' + esc(s[1]) + '</a>') + '</li>'; }).join('') + '</ol></section>';
+  }
+
+  var todoHtml = '<section class="card"><div class="card-head"><h2>' + icon('bell') + ' Needs you today</h2>' + (count ? '<span class="badge overdue">' + count + '</span>' : '') + '</div>' +
+    (count ? '<ul class="todo">' + todo.map(function (x) {
+      return '<li class="' + x.tone + '"><span class="todo-ic">' + icon(x.ic, 16) + '</span><a href="' + x.href + '"><strong>' + x.t + '</strong><span>' + x.s + '</span></a>' +
+        (x.tick ? '<button type="button" class="tick" data-act="setTaskStatus" data-id="' + esc(x.tick) + '" data-status="done" title="Mark done"><span class="sr">Mark done</span></button>' : '<span class="go">' + icon('arrow', 16) + '</span>') + '</li>';
+    }).join('') + '</ul>' : '<div class="allclear">' + icon('check', 28) + '<p><strong>Nothing urgent.</strong><br>No overdue tasks, follow-ups or invoices.</p></div>') + '</section>';
+
+  /* this month at a glance */
+  var glance = [];
   if (can('tasks')) {
-    var myTasks = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done' && ((t.dueDate && t.dueDate < week) || (!t.dueDate && t.priority === 'high')); })
-      .sort(function (a, b) { return (a.dueDate || '9') < (b.dueDate || '9') ? -1 : 1; }).slice(0, 12);
-    if (!isOwner()) stats.push(stat('My open tasks', String(d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; }).length)));
-    blocks.unshift('<section class="card"><div class="card-head"><h2>My tasks this week</h2><a href="' + link('tasks') + '">All tasks</a></div>' +
-      (myTasks.length ? '<ul class="task-list">' + myTasks.map(function (t) { return taskRow(t, true); }).join('') + '</ul>' : '<p class="muted">Nothing due this week.</p>') + '</section>');
+    var dueM = d.tasks.filter(function (t) { return t.dueDate && ymOf(t.dueDate) === ym && t.dueDate <= now; });
+    var ok = dueM.filter(function (t) { return t.status === 'done' && String(t.completedAt).slice(0, 10) <= t.dueDate; }).length;
+    if (dueM.length) glance.push(['Tasks done on time', ok + ' of ' + dueM.length, ok / dueM.length * 100]);
+  }
+  if (can('pipeline')) {
+    var w = d.prospects.filter(function (p) { return p.stage === 'won'; }).length, lo = d.prospects.filter(function (p) { return p.stage === 'lost'; }).length;
+    if (w + lo) glance.push(['Win rate, all deals', w + ' of ' + (w + lo), w / (w + lo) * 100]);
+  }
+  if (can('leads')) {
+    var lm = d.leads.filter(function (l) { return ymOf(l.createdAt) === ym; }), called = lm.filter(function (l) { return l.status !== 'new'; }).length;
+    if (lm.length) glance.push(['Leads called by clients', called + ' of ' + lm.length, called / lm.length * 100]);
   }
   if (can('billing')) {
-    var mrr = {}; active.forEach(function (c) { var v = c.billingCycle === 'yearly' ? c.retainerMinor / 12 : c.billingCycle === 'quarterly' ? c.retainerMinor / 3 : c.retainerMinor; mrr[c.currency] = (mrr[c.currency] || 0) + v; });
-    var dueInv = d.invoices.filter(function (i) { return i.status === 'open' && i.dueDate <= addDays(now, 30); }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; });
-    var overdue = d.invoices.filter(function (i) { return i.status === 'open' && invState(i) === 'overdue'; });
-    var mrrText = Object.keys(mrr).length ? Object.keys(mrr).map(function (c) { return money(Math.round(mrr[c]), c, true); }).join(' · ') : '—';
-    stats.push(stat('Overdue invoices', overdue.length ? sumByCur(overdue, 'amountMinor') : 'Nothing', 'Retainers: ' + esc(mrrText) + ' / month'));
-    if (!can('clients')) stats.unshift(stat('Unpaid invoices', String(d.invoices.filter(function (i) { return i.status === 'open'; }).length)));
-    blocks.push('<section class="card" style="grid-column:1/-1"><div class="card-head"><div><h2>Invoices due in the next 30 days</h2><p>Unpaid, oldest first. Clients see these in their login.</p></div><a class="btn secondary small" href="' + link('invoices') + '">All invoices</a></div>' +
-      (dueInv.length ? invoiceTable(dueInv, true) : '<div class="empty">Nothing due in the next 30 days.</div>') + '</section>');
+    var billed = d.invoices.filter(function (i) { return i.status !== 'void' && ymOf(i.dueDate) === ym; }), pd = billed.filter(function (i) { return i.status === 'paid'; }).length;
+    if (billed.length) glance.push(['Invoices due this month paid', pd + ' of ' + billed.length, pd / billed.length * 100]);
   }
-  var right = (can('tasks') ? '<a class="btn secondary" href="' + link('tasks') + '">My tasks</a>' : '') + (can('clients') ? '<a class="btn" href="' + link('clients/new') + '">Add client</a>' : '') +
-    (!can('clients') && can('billing') ? '<a class="btn" href="' + link('invoices/new') + '">New invoice</a>' : '');
-  return head('Hello, ' + first(me.name), 'What needs attention today.', right) +
-    (stats.length ? '<div class="grid-4">' + stats.slice(0, 4).join('') + '</div>' : '') +
-    (blocks.length ? '<div class="grid-2" style="margin-top:16px;align-items:start">' + blocks.join('') + '</div>' : '') +
-    (!stats.length && !blocks.length ? '<div class="card"><div class="empty">Your login has no CRM areas yet. Ask the owner to give you access.</div></div>' : '');
+  var reviewLink = canReview() ? '<a class="btn secondary small" href="' + link('review') + '">Open monthly review ' + icon('arrow', 14) + '</a>' : '';
+  var glanceHtml = '<section class="card"><div class="card-head"><h2>' + icon('star') + ' ' + esc(fmtMonth(ym)) + ' so far</h2>' + reviewLink + '</div>' +
+    (glance.length ? '<div class="glance">' + glance.map(function (g) { return '<div><div class="glance-row"><span>' + esc(g[0]) + '</span><strong>' + esc(g[1]) + '</strong></div>' + bar(g[2], g[2] >= 70 ? 'green' : g[2] >= 40 ? '' : 'red') + '</div>'; }).join('') + '</div>'
+      : '<p class="muted">Numbers show up here once there are tasks, deals, leads or invoices this month.</p>') + '</section>';
+
+  return hero + start + (kpis.length ? '<div class="kpis">' + kpis.slice(0, 4).join('') + '</div>' : '') +
+    '<div class="grid-2" style="margin-top:16px;align-items:start">' + todoHtml + glanceHtml + '</div>' +
+    (!kpis.length && !todo.length && !glance.length ? '<div class="card" style="margin-top:16px"><div class="empty">Your login has no CRM areas yet. Ask the owner to give you access.</div></div>' : '');
 }
+
+/* ---------- monthly review ---------- */
+function canReview() { return isOwner() || can('tasks') || can('pipeline'); }
+var TASK_TARGET = 15, DEAL_TARGET = 2;
+function memberReview(u, ym) {
+  var d = D(), now = today(), cur = ym === now.slice(0, 7), endDay = cur ? now : ymShift(ym, 1) + '-00';
+  var tasks = d.tasks.filter(function (t) { return t.assigneeId === u.id; });
+  var dueIn = tasks.filter(function (t) { return t.dueDate && ymOf(t.dueDate) === ym && t.dueDate <= endDay; });
+  var onTime = dueIn.filter(function (t) { return t.status === 'done' && String(t.completedAt).slice(0, 10) <= t.dueDate; }).length;
+  var doneN = tasks.filter(function (t) { return t.status === 'done' && ymOf(t.completedAt) === ym; }).length;
+  var late = cur ? tasks.filter(function (t) { return t.status !== 'done' && t.dueDate && t.dueDate < now; }).length : dueIn.length - onTime;
+  var deals = d.prospects.filter(function (p) { return p.ownerId === u.id; });
+  var won = deals.filter(function (p) { return p.stage === 'won' && ymOf(p.updatedAt) === ym; }).length;
+  var lost = deals.filter(function (p) { return p.stage === 'lost' && ymOf(p.updatedAt) === ym; }).length;
+  var openD = deals.filter(function (p) { return OPEN_STAGES.indexOf(p.stage) >= 0; });
+  var kept = openD.filter(function (p) { return p.nextFollowUp && p.nextFollowUp >= now; }).length;
+  if (!tasks.some(function (t) { return ymOf(t.createdAt) <= ym; }) && !deals.some(function (p) { return ymOf(p.createdAt) <= ym; })) return null;
+  var parts = [];
+  if (dueIn.length) parts.push(['Tasks on time', onTime / dueIn.length, 35, onTime + ' of ' + dueIn.length + ' on time']);
+  parts.push(['Tasks finished', Math.min(1, doneN / TASK_TARGET), 20, doneN + ' finished · target ' + TASK_TARGET]);
+  parts.push([cur ? 'Nothing overdue' : 'Nothing missed', Math.max(0, 1 - late / 5), 15, late ? late + (cur ? ' overdue now' : ' missed') : 'None']);
+  if (deals.length) {
+    parts.push(['Deals won', Math.min(1, won / DEAL_TARGET), 20, won + ' won' + (lost ? ', ' + lost + ' lost' : '') + ' · target ' + DEAL_TARGET]);
+    if (cur && openD.length) parts.push(['Follow-ups planned', kept / openD.length, 10, kept + ' of ' + openD.length + ' open deals have a next date']);
+  }
+  var tw = parts.reduce(function (n, p) { return n + p[2]; }, 0), got = parts.reduce(function (n, p) { return n + p[1] * p[2]; }, 0);
+  var score = Math.round(got / tw * 100);
+  return { u: u, score: score, band: score >= 80 ? 'A' : score >= 60 ? 'B' : score >= 40 ? 'C' : 'D', parts: parts, won: won, doneN: doneN, late: late };
+}
+var BAND = { A: ['paid', 'Excellent'], B: ['upcoming', 'Good'], C: ['due', 'Needs a push'], D: ['overdue', 'Needs attention'] };
+function initials(n) { return String(n || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join(''); }
+
+function viewReview(r) {
+  if (!canReview()) return head('Not available', 'Your login does not include this part of the CRM.');
+  var d = D(), now = today(), ym = /^\d{4}-\d{2}$/.test(r.q.month || '') ? r.q.month : now.slice(0, 7), prev = ymShift(ym, -1), next = ymShift(ym, 1);
+  var people = isOwner() ? d.users.filter(function (u) { return u.role !== 'client' && !u.disabled; }) : [d.me];
+  var reviews = people.map(function (u) { return memberReview(u, ym); }).filter(Boolean).sort(function (a, b) { return b.score - a.score; });
+  var nav = '<div class="month-nav"><a class="btn secondary small" href="' + link('review', { month: prev }) + '">← ' + esc(fmtMonth(prev)) + '</a><strong>' + esc(fmtMonth(ym)) + '</strong>' +
+    (next <= now.slice(0, 7) ? '<a class="btn secondary small" href="' + link('review', { month: next }) + '">' + esc(fmtMonth(next)) + ' →</a>' : '<span></span>') + '</div>';
+  var out = head(isOwner() ? 'Monthly review' : 'My monthly review', isOwner() ? 'How the agency, the team and every client did this month. Scores update live from the CRM.' : 'Your score for the month, worked out from your tasks and deals.') + nav;
+
+  /* agency scorecard */
+  if (isOwner()) {
+    var inM = function (rows, key, m) { return rows.filter(function (x) { return ymOf(x[key]) === m; }); };
+    var metric = function (label, a, b, fmt, goodUp) {
+      var ch = b ? (a - b) / b : null, cls = ch == null || Math.abs(ch) < 0.005 ? '' : (ch > 0) === goodUp ? 'pos' : 'neg';
+      return '<div class="score-cell"><div class="sc-label">' + esc(label) + '</div><div class="sc-val">' + (fmt ? fmt(a) : nf.format(a)) + '</div><div class="sc-delta ' + cls + '">' + (ch == null ? 'last month: ' + (fmt ? fmt(b) : nf.format(b)) : Math.abs(ch) < 0.005 ? 'Same as ' + fmtMonth(prev).split(' ')[0] : (ch > 0 ? '▲ ' : ch < 0 ? '▼ ' : '') + Math.abs(Math.round(ch * 100)) + '% vs ' + fmtMonth(prev).split(' ')[0]) + '</div></div>';
+    };
+    var wonP = function (m) { return d.prospects.filter(function (p) { return p.stage === 'won' && ymOf(p.updatedAt) === m; }).length; };
+    var lostP = function (m) { return d.prospects.filter(function (p) { return p.stage === 'lost' && ymOf(p.updatedAt) === m; }).length; };
+    var paid = function (m) { return d.invoices.filter(function (i) { return i.status === 'paid' && ymOf(i.paidAt) === m; }); };
+    var pm = moneyByCur(paid(ym), 'amountMinor'), pp = moneyByCur(paid(prev), 'amountMinor'), mc = mainCur(Object.assign({}, pp, pm)) || 'INR';
+    var spent = function (m) { return d.expenses.filter(function (e) { return ymOf(e.date) === m && e.currency === mc; }).reduce(function (n, e) { return n + e.amountMinor; }, 0); };
+    var doneT = function (m) { return d.tasks.filter(function (t) { return t.status === 'done' && ymOf(t.completedAt) === m; }).length; };
+    out += '<section class="card"><div class="card-head"><h2>' + icon('star') + ' Agency scorecard</h2><p>Compared with ' + esc(fmtMonth(prev)) + '</p></div><div class="scorecard">' +
+      metric('New prospects', inM(d.prospects, 'createdAt', ym).length, inM(d.prospects, 'createdAt', prev).length, null, true) +
+      metric('Deals won', wonP(ym), wonP(prev), null, true) +
+      metric('Deals lost', lostP(ym), lostP(prev), null, false) +
+      metric('New clients', inM(d.clients, 'createdAt', ym).length, inM(d.clients, 'createdAt', prev).length, null, true) +
+      metric('Leads delivered to clients', inM(d.leads, 'createdAt', ym).length, inM(d.leads, 'createdAt', prev).length, null, true) +
+      metric('Tasks finished', doneT(ym), doneT(prev), null, true) +
+      metric('Money collected (' + mc + ')', pm[mc] || 0, pp[mc] || 0, function (v) { return money(v, mc, true); }, true) +
+      metric('Expenses (' + mc + ')', spent(ym), spent(prev), function (v) { return money(v, mc, true); }, false) + '</div></section>';
+  }
+
+  /* team review */
+  var top = reviews[0], weak = reviews.filter(function (x) { return x.band === 'D'; });
+  out += '<section class="card"><div class="card-head"><div><h2>' + icon('clients') + ' ' + (isOwner() ? 'Team review' : 'Your score') + '</h2><p>Out of 100: tasks on time 35 · tasks finished 20 · nothing overdue 15 · deals won 20 · follow-ups planned 10. Parts that don\'t apply to someone are left out.</p></div></div>' +
+    (isOwner() && reviews.length > 1 ? '<div class="review-sum"><div><span>' + icon('star', 14) + ' Top performer</span><strong>' + esc(top.u.name) + ' · ' + top.score + '</strong></div><div><span>Team average</span><strong>' + Math.round(reviews.reduce(function (n, x) { return n + x.score; }, 0) / reviews.length) + '</strong></div><div><span>Needs attention</span><strong>' + (weak.length ? esc(weak.map(function (x) { return first(x.u.name); }).join(', ')) : 'Nobody') + '</strong></div></div>' : '') +
+    (reviews.length ? '<div class="people">' + reviews.map(function (x, i) {
+      var trend = lastMonthsFrom(ym, 6).map(function (m) { var rv = memberReview(x.u, m); return rv ? rv.score : 0; });
+      return '<article class="person"><div class="person-head"><span class="avatar">' + esc(initials(x.u.name)) + '</span><div><strong>' + esc(x.u.name) + (i === 0 && reviews.length > 1 ? ' <span class="crown">' + icon('star', 14) + '</span>' : '') + '</strong><div class="muted" style="font-size:12.5px">' +
+        (x.u.role === 'admin' ? 'Owner' : esc(teamName(x.u.perms || []))) + '</div></div><div class="score"><span class="score-n">' + x.score + '</span>' + badge(BAND[x.band][0], x.band + ' · ' + BAND[x.band][1]) + '</div></div>' +
+        bar(x.score, x.score >= 80 ? 'green' : x.score >= 40 ? '' : 'red') +
+        '<dl class="parts">' + x.parts.map(function (p) { return '<dt>' + esc(p[0]) + '</dt><dd><span>' + esc(p[3]) + '</span><span class="pts">' + Math.round(p[1] * p[2] * 10) / 10 + '/' + p[2] + '</span></dd>'; }).join('') + '</dl>' +
+        '<div class="trend"><span class="muted">Last 6 months</span>' + spark(trend) + '</div></article>';
+    }).join('') + '</div>' : '<div class="empty">No tasks or deals ' + (isOwner() ? 'assigned to anyone' : 'assigned to you') + ' yet, so there is nothing to score for ' + esc(fmtMonth(ym)) + '.</div>') + '</section>';
+
+  /* client health */
+  if (isOwner() || can('clients')) {
+    var rows = d.clients.filter(function (c) { return c.status === 'active' || c.status === 'onboarding'; }).map(function (c) {
+      var pts = 100, why = [];
+      var L = (d.leads || []).filter(function (l) { return l.clientId === c.id; }), lm = L.filter(function (l) { return ymOf(l.createdAt) === ym; }), lp = L.filter(function (l) { return ymOf(l.createdAt) === prev; });
+      var called = lm.filter(function (l) { return l.status !== 'new'; }).length, wonL = lm.filter(function (l) { return l.status === 'won'; }).length;
+      if (can('leads')) {
+        if (!lm.length && c.status === 'active') { pts -= 30; why.push('No leads this month'); }
+        else if (lp.length && lm.length < lp.length * 0.7) { pts -= 15; why.push('Leads down ' + Math.round((1 - lm.length / lp.length) * 100) + '%'); }
+        if (lm.length >= 3 && called / lm.length < 0.5) { pts -= 25; why.push('Client is not calling leads'); }
+      }
+      var met = function (m) { var x = (d.metrics || []).filter(function (r) { return r.clientId === c.id && r.month === m; }); var sp = x.reduce(function (n, r) { return n + r.spendMinor; }, 0), le = x.reduce(function (n, r) { return n + r.leads; }, 0); return le ? sp / le : null; };
+      var cplNow = met(ym) != null ? met(ym) : met(prev), cplBefore = met(ym) != null ? met(prev) : met(ymShift(ym, -2));
+      if (can('results') && cplNow != null && cplBefore && cplNow > cplBefore * 1.2) { pts -= 15; why.push('Cost per lead up ' + Math.round((cplNow / cplBefore - 1) * 100) + '%'); }
+      var od = (d.invoices || []).filter(function (i) { return i.clientId === c.id && i.status === 'open' && invState(i) === 'overdue'; });
+      if (can('billing') && od.length) { pts -= 25; why.push(od.length === 1 ? 'Invoice overdue' : od.length + ' invoices overdue'); }
+      var h = pts >= 85 ? ['paid', 'Healthy'] : pts >= 55 ? ['due', 'Watch'] : ['overdue', 'At risk'];
+      return { c: c, pts: pts, h: h, why: why, lm: lm.length, called: called, wonL: wonL, cpl: cplNow };
+    }).sort(function (a, b) { return a.pts - b.pts; });
+    var counts = { Healthy: 0, Watch: 0, 'At risk': 0 }; rows.forEach(function (x) { counts[x.h[1]]++; });
+    out += '<section class="card" style="padding:0"><div class="card-head" style="padding:18px 20px 0"><div><h2>' + icon('leads') + ' Client health</h2><p>Worst first. Checks leads coming in, whether the client calls them, cost per lead and overdue invoices.</p></div>' +
+      '<div class="pill-row">' + badge('paid', counts.Healthy + ' healthy') + badge('due', counts.Watch + ' watch') + badge('overdue', counts['At risk'] + ' at risk') + '</div></div>' +
+      (rows.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Client</th><th>Health</th>' + (can('leads') ? '<th class="r">Leads</th><th class="r">Called</th><th class="r">' + 'Won' + '</th>' : '') + (can('results') ? '<th class="r">Cost / lead</th>' : '') + '<th>What to look at</th></tr></thead><tbody>' +
+        rows.map(function (x) {
+          return '<tr><td style="padding-left:20px"><a href="' + link('client/' + x.c.id) + '"><strong>' + esc(x.c.name) + '</strong></a></td><td>' + badge(x.h[0], x.h[1]) + '</td>' +
+            (can('leads') ? '<td class="r">' + x.lm + '</td><td class="r">' + (x.lm ? Math.round(x.called / x.lm * 100) + '%' : '—') + '</td><td class="r">' + x.wonL + '</td>' : '') +
+            (can('results') ? '<td class="r">' + (x.cpl != null ? money(Math.round(x.cpl), x.c.currency) : '—') + '</td>' : '') +
+            '<td>' + (x.why.length ? esc(x.why.join(' · ')) : '<span class="muted">All good</span>') + '</td></tr>';
+        }).join('') + '</tbody></table></div>' : '<div class="empty">No active clients yet.</div>') + '</section>';
+  }
+  return out;
+}
+function lastMonthsFrom(ym, n) { var out = []; for (var i = n - 1; i >= 0; i--) out.push(ymShift(ym, -i)); return out; }
 
 /* ---------- clients ---------- */
 function viewClients(r) {
