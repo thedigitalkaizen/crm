@@ -368,6 +368,102 @@ pre.box { white-space: pre-wrap; font-size: 12.5px; background: var(--bg); paddi
 @media (max-width: 960px) { .kpis, .scorecard { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .hero { padding: 20px; } .hero h1 { font-size: 23px; } .steps, .review-sum { grid-template-columns: 1fr; } }
 @media (max-width: 460px) { .kpis { grid-template-columns: 1fr; } }
+/* motivation: goals, streak, wins, rings, podium, celebrations, motion */
+.hero-line { display: flex; gap: 8px; align-items: flex-start; color: #c9cfe0; font-size: 13.5px; margin: 12px 0 14px; max-width: 560px; }
+.hero-line .ic { color: #f5b301; margin-top: 2px; }
+.hero-main { flex: 1 1 360px; min-width: 0; }
+.hero-day { display: flex; gap: 14px; align-items: center; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 14px 18px; }
+.hero-day-t { font-family: var(--font-head); font-weight: 600; font-size: 15px; color: #fff; }
+.streak { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 13px; color: #8f98b5; }
+.streak.on { color: #ffb547; font-weight: 600; }
+.streak.on .ic { animation: flicker 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+@keyframes flicker { 0%, 100% { transform: scale(1) rotate(0); } 30% { transform: scale(1.12) rotate(-4deg); } 60% { transform: scale(.96) rotate(3deg); } }
+.ring { position: relative; flex-shrink: 0; }
+.ring svg { transform: rotate(-90deg); display: block; }
+.ring circle { fill: none; stroke-width: 7; }
+.ring-bg { stroke: var(--line-2); }
+.ring-val { stroke: var(--royal); stroke-linecap: round; transition: stroke-dashoffset .6s ease; }
+.ring.green .ring-val { stroke: var(--emerald); }
+.ring.amber .ring-val { stroke: #f5b301; }
+.ring.red .ring-val { stroke: var(--red-ink); }
+.ring.light .ring-bg { stroke: rgba(255,255,255,.14); }
+.ring.light .ring-val { stroke: #7aa2ff; }
+.ring.light.green .ring-val { stroke: var(--emerald); }
+.ring-in { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font-family: var(--font-head); font-variant-numeric: tabular-nums; }
+.ring-in strong { font-size: 18px; font-weight: 600; }
+.ring-in small { font-size: 12px; opacity: .7; font-weight: 500; }
+.hero .ring-in { color: #fff; }
+.ring-done { color: var(--emerald); display: grid; place-items: center; }
+.goals { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.goal { display: flex; gap: 14px; align-items: center; padding: 12px; border: 1px solid var(--line-2); border-radius: 12px; color: var(--ink); text-decoration: none; transition: border-color .15s, transform .15s; }
+a.goal:hover { border-color: var(--royal); transform: translateY(-2px); }
+.goal-label { font-size: 13px; color: var(--ink-2); display: flex; gap: 6px; align-items: center; }
+.goal-num { font-family: var(--font-head); font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; margin: 2px 0; }
+.goal-num small { font-size: 12.5px; color: var(--ink-3); font-weight: 500; }
+.goal-status { font-size: 12.5px; font-weight: 500; }
+.warn { color: var(--amber-ink); }
+.goals-empty { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.goals-empty > div { flex: 1 1 260px; }
+.goals-empty h2 { margin: 0 0 2px; }
+.goals-empty p { margin: 0; }
+section.card + section.card, .hero + section.card { margin-bottom: 16px; }
+.kpis { margin-bottom: 0; }
+.kpi { transition: border-color .15s, transform .15s, box-shadow .15s; }
+.kpi:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(11,18,38,.07); }
+.meter span { transition: width .6s ease; }
+.meter span.amber { background: #f5b301; }
+.wins { list-style: none; margin: 0; padding: 0; }
+.wins li { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line-2); font-size: 14px; }
+.wins li:first-child { border-top: 0; padding-top: 0; }
+.win-ic { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--emerald-soft); color: var(--emerald-ink); flex-shrink: 0; }
+.win-t { flex: 1; min-width: 0; }
+.win-at { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+.allclear-ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--emerald-soft); color: var(--emerald-ink); flex-shrink: 0; }
+.allclear-ic.muted-ic { background: var(--line-2); color: var(--ink-3); }
+.podium { display: flex; justify-content: center; align-items: flex-end; gap: 14px; margin: 4px 0 18px; }
+.pod { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 130px; text-align: center; font-size: 13.5px; }
+.pod .muted { font-size: 12.5px; }
+.pod-block { width: 100%; border-radius: 10px 10px 0 0; background: var(--royal-soft); color: var(--royal-ink); display: grid; place-items: center; font-family: var(--font-head); font-weight: 700; font-size: 20px; margin-top: 6px; }
+.pod-1 .pod-block { height: 92px; background: var(--navy); color: #f5b301; }
+.pod-2 .pod-block { height: 64px; }
+.pod-3 .pod-block { height: 44px; background: var(--line-2); color: var(--ink-2); }
+.avatar.gold { background: #fff4d6; color: #9a6700; box-shadow: 0 0 0 3px #f5b301; }
+.medals { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.medal { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 99px; background: #fff4d6; color: #7a5200; font-size: 12px; font-weight: 600; }
+.medal .ic { color: #b8860b; }
+.tick { transition: transform .15s, background .15s; }
+.tick:hover { transform: scale(1.1); }
+.tick:active { transform: scale(.9); }
+/* celebration toast + confetti */
+.confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 60; }
+.cheer { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 61; display: flex; align-items: center; gap: 10px; background: var(--navy); color: #fff; padding: 12px 18px; border-radius: 12px; font-weight: 500; font-size: 14.5px; box-shadow: 0 10px 30px rgba(11,18,38,.25); animation: cheerIn .45s cubic-bezier(.2,1.4,.4,1) both; max-width: calc(100vw - 32px); }
+.cheer.big { font-family: var(--font-head); font-size: 17px; padding: 16px 22px; }
+.cheer-ic { width: 30px; height: 30px; border-radius: 50%; background: var(--emerald); display: grid; place-items: center; flex-shrink: 0; }
+.cheer.big .cheer-ic { width: 38px; height: 38px; background: #f5b301; color: var(--navy); }
+.cheer.out { animation: cheerOut .4s ease both; }
+@keyframes cheerIn { from { opacity: 0; transform: translate(-50%, 24px) scale(.9); } }
+@keyframes cheerOut { to { opacity: 0; transform: translate(-50%, 16px); } }
+/* page entrance: only on the first render of a page (.anim) */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+@keyframes pop { from { opacity: 0; transform: scale(.94) translateY(8px); } }
+@keyframes grow { from { width: 0; } }
+@keyframes ringFill { from { stroke-dashoffset: var(--c); } }
+@keyframes draw { from { stroke-dashoffset: 1; } }
+@keyframes dotIn { 0%, 70% { opacity: 0; transform: scale(0); } }
+.anim .main > * { animation: rise .5s ease-out both; animation-delay: calc(var(--i, 0) * 70ms); }
+.anim .kpis > *, .anim .goals > *, .anim .scorecard > *, .anim .people > * { animation: pop .45s ease-out both; animation-delay: calc(var(--i, 0) * 70ms + var(--j, 0) * 70ms + 80ms); }
+.anim .podium > * { animation: rise .6s cubic-bezier(.2,1.3,.4,1) both; }
+.anim .podium .pod-2 { animation-delay: .2s; } .anim .podium .pod-1 { animation-delay: .45s; } .anim .podium .pod-3 { animation-delay: .05s; }
+.anim .meter span { animation: grow 1s cubic-bezier(.2,.8,.2,1) both; animation-delay: .25s; }
+.anim .ring-val { animation: ringFill 1.2s cubic-bezier(.2,.8,.2,1) both; animation-delay: .2s; }
+.anim .spark polyline { stroke-dasharray: 1; animation: draw 1.2s ease-out both; animation-delay: .3s; }
+.anim .spark-dot { transform-box: fill-box; transform-origin: center; animation: dotIn 1.5s ease-out both; }
+.anim .todo li, .anim .wins li { animation: rise .4s ease-out both; }
+.anim .todo li:nth-child(2), .anim .wins li:nth-child(2) { animation-delay: .35s; } .anim .todo li:nth-child(3), .anim .wins li:nth-child(3) { animation-delay: .42s; }
+.anim .todo li:nth-child(n+4), .anim .wins li:nth-child(n+4) { animation-delay: .5s; }
+.anim .todo li:first-child, .anim .wins li:first-child { animation-delay: .28s; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+@media (max-width: 640px) { .hero-day { width: 100%; } .pod { width: 30%; } .goals { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -533,6 +629,7 @@ function afterRender() {
   }
   var lazy = app.querySelector('[data-notes]');
   if (lazy) loadNotes(lazy.getAttribute('data-notes'));
+  try { animatePage(); checkMilestones(); var at = route().q.at, atEl = at && document.getElementById(at); if (atEl) atEl.scrollIntoView({ block: 'start' }); } catch (e) { console.error(e); }
 }
 function showToast(text, err) {
   var t = document.createElement('p'); t.className = 'notice toast ' + (err ? 'err' : 'ok'); t.textContent = text; document.body.appendChild(t);
@@ -657,46 +754,111 @@ var ICON = {
   arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
   check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  flame: '<path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.4 2.4-5.4 3.6-7.8.4 1.6 1.3 2.6 2.4 3.1C11.3 6.6 13 4.3 15 3c-.3 3 1.3 4.7 2.4 6.3 1 1.4 1.6 3 1.6 4.8C19 18.2 16 21 12 21z"/>',
+  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/>',
+  trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>',
+  spark: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/>',
 };
 function icon(name, size) { return '<svg class="ic" width="' + (size || 18) + '" height="' + (size || 18) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[name] + '</svg>'; }
 function ymOf(s) { return String(s || '').slice(0, 7); }
 function ymShift(ym, n) { var y = +ym.slice(0, 4), m = +ym.slice(5, 7) - 1 + n; return new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 7); }
-function lastMonths(n) { var cur = today().slice(0, 7), out = []; for (var i = n - 1; i >= 0; i--) out.push(ymShift(cur, -i)); return out; }
+function lastMonths(n) { return lastMonthsFrom(today().slice(0, 7), n); }
+function lastMonthsFrom(ym, n) { var out = []; for (var i = n - 1; i >= 0; i--) out.push(ymShift(ym, -i)); return out; }
 function spark(vals, color) {
   var W = 96, H = 30, max = Math.max.apply(null, vals.concat([1])), step = W / Math.max(1, vals.length - 1);
   var pts = vals.map(function (v, i) { return (i * step).toFixed(1) + ',' + (H - 3 - (v / max) * (H - 6)).toFixed(1); });
-  return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true"><polyline points="' + pts.join(' ') + '" fill="none" stroke="' + (color || 'var(--royal)') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<circle cx="' + pts[pts.length - 1].split(',')[0] + '" cy="' + pts[pts.length - 1].split(',')[1] + '" r="2.6" fill="' + (color || 'var(--royal)') + '"/></svg>';
+  var last = pts[pts.length - 1].split(',');
+  return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true"><polyline pathLength="1" points="' + pts.join(' ') + '" fill="none" stroke="' + (color || 'var(--royal)') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle class="spark-dot" cx="' + last[0] + '" cy="' + last[1] + '" r="2.6" fill="' + (color || 'var(--royal)') + '"/></svg>';
 }
-function kpi(ic, tone, label, value, sub, sparkVals, href) {
+/* numbers that count up when a page opens: <span data-count="1234" data-fmt="int|money" data-cur="INR"> */
+function countNum(v, fmt, cur) { return '<span data-count="' + (Number(v) || 0) + '" data-fmt="' + (fmt || 'int') + '"' + (cur ? ' data-cur="' + esc(cur) + '"' : '') + '>' + (fmt === 'money' ? money(v, cur, true) : nf.format(Math.round(v || 0))) + '</span>'; }
+function kpi(ic, tone, label, valueHtml, sub, sparkVals, href) {
   return '<a class="kpi" href="' + href + '"><div class="kpi-top"><span class="kpi-ic ' + tone + '">' + icon(ic) + '</span>' + (sparkVals ? spark(sparkVals, tone === 'green' ? 'var(--emerald)' : 'var(--royal)') : '') + '</div>' +
-    '<div class="kpi-val">' + value + '</div><div class="kpi-label">' + esc(label) + '</div>' + (sub ? '<div class="kpi-sub">' + sub + '</div>' : '') + '</a>';
+    '<div class="kpi-val">' + valueHtml + '</div><div class="kpi-label">' + esc(label) + '</div>' + (sub ? '<div class="kpi-sub">' + sub + '</div>' : '') + '</a>';
 }
 function bar(pct, tone) { pct = Math.max(0, Math.min(100, Math.round(pct))); return '<div class="meter"><span class="' + (tone || '') + '" style="width:' + pct + '%"></span></div>'; }
+/* circular progress; centre shows a counting number */
+function ring(pct, tone, size, centre) {
+  var s = size || 84, r = s / 2 - 7, C = 2 * Math.PI * r, p = Math.max(0, Math.min(1, pct || 0));
+  return '<div class="ring ' + (tone || '') + '" style="width:' + s + 'px;height:' + s + 'px"><svg viewBox="0 0 ' + s + ' ' + s + '" width="' + s + '" height="' + s + '" aria-hidden="true">' +
+    '<circle cx="' + s / 2 + '" cy="' + s / 2 + '" r="' + r + '" class="ring-bg"/><circle cx="' + s / 2 + '" cy="' + s / 2 + '" r="' + r + '" class="ring-val" style="stroke-dasharray:' + C.toFixed(1) + ';stroke-dashoffset:' + (C * (1 - p)).toFixed(1) + ';--c:' + C.toFixed(1) + '"/></svg>' +
+    '<div class="ring-in">' + (centre || '') + '</div></div>';
+}
 function moneyByCur(rows, key) { var m = {}; rows.forEach(function (r) { m[r.currency] = (m[r.currency] || 0) + (r[key] || 0); }); return m; }
 function moneyText(m) { var k = Object.keys(m); return k.length ? k.map(function (c) { return money(m[c], c, true); }).join(' · ') : '—'; }
 function mainCur(m) { var k = Object.keys(m).sort(function (a, b) { return m[b] - m[a]; }); return k[0]; }
+function ago(iso) {
+  var d = Math.floor((Date.now() - Date.parse(iso)) / 86400000);
+  return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? d + ' days ago' : fmtDate(iso);
+}
+var KAIZEN_LINES = ['Kaizen means a little better every day. 1% a day adds up to 37 times better in a year.', 'Small steps done daily beat big plans done never.',
+  'Clients remember speed. Reply first, polish later.', 'Every follow-up keeps a door open. Knock on one today.', 'Done is a habit. Tick one thing off in the next 10 minutes.',
+  'Great agencies are built on boring consistency.', 'Today\'s leads are next month\'s results.', 'Win the morning, win the day.', 'One more call today is one more client this month.',
+  'Progress, not perfection.', 'Make one client\'s day better today. They will tell others.'];
+function dayLine() { var n = Math.floor(Date.now() / 86400000); return KAIZEN_LINES[n % KAIZEN_LINES.length]; }
+
+/* ---------- monthly goals ---------- */
+function goalsNow(ym) {
+  var d = D(), g = (d.agency || {}).goals || {}, out = [], now = today();
+  ym = ym || now.slice(0, 7);
+  if (g.revenue && can('billing')) {
+    var got = d.invoices.filter(function (i) { return i.status === 'paid' && ymOf(i.paidAt) === ym && i.currency === g.currency; }).reduce(function (n, i) { return n + i.amountMinor; }, 0);
+    out.push({ key: 'revenue', label: 'Money collected', ic: 'money', got: major(got, g.currency), goal: g.revenue, cur: g.currency, href: link('invoices', { status: 'paid' }) });
+  }
+  if (g.clients && (can('clients') || can('billing'))) out.push({ key: 'clients', label: 'New clients', ic: 'clients', got: d.clients.filter(function (c) { return ymOf(c.createdAt) === ym && c.status !== 'churned'; }).length, goal: g.clients, href: link('clients') });
+  if (g.deals && can('pipeline')) out.push({ key: 'deals', label: 'Deals won', ic: 'trophy', got: d.prospects.filter(function (p) { return p.stage === 'won' && ymOf(p.updatedAt) === ym; }).length, goal: g.deals, href: link('pipeline', { show: 'won' }) });
+  if (g.leads && can('leads')) out.push({ key: 'leads', label: 'Leads for clients', ic: 'leads', got: d.leads.filter(function (l) { return ymOf(l.createdAt) === ym; }).length, goal: g.leads, href: link('leads') });
+  return out;
+}
+function goalsCard() {
+  var list = goalsNow(), now = new Date(), dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(), pace = now.getDate() / dim;
+  if (!list.length) {
+    return isOwner() ? '<section class="card goals-empty"><span class="kpi-ic">' + icon('target') + '</span><div><h2>Set your goals for ' + esc(fmtMonth(today().slice(0, 7)).split(' ')[0]) + '</h2><p class="muted">Pick a target for money collected, new clients, deals won and leads. Progress rings fill up here as the team gets closer.</p></div><a class="btn" href="' + link('settings', { at: 'goals' }) + '">Set goals</a></section>' : '';
+  }
+  var left = dim - now.getDate();
+  return '<section class="card"><div class="card-head"><div><h2>' + icon('target') + ' ' + esc(fmtMonth(today().slice(0, 7)).split(' ')[0]) + ' goals</h2><p>' + left + ' day' + (left === 1 ? '' : 's') + ' left in the month' + (isOwner() ? ' · <a href="' + link('settings', { at: 'goals' }) + '">Change goals</a>' : '') + '</p></div></div><div class="goals">' +
+    list.map(function (g) {
+      var p = g.goal ? g.got / g.goal : 0, done = p >= 1, onTrack = p >= pace - 0.05;
+      var tone = done ? 'green' : onTrack ? '' : 'amber';
+      var centre = done ? '<span class="ring-done">' + icon('check', 22) + '</span>' : '<strong>' + countNum(Math.round(p * 100)) + '%</strong>';
+      var status = done ? '<span class="pos">Goal reached!</span>' : onTrack ? '<span class="pos">On track</span>' : '<span class="warn">' + (g.cur ? money(Math.round((g.goal - g.got) * Math.pow(10, digits(g.cur))), g.cur, true) : nf.format(Math.ceil(g.goal - g.got))) + ' to go</span>';
+      return '<a class="goal" href="' + g.href + '">' + ring(p, tone, 86, centre) + '<div><div class="goal-label">' + icon(g.ic, 15) + ' ' + esc(g.label) + '</div><div class="goal-num">' +
+        (g.cur ? countNum(Math.round(g.got * Math.pow(10, digits(g.cur))), 'money', g.cur) + ' <small>of ' + money(Math.round(g.goal * Math.pow(10, digits(g.cur))), g.cur, true) + '</small>' : countNum(g.got) + ' <small>of ' + nf.format(g.goal) + '</small>') + '</div><div class="goal-status">' + status + '</div></div></a>';
+    }).join('') + '</div></section>';
+}
+
+/* ---------- my day: today's tasks ring + streak ---------- */
+function myDay() {
+  var d = D(), me = d.me, now = today();
+  var mine = d.tasks.filter(function (t) { return t.assigneeId === me.id; });
+  var doneToday = mine.filter(function (t) { return t.status === 'done' && String(t.completedAt).slice(0, 10) === now; }).length;
+  var left = mine.filter(function (t) { return t.status !== 'done' && t.dueDate && t.dueDate <= now; }).length;
+  var days = {}; mine.forEach(function (t) { if (t.status === 'done' && t.completedAt) days[String(t.completedAt).slice(0, 10)] = 1; });
+  var streak = 0, day = days[now] ? now : addDays(now, -1);
+  while (days[day]) { streak++; day = addDays(day, -1); }
+  return { done: doneToday, total: doneToday + left, left: left, streak: streak };
+}
 
 /* ---------- overview ---------- */
 function viewOverview() {
   var d = D(), me = d.me, now = today(), ym = now.slice(0, 7), months = lastMonths(6), hr = new Date().getHours();
   var hello = (hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening') + ', ' + first(me.name);
   var dateText = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
-  var todo = [], kpis = [];
+  var todo = [], kpis = [], wins = [];
 
-  /* things that need someone today */
   if (can('billing')) {
     var overdue = d.invoices.filter(function (i) { return i.status === 'open' && invState(i) === 'overdue'; });
     overdue.slice(0, 4).forEach(function (i) { todo.push({ tone: 'red', ic: 'money', t: 'Chase ' + esc(clientName(i.clientId)) + ' for ' + money(i.amountMinor, i.currency), s: 'Invoice ' + esc(i.number) + ' was due ' + fmtDate(i.dueDate), href: link('invoice/' + i.id) }); });
     var paidNow = d.invoices.filter(function (i) { return i.status === 'paid' && ymOf(i.paidAt) === ym; });
-    var cm = moneyByCur(paidNow, 'amountMinor'), mc = mainCur(cm) || (d.clients[0] || {}).currency || 'INR';
-    kpis.push(kpi('money', 'green', 'Collected in ' + fmtMonth(ym).split(' ')[0], Object.keys(cm).length ? moneyText(cm) : money(0, mc, true),
+    var cm = moneyByCur(paidNow, 'amountMinor'), mc = mainCur(cm) || ((d.agency.goals || {}).currency) || 'INR';
+    kpis.push(kpi('money', 'green', 'Collected in ' + fmtMonth(ym).split(' ')[0], countNum(cm[mc] || 0, 'money', mc) + (Object.keys(cm).length > 1 ? ' <small>+ other currencies</small>' : ''),
       overdue.length ? '<span class="neg">' + overdue.length + ' overdue · ' + esc(sumByCur(overdue, 'amountMinor')) + '</span>' : '<span class="pos">Nothing overdue</span>',
       months.map(function (m) { return d.invoices.filter(function (i) { return i.status === 'paid' && ymOf(i.paidAt) === m && i.currency === mc; }).reduce(function (n, i) { return n + i.amountMinor; }, 0); }), link('invoices')));
+    d.invoices.filter(function (i) { return i.status === 'paid' && i.paidAt >= addDays(now, -30); }).forEach(function (i) { wins.push({ at: i.paidAt, ic: 'money', t: esc(clientName(i.clientId)) + ' paid ' + money(i.amountMinor, i.currency) }); });
   }
   if (can('tasks')) {
-    var mine = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; });
-    mine.filter(function (t) { return t.dueDate && t.dueDate <= now; }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; }).slice(0, 5).forEach(function (t) {
+    d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done' && t.dueDate && t.dueDate <= now; }).sort(function (a, b) { return a.dueDate < b.dueDate ? -1 : 1; }).slice(0, 6).forEach(function (t) {
       todo.push({ tone: t.dueDate < now ? 'red' : 'amber', ic: 'task', t: esc(t.title), s: (t.dueDate < now ? 'Overdue since ' + fmtDate(t.dueDate) : 'Due today') + (t.clientId ? ' · ' + esc(clientName(t.clientId)) : ''), href: link('task/' + t.id), tick: t.id });
     });
   }
@@ -706,8 +868,9 @@ function viewOverview() {
       todo.push({ tone: 'royal', ic: 'deals', t: 'Follow up with ' + esc(p.company || p.name), s: STAGE_LABEL[p.stage] + ' · planned for ' + fmtDate(p.nextFollowUp), href: link('prospect/' + p.id) });
     });
     var won = d.prospects.filter(function (p) { return p.stage === 'won'; });
-    kpis.push(kpi('deals', 'royal', 'Open deals', open.length + (open.length ? ' <small>' + esc(sumByCur(open, 'valueMinor')) + '/mo</small>' : ''),
+    kpis.push(kpi('deals', 'royal', 'Open deals', countNum(open.length) + (open.length ? ' <small>' + esc(sumByCur(open, 'valueMinor')) + '/mo</small>' : ''),
       won.filter(function (p) { return ymOf(p.updatedAt) === ym; }).length + ' won this month', months.map(function (m) { return won.filter(function (p) { return ymOf(p.updatedAt) === m; }).length; }), link('pipeline')));
+    won.filter(function (p) { return p.updatedAt >= addDays(now, -30); }).forEach(function (p) { wins.push({ at: p.updatedAt, ic: 'trophy', t: 'Won ' + esc(p.company || p.name) + (p.valueMinor ? ' · ' + money(p.valueMinor, p.currency, true) + '/mo' : '') }); });
   }
   if (can('leads')) {
     var waiting = {}; d.leads.forEach(function (l) { if (l.status === 'new') waiting[l.clientId] = (waiting[l.clientId] || 0) + 1; });
@@ -716,36 +879,50 @@ function viewOverview() {
     });
     var thisM = d.leads.filter(function (l) { return ymOf(l.createdAt) === ym; }), prevM = d.leads.filter(function (l) { return ymOf(l.createdAt) === ymShift(ym, -1); });
     var ch = prevM.length ? Math.round((thisM.length - prevM.length) / prevM.length * 100) : null;
-    kpis.push(kpi('leads', 'royal', 'Leads delivered this month', nf.format(thisM.length), ch == null ? 'For all clients' : '<span class="' + (ch >= 0 ? 'pos' : 'neg') + '">' + (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch) + '% vs last month</span>',
+    kpis.push(kpi('leads', 'royal', 'Leads delivered this month', countNum(thisM.length), ch == null ? 'For all clients' : '<span class="' + (ch >= 0 ? 'pos' : 'neg') + '">' + (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch) + '% vs last month</span>',
       months.map(function (m) { return d.leads.filter(function (l) { return ymOf(l.createdAt) === m; }).length; }), link('leads')));
+    var wonLeads = {}; d.leads.forEach(function (l) { if (l.status === 'won' && l.updatedAt >= addDays(now, -14)) wonLeads[l.clientId] = (wonLeads[l.clientId] || []).concat([l]); });
+    Object.keys(wonLeads).forEach(function (id) { var L = wonLeads[id]; wins.push({ at: L.map(function (l) { return l.updatedAt; }).sort().pop(), ic: 'leads', t: esc(clientName(id)) + ' turned ' + L.length + ' lead' + (L.length === 1 ? '' : 's') + ' into customers' }); });
   }
   if (can('clients') || can('billing')) {
     var active = d.clients.filter(function (c) { return c.status === 'active'; }), onb = d.clients.filter(function (c) { return c.status === 'onboarding'; });
-    kpis.unshift(kpi('clients', 'royal', 'Active clients', String(active.length), onb.length ? onb.length + ' onboarding' : d.clients.length + ' in total',
+    kpis.unshift(kpi('clients', 'royal', 'Active clients', countNum(active.length), onb.length ? onb.length + ' onboarding' : d.clients.length + ' in total',
       months.map(function (m) { return d.clients.filter(function (c) { return ymOf(c.createdAt) <= m && c.status !== 'churned'; }).length; }), link('clients')));
+    d.clients.filter(function (c) { return c.createdAt >= addDays(now, -30); }).forEach(function (c) { wins.push({ at: c.createdAt, ic: 'clients', t: 'New client: ' + esc(c.name) }); });
   }
-  if (can('tasks') && kpis.length < 4) {
-    var mineOpen = d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; });
-    kpis.push(kpi('task', 'royal', 'My open tasks', String(mineOpen.length), d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status === 'done' && ymOf(t.completedAt) === ym; }).length + ' finished this month',
+  var day = can('tasks') ? myDay() : null;
+  if (day && kpis.length < 4) {
+    kpis.push(kpi('task', 'royal', 'My open tasks', countNum(d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status !== 'done'; }).length), d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status === 'done' && ymOf(t.completedAt) === ym; }).length + ' finished this month',
       months.map(function (m) { return d.tasks.filter(function (t) { return t.assigneeId === me.id && t.status === 'done' && ymOf(t.completedAt) === m; }).length; }), link('tasks')));
   }
+  if (can('tasks')) {
+    var doneWeek = d.tasks.filter(function (t) { return t.status === 'done' && t.completedAt >= addDays(now, -7); });
+    if (doneWeek.length >= 3) wins.push({ at: doneWeek.map(function (t) { return t.completedAt; }).sort().pop(), ic: 'task', t: 'The team finished ' + doneWeek.length + ' tasks this week' });
+  }
+  wins.sort(function (a, b) { return a.at < b.at ? 1 : -1; });
 
-  /* quick actions */
+  /* hero */
   var quick = [[can('clients'), 'clients/new', 'Add client'], [can('pipeline'), 'pipeline', 'Add prospect'], [can('tasks'), 'tasks?add=1', 'Add task'], [can('billing'), 'invoices/new', 'New invoice'], [isOwner(), 'team', 'Invite team']]
     .filter(function (x) { return x[0]; }).map(function (x) { return '<a class="hero-btn" href="#/' + x[1] + '">' + icon('plus', 15) + esc(x[2]) + '</a>'; }).join('');
   var count = todo.length;
-  var hero = '<section class="hero"><div><p class="hero-date">' + esc(dateText) + '</p><h1>' + esc(hello) + '</h1><p class="hero-sub">' +
-    (count ? 'You have <strong>' + count + ' thing' + (count === 1 ? '' : 's') + '</strong> to handle today.' : 'All clear for today. Nice work.') + '</p></div>' +
-    (quick ? '<div class="hero-actions">' + quick + '</div>' : '') + '</section>';
+  var dayHtml = day ? '<div class="hero-day">' + ring(day.total ? day.done / day.total : 1, day.total && day.done < day.total ? 'light' : 'green light', 92,
+      '<strong>' + (day.total ? countNum(day.done) + '<small>/' + day.total + '</small>' : icon('check', 24)) + '</strong>') +
+    '<div><div class="hero-day-t">' + (day.total ? (day.left ? day.left + ' task' + (day.left === 1 ? '' : 's') + ' left today' : 'Today\'s tasks done!') : 'No tasks due today') + '</div>' +
+    '<div class="streak' + (day.streak ? ' on' : '') + '">' + icon('flame', 16) + '<span>' + (day.streak ? countNum(day.streak) + '-day streak' : 'Finish a task to start a streak') + '</span>' + '</div></div></div>' : '';
+  var hero = '<section class="hero"><div class="hero-main"><p class="hero-date">' + esc(dateText) + '</p><h1>' + esc(hello) + '</h1><p class="hero-sub">' +
+    (count ? 'You have <strong>' + count + ' thing' + (count === 1 ? '' : 's') + '</strong> to handle today.' : 'All clear for today. Nice work.') + '</p>' +
+    '<p class="hero-line">' + icon('spark', 15) + esc(dayLine()) + '</p>' + (quick ? '<div class="hero-actions">' + quick + '</div>' : '') + '</div>' + dayHtml + '</section>';
 
   /* getting started (owner, while the CRM is still empty) */
   var start = '';
   if (isOwner()) {
-    var steps = [[!!(d.agency.bankDetails && d.agency.email), 'Add your agency details and bank account', 'settings'], [d.users.some(function (u) { return u.role === 'staff'; }) || (d.invites || []).some(function (i) { return i.role === 'staff'; }), 'Invite your team and choose what each can see', 'team'],
+    var g = d.agency.goals || {};
+    var steps = [[!!(d.agency.bankDetails && d.agency.email), 'Add your agency details and bank account', 'settings'], [!!(g.revenue || g.clients || g.deals || g.leads), 'Set this month\'s goals', 'settings'],
+      [d.users.some(function (u) { return u.role === 'staff'; }) || (d.invites || []).some(function (i) { return i.role === 'staff'; }), 'Invite your team and choose what each can see', 'team'],
       [d.clients.length > 0, 'Add your first client', 'clients/new'], [d.prospects.length > 0, 'Put a prospect in the sales pipeline', 'pipeline'], [d.users.some(function (u) { return u.role === 'client'; }), 'Give a client their own login', 'clients'],
       [d.invoices.length > 0, 'Send your first invoice', 'invoices/new']];
     var doneN = steps.filter(function (s) { return s[0]; }).length;
-    if (doneN < steps.length) start = '<section class="card start"><div class="card-head"><div><h2>Set up your CRM</h2><p>' + doneN + ' of ' + steps.length + ' done. Takes about 10 minutes.</p></div><span class="start-pct">' + Math.round(doneN / steps.length * 100) + '%</span></div>' + bar(doneN / steps.length * 100, 'green') +
+    if (doneN < steps.length) start = '<section class="card start"><div class="card-head"><div><h2>' + icon('spark') + ' Set up your CRM</h2><p>' + doneN + ' of ' + steps.length + ' done. Takes about 10 minutes.</p></div><span class="start-pct">' + countNum(Math.round(doneN / steps.length * 100)) + '%</span></div>' + bar(doneN / steps.length * 100, 'green') +
       '<ol class="steps">' + steps.map(function (s) { return '<li class="' + (s[0] ? 'done' : '') + '"><span class="dot">' + (s[0] ? icon('check', 14) : '') + '</span>' + (s[0] ? '<span>' + esc(s[1]) + '</span>' : '<a href="#/' + s[2] + '">' + esc(s[1]) + '</a>') + '</li>'; }).join('') + '</ol></section>';
   }
 
@@ -753,41 +930,68 @@ function viewOverview() {
     (count ? '<ul class="todo">' + todo.map(function (x) {
       return '<li class="' + x.tone + '"><span class="todo-ic">' + icon(x.ic, 16) + '</span><a href="' + x.href + '"><strong>' + x.t + '</strong><span>' + x.s + '</span></a>' +
         (x.tick ? '<button type="button" class="tick" data-act="setTaskStatus" data-id="' + esc(x.tick) + '" data-status="done" title="Mark done"><span class="sr">Mark done</span></button>' : '<span class="go">' + icon('arrow', 16) + '</span>') + '</li>';
-    }).join('') + '</ul>' : '<div class="allclear">' + icon('check', 28) + '<p><strong>Nothing urgent.</strong><br>No overdue tasks, follow-ups or invoices.</p></div>') + '</section>';
+    }).join('') + '</ul>' : '<div class="allclear"><span class="allclear-ic">' + icon('trophy', 26) + '</span><p><strong>Nothing urgent. You\'re on top of it.</strong><br>No overdue tasks, follow-ups or invoices.</p></div>') + '</section>';
 
-  /* this month at a glance */
-  var glance = [];
-  if (can('tasks')) {
-    var dueM = d.tasks.filter(function (t) { return t.dueDate && ymOf(t.dueDate) === ym && t.dueDate <= now; });
-    var ok = dueM.filter(function (t) { return t.status === 'done' && String(t.completedAt).slice(0, 10) <= t.dueDate; }).length;
-    if (dueM.length) glance.push(['Tasks done on time', ok + ' of ' + dueM.length, ok / dueM.length * 100]);
-  }
-  if (can('pipeline')) {
-    var w = d.prospects.filter(function (p) { return p.stage === 'won'; }).length, lo = d.prospects.filter(function (p) { return p.stage === 'lost'; }).length;
-    if (w + lo) glance.push(['Win rate, all deals', w + ' of ' + (w + lo), w / (w + lo) * 100]);
-  }
-  if (can('leads')) {
-    var lm = d.leads.filter(function (l) { return ymOf(l.createdAt) === ym; }), called = lm.filter(function (l) { return l.status !== 'new'; }).length;
-    if (lm.length) glance.push(['Leads called by clients', called + ' of ' + lm.length, called / lm.length * 100]);
-  }
-  if (can('billing')) {
-    var billed = d.invoices.filter(function (i) { return i.status !== 'void' && ymOf(i.dueDate) === ym; }), pd = billed.filter(function (i) { return i.status === 'paid'; }).length;
-    if (billed.length) glance.push(['Invoices due this month paid', pd + ' of ' + billed.length, pd / billed.length * 100]);
-  }
-  var reviewLink = canReview() ? '<a class="btn secondary small" href="' + link('review') + '">Open monthly review ' + icon('arrow', 14) + '</a>' : '';
-  var glanceHtml = '<section class="card"><div class="card-head"><h2>' + icon('star') + ' ' + esc(fmtMonth(ym)) + ' so far</h2>' + reviewLink + '</div>' +
-    (glance.length ? '<div class="glance">' + glance.map(function (g) { return '<div><div class="glance-row"><span>' + esc(g[0]) + '</span><strong>' + esc(g[1]) + '</strong></div>' + bar(g[2], g[2] >= 70 ? 'green' : g[2] >= 40 ? '' : 'red') + '</div>'; }).join('') + '</div>'
-      : '<p class="muted">Numbers show up here once there are tasks, deals, leads or invoices this month.</p>') + '</section>';
+  var winsHtml = '<section class="card"><div class="card-head"><h2>' + icon('trophy') + ' Recent wins</h2>' + (canReview() ? '<a class="btn secondary small" href="' + link('review') + '">Monthly review ' + icon('arrow', 14) + '</a>' : '') + '</div>' +
+    (wins.length ? '<ul class="wins">' + wins.slice(0, 6).map(function (w) { return '<li><span class="win-ic">' + icon(w.ic, 15) + '</span><span class="win-t">' + w.t + '</span><span class="win-at">' + esc(ago(w.at)) + '</span></li>'; }).join('') + '</ul>'
+      : '<div class="allclear"><span class="allclear-ic muted-ic">' + icon('trophy', 26) + '</span><p><strong>Your first win this month is one step away.</strong><br>Paid invoices, won deals and new clients show up here.</p></div>') + '</section>';
 
-  return hero + start + (kpis.length ? '<div class="kpis">' + kpis.slice(0, 4).join('') + '</div>' : '') +
-    '<div class="grid-2" style="margin-top:16px;align-items:start">' + todoHtml + glanceHtml + '</div>' +
-    (!kpis.length && !todo.length && !glance.length ? '<div class="card" style="margin-top:16px"><div class="empty">Your login has no CRM areas yet. Ask the owner to give you access.</div></div>' : '');
+  return hero + start + goalsCard() + (kpis.length ? '<div class="kpis">' + kpis.slice(0, 4).join('') + '</div>' : '') +
+    '<div class="grid-2" style="margin-top:16px;align-items:start">' + todoHtml + winsHtml + '</div>' +
+    (!kpis.length && !todo.length ? '<div class="card" style="margin-top:16px"><div class="empty">Your login has no CRM areas yet. Ask the owner to give you access.</div></div>' : '');
+}
+
+/* ---------- celebrations ---------- */
+var REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+var CHEERS = {
+  task: ['Done! One step closer.', 'Ticked off. Keep the streak alive.', 'Nice. What\'s next?', 'Small steps, big results.', 'Another one down. You\'re flying.'],
+  deal: ['Deal won! Welcome your new client.', 'Huge win. Go celebrate it.', 'New client on board. Brilliant work.'],
+  paid: ['Payment in. Cash flow says thank you.', 'Money received. Lovely.', 'Paid! That\'s how it\'s done.'],
+  lead: ['Another customer won. Great calling!', 'Converted! Your ads are paying off.', 'Yes! One more happy customer.'],
+};
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function confetti(x, y, big) {
+  if (REDUCED) return;
+  var cv = document.createElement('canvas'), W = innerWidth, H = innerHeight, dpr = window.devicePixelRatio || 1;
+  cv.className = 'confetti'; cv.width = W * dpr; cv.height = H * dpr; document.body.appendChild(cv);
+  var cx = cv.getContext('2d'); cx.scale(dpr, dpr);
+  var colors = ['#2f6bff', '#10b981', '#f5b301', '#0b1226', '#7aa2ff', '#ff7a59'], N = big ? 160 : 70, parts = [];
+  for (var i = 0; i < N; i++) {
+    var a = (big ? -Math.PI / 2 + (Math.random() - 0.5) * 2.2 : -Math.PI / 2 + (Math.random() - 0.5) * 1.6), v = (big ? 9 : 6) + Math.random() * (big ? 8 : 5);
+    parts.push({ x: big ? W * (0.2 + Math.random() * 0.6) : x, y: big ? H * 0.9 : y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.4, w: 5 + Math.random() * 5, h: 3 + Math.random() * 4, c: colors[i % colors.length] });
+  }
+  var t0 = Date.now();
+  (function frame() { var t = Date.now();
+    var el = t - t0; cx.clearRect(0, 0, W, H);
+    parts.forEach(function (p) { p.vy += 0.28; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.globalAlpha = Math.max(0, 1 - el / 1900); cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); cx.restore(); });
+    if (el < 1900) requestAnimationFrame(frame); else cv.remove();
+  })(t0);
+}
+function cheer(kind, el, text) {
+  var r = el && el.getBoundingClientRect ? el.getBoundingClientRect() : null;
+  confetti(r ? r.left + r.width / 2 : innerWidth / 2, r ? r.top + r.height / 2 : innerHeight / 2, kind === 'big');
+  var t = document.createElement('div'); t.className = 'cheer' + (kind === 'big' ? ' big' : ''); t.setAttribute('role', 'status');
+  t.innerHTML = '<span class="cheer-ic">' + icon(kind === 'big' ? 'trophy' : kind === 'paid' ? 'money' : kind === 'deal' ? 'trophy' : 'check', kind === 'big' ? 22 : 16) + '</span><span>' + esc(text || pick(CHEERS[kind] || CHEERS.task)) + '</span>';
+  document.querySelectorAll('.cheer').forEach(function (x) { x.remove(); });
+  document.body.appendChild(t); setTimeout(function () { t.classList.add('out'); }, kind === 'big' ? 4200 : 2600); setTimeout(function () { t.remove(); }, kind === 'big' ? 4700 : 3100);
+}
+/* goal reached / day cleared: checked after every render once data is loaded */
+function checkMilestones() {
+  if (!S.d || isClient()) return;
+  var met = goalsNow().filter(function (g) { return g.goal && g.got >= g.goal; }).map(function (g) { return g.key; });
+  var dayLeft = can('tasks') ? myDay() : null;
+  if (S.prevMet) {
+    var fresh = goalsNow().filter(function (g) { return met.indexOf(g.key) >= 0 && S.prevMet.indexOf(g.key) < 0; })[0];
+    if (fresh) setTimeout(function () { cheer('big', null, 'Goal reached: ' + fresh.label.toLowerCase() + ' for ' + fmtMonth(today().slice(0, 7)).split(' ')[0] + '! Amazing work.'); }, 500);
+    else if (dayLeft && S.prevLeft > 0 && dayLeft.left === 0 && dayLeft.total > 0) setTimeout(function () { cheer('big', null, 'Day cleared! Every task for today is done.'); }, 500);
+  }
+  S.prevMet = met; S.prevLeft = dayLeft ? dayLeft.left : 0;
 }
 
 /* ---------- monthly review ---------- */
 function canReview() { return isOwner() || can('tasks') || can('pipeline'); }
 var TASK_TARGET = 15, DEAL_TARGET = 2;
-function memberReview(u, ym) {
+function memberReview(u, ym, noBadges) {
   var d = D(), now = today(), cur = ym === now.slice(0, 7), endDay = cur ? now : ymShift(ym, 1) + '-00';
   var tasks = d.tasks.filter(function (t) { return t.assigneeId === u.id; });
   var dueIn = tasks.filter(function (t) { return t.dueDate && ymOf(t.dueDate) === ym && t.dueDate <= endDay; });
@@ -810,7 +1014,16 @@ function memberReview(u, ym) {
   }
   var tw = parts.reduce(function (n, p) { return n + p[2]; }, 0), got = parts.reduce(function (n, p) { return n + p[1] * p[2]; }, 0);
   var score = Math.round(got / tw * 100);
-  return { u: u, score: score, band: score >= 80 ? 'A' : score >= 60 ? 'B' : score >= 40 ? 'C' : 'D', parts: parts, won: won, doneN: doneN, late: late };
+  var badges = [];
+  if (!noBadges) {
+    if (dueIn.length >= 3 && onTime === dueIn.length) badges.push(['On-time hero', 'check']);
+    if (doneN >= TASK_TARGET) badges.push(['Task machine', 'task']);
+    if (won >= 1) badges.push([won > 1 ? 'Deal closer x' + won : 'Deal closer', 'trophy']);
+    if (!late && tasks.length) badges.push(['Clean slate', 'spark']);
+    var pr = memberReview(u, ymShift(ym, -1), true);
+    if (pr && score - pr.score >= 10) badges.push(['Rising star +' + (score - pr.score), 'deals']);
+  }
+  return { u: u, score: score, band: score >= 80 ? 'A' : score >= 60 ? 'B' : score >= 40 ? 'C' : 'D', parts: parts, won: won, doneN: doneN, late: late, badges: badges };
 }
 var BAND = { A: ['paid', 'Excellent'], B: ['upcoming', 'Good'], C: ['due', 'Needs a push'], D: ['overdue', 'Needs attention'] };
 function initials(n) { return String(n || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join(''); }
@@ -827,9 +1040,11 @@ function viewReview(r) {
   /* agency scorecard */
   if (isOwner()) {
     var inM = function (rows, key, m) { return rows.filter(function (x) { return ymOf(x[key]) === m; }); };
-    var metric = function (label, a, b, fmt, goodUp) {
+    var metric = function (label, a, b, cur, goodUp) {
       var ch = b ? (a - b) / b : null, cls = ch == null || Math.abs(ch) < 0.005 ? '' : (ch > 0) === goodUp ? 'pos' : 'neg';
-      return '<div class="score-cell"><div class="sc-label">' + esc(label) + '</div><div class="sc-val">' + (fmt ? fmt(a) : nf.format(a)) + '</div><div class="sc-delta ' + cls + '">' + (ch == null ? 'last month: ' + (fmt ? fmt(b) : nf.format(b)) : Math.abs(ch) < 0.005 ? 'Same as ' + fmtMonth(prev).split(' ')[0] : (ch > 0 ? '▲ ' : ch < 0 ? '▼ ' : '') + Math.abs(Math.round(ch * 100)) + '% vs ' + fmtMonth(prev).split(' ')[0]) + '</div></div>';
+      var f = function (v) { return cur ? money(v, cur, true) : nf.format(v); };
+      return '<div class="score-cell"><div class="sc-label">' + esc(label) + '</div><div class="sc-val">' + countNum(a, cur ? 'money' : 'int', cur) + '</div><div class="sc-delta ' + cls + '">' +
+        (ch == null ? 'last month: ' + f(b) : Math.abs(ch) < 0.005 ? 'Same as ' + fmtMonth(prev).split(' ')[0] : (ch > 0 ? '▲ ' : '▼ ') + Math.abs(Math.round(ch * 100)) + '% vs ' + fmtMonth(prev).split(' ')[0]) + '</div></div>';
     };
     var wonP = function (m) { return d.prospects.filter(function (p) { return p.stage === 'won' && ymOf(p.updatedAt) === m; }).length; };
     var lostP = function (m) { return d.prospects.filter(function (p) { return p.stage === 'lost' && ymOf(p.updatedAt) === m; }).length; };
@@ -837,27 +1052,42 @@ function viewReview(r) {
     var pm = moneyByCur(paid(ym), 'amountMinor'), pp = moneyByCur(paid(prev), 'amountMinor'), mc = mainCur(Object.assign({}, pp, pm)) || 'INR';
     var spent = function (m) { return d.expenses.filter(function (e) { return ymOf(e.date) === m && e.currency === mc; }).reduce(function (n, e) { return n + e.amountMinor; }, 0); };
     var doneT = function (m) { return d.tasks.filter(function (t) { return t.status === 'done' && ymOf(t.completedAt) === m; }).length; };
-    out += '<section class="card"><div class="card-head"><h2>' + icon('star') + ' Agency scorecard</h2><p>Compared with ' + esc(fmtMonth(prev)) + '</p></div><div class="scorecard">' +
+    var gl = goalsNow(ym);
+    out += (gl.length ? '<section class="card"><div class="card-head"><h2>' + icon('target') + ' Goals for ' + esc(fmtMonth(ym)) + '</h2>' + (isOwner() ? '<a href="' + link('settings', { at: 'goals' }) + '">Change goals</a>' : '') + '</div><div class="goals">' +
+      gl.map(function (g) { var p = g.goal ? g.got / g.goal : 0; return '<div class="goal">' + ring(p, p >= 1 ? 'green' : '', 78, p >= 1 ? '<span class="ring-done">' + icon('check', 20) + '</span>' : '<strong>' + countNum(Math.round(p * 100)) + '%</strong>') + '<div><div class="goal-label">' + esc(g.label) + '</div><div class="goal-num">' + (g.cur ? money(Math.round(g.got * Math.pow(10, digits(g.cur))), g.cur, true) : nf.format(g.got)) + ' <small>of ' + (g.cur ? money(Math.round(g.goal * Math.pow(10, digits(g.cur))), g.cur, true) : nf.format(g.goal)) + '</small></div></div></div>'; }).join('') + '</div></section>' : '') +
+      '<section class="card"><div class="card-head"><h2>' + icon('star') + ' Agency scorecard</h2><p>Compared with ' + esc(fmtMonth(prev)) + '</p></div><div class="scorecard">' +
       metric('New prospects', inM(d.prospects, 'createdAt', ym).length, inM(d.prospects, 'createdAt', prev).length, null, true) +
       metric('Deals won', wonP(ym), wonP(prev), null, true) +
       metric('Deals lost', lostP(ym), lostP(prev), null, false) +
       metric('New clients', inM(d.clients, 'createdAt', ym).length, inM(d.clients, 'createdAt', prev).length, null, true) +
       metric('Leads delivered to clients', inM(d.leads, 'createdAt', ym).length, inM(d.leads, 'createdAt', prev).length, null, true) +
       metric('Tasks finished', doneT(ym), doneT(prev), null, true) +
-      metric('Money collected (' + mc + ')', pm[mc] || 0, pp[mc] || 0, function (v) { return money(v, mc, true); }, true) +
-      metric('Expenses (' + mc + ')', spent(ym), spent(prev), function (v) { return money(v, mc, true); }, false) + '</div></section>';
+      metric('Money collected (' + mc + ')', pm[mc] || 0, pp[mc] || 0, mc, true) +
+      metric('Expenses (' + mc + ')', spent(ym), spent(prev), mc, false) + '</div></section>';
   }
 
-  /* team review */
+  /* podium */
+  var podium = '';
+  if (isOwner() && reviews.length > 1) {
+    var order = [reviews[1], reviews[0], reviews[2]].filter(Boolean), place = { 0: 1, 1: 0, 2: 2 };
+    podium = '<div class="podium">' + order.map(function (x) {
+      var rank = reviews.indexOf(x) + 1;
+      return '<div class="pod pod-' + rank + '"><span class="avatar' + (rank === 1 ? ' gold' : '') + '">' + esc(initials(x.u.name)) + '</span><strong>' + esc(first(x.u.name)) + '</strong><span class="muted">' + countNum(x.score) + ' points</span>' +
+        '<div class="pod-block"><span>' + (rank === 1 ? icon('trophy', 22) : rank) + '</span></div></div>';
+    }).join('') + '</div>';
+  }
   var top = reviews[0], weak = reviews.filter(function (x) { return x.band === 'D'; });
   out += '<section class="card"><div class="card-head"><div><h2>' + icon('clients') + ' ' + (isOwner() ? 'Team review' : 'Your score') + '</h2><p>Out of 100: tasks on time 35 · tasks finished 20 · nothing overdue 15 · deals won 20 · follow-ups planned 10. Parts that don\'t apply to someone are left out.</p></div></div>' +
+    podium +
     (isOwner() && reviews.length > 1 ? '<div class="review-sum"><div><span>' + icon('star', 14) + ' Top performer</span><strong>' + esc(top.u.name) + ' · ' + top.score + '</strong></div><div><span>Team average</span><strong>' + Math.round(reviews.reduce(function (n, x) { return n + x.score; }, 0) / reviews.length) + '</strong></div><div><span>Needs attention</span><strong>' + (weak.length ? esc(weak.map(function (x) { return first(x.u.name); }).join(', ')) : 'Nobody') + '</strong></div></div>' : '') +
     (reviews.length ? '<div class="people">' + reviews.map(function (x, i) {
-      var trend = lastMonthsFrom(ym, 6).map(function (m) { var rv = memberReview(x.u, m); return rv ? rv.score : 0; });
-      return '<article class="person"><div class="person-head"><span class="avatar">' + esc(initials(x.u.name)) + '</span><div><strong>' + esc(x.u.name) + (i === 0 && reviews.length > 1 ? ' <span class="crown">' + icon('star', 14) + '</span>' : '') + '</strong><div class="muted" style="font-size:12.5px">' +
-        (x.u.role === 'admin' ? 'Owner' : esc(teamName(x.u.perms || []))) + '</div></div><div class="score"><span class="score-n">' + x.score + '</span>' + badge(BAND[x.band][0], x.band + ' · ' + BAND[x.band][1]) + '</div></div>' +
-        bar(x.score, x.score >= 80 ? 'green' : x.score >= 40 ? '' : 'red') +
-        '<dl class="parts">' + x.parts.map(function (p) { return '<dt>' + esc(p[0]) + '</dt><dd><span>' + esc(p[3]) + '</span><span class="pts">' + Math.round(p[1] * p[2] * 10) / 10 + '/' + p[2] + '</span></dd>'; }).join('') + '</dl>' +
+      var trend = lastMonthsFrom(ym, 6).map(function (m) { var rv = memberReview(x.u, m, true); return rv ? rv.score : 0; });
+      var tone = x.score >= 80 ? 'green' : x.score >= 60 ? '' : x.score >= 40 ? 'amber' : 'red';
+      return '<article class="person"><div class="person-head"><span class="avatar">' + esc(initials(x.u.name)) + '</span><div><strong>' + esc(x.u.name) + (i === 0 && reviews.length > 1 ? ' <span class="crown">' + icon('trophy', 14) + '</span>' : '') + '</strong><div class="muted" style="font-size:12.5px">' +
+        (x.u.role === 'admin' ? 'Owner' : esc(teamName(x.u.perms || []))) + '</div><div style="margin-top:4px">' + badge(BAND[x.band][0], x.band + ' · ' + BAND[x.band][1]) + '</div></div>' +
+        '<div class="score">' + ring(x.score / 100, tone, 76, '<strong>' + countNum(x.score) + '</strong>') + '</div></div>' +
+        (x.badges.length ? '<div class="medals">' + x.badges.map(function (b) { return '<span class="medal">' + icon(b[1], 13) + esc(b[0]) + '</span>'; }).join('') + '</div>' : '') +
+        '<dl class="parts">' + x.parts.map(function (p) { return '<dt>' + esc(p[0]) + '</dt><dd><span>' + esc(p[3]) + '</span><span class="pts">' + Math.round(p[1] * p[2] * 10) / 10 + '/' + p[2] + '</span></dd>' + bar(p[1] * 100, p[1] >= 0.8 ? 'green' : p[1] >= 0.4 ? '' : 'red'); }).join('') + '</dl>' +
         '<div class="trend"><span class="muted">Last 6 months</span>' + spark(trend) + '</div></article>';
     }).join('') + '</div>' : '<div class="empty">No tasks or deals ' + (isOwner() ? 'assigned to anyone' : 'assigned to you') + ' yet, so there is nothing to score for ' + esc(fmtMonth(ym)) + '.</div>') + '</section>';
 
@@ -883,9 +1113,9 @@ function viewReview(r) {
     var counts = { Healthy: 0, Watch: 0, 'At risk': 0 }; rows.forEach(function (x) { counts[x.h[1]]++; });
     out += '<section class="card" style="padding:0"><div class="card-head" style="padding:18px 20px 0"><div><h2>' + icon('leads') + ' Client health</h2><p>Worst first. Checks leads coming in, whether the client calls them, cost per lead and overdue invoices.</p></div>' +
       '<div class="pill-row">' + badge('paid', counts.Healthy + ' healthy') + badge('due', counts.Watch + ' watch') + badge('overdue', counts['At risk'] + ' at risk') + '</div></div>' +
-      (rows.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Client</th><th>Health</th>' + (can('leads') ? '<th class="r">Leads</th><th class="r">Called</th><th class="r">' + 'Won' + '</th>' : '') + (can('results') ? '<th class="r">Cost / lead</th>' : '') + '<th>What to look at</th></tr></thead><tbody>' +
+      (rows.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Client</th><th>Health</th><th style="width:120px">Score</th>' + (can('leads') ? '<th class="r">Leads</th><th class="r">Called</th><th class="r">Won</th>' : '') + (can('results') ? '<th class="r">Cost / lead</th>' : '') + '<th>What to look at</th></tr></thead><tbody>' +
         rows.map(function (x) {
-          return '<tr><td style="padding-left:20px"><a href="' + link('client/' + x.c.id) + '"><strong>' + esc(x.c.name) + '</strong></a></td><td>' + badge(x.h[0], x.h[1]) + '</td>' +
+          return '<tr><td style="padding-left:20px"><a href="' + link('client/' + x.c.id) + '"><strong>' + esc(x.c.name) + '</strong></a></td><td>' + badge(x.h[0], x.h[1]) + '</td><td>' + bar(Math.max(0, x.pts), x.pts >= 85 ? 'green' : x.pts >= 55 ? 'amber' : 'red') + '</td>' +
             (can('leads') ? '<td class="r">' + x.lm + '</td><td class="r">' + (x.lm ? Math.round(x.called / x.lm * 100) + '%' : '—') + '</td><td class="r">' + x.wonL + '</td>' : '') +
             (can('results') ? '<td class="r">' + (x.cpl != null ? money(Math.round(x.cpl), x.c.currency) : '—') + '</td>' : '') +
             '<td>' + (x.why.length ? esc(x.why.join(' · ')) : '<span class="muted">All good</span>') + '</td></tr>';
@@ -893,7 +1123,26 @@ function viewReview(r) {
   }
   return out;
 }
-function lastMonthsFrom(ym, n) { var out = []; for (var i = n - 1; i >= 0; i--) out.push(ymShift(ym, -i)); return out; }
+
+/* ---------- motion: runs after each render; only animates the first time a page opens ---------- */
+var lastAnimated = '';
+function animatePage() {
+  var key = location.hash.split('?')[0] + '|' + (S.d ? 1 : 0), firstTime = key !== lastAnimated;
+  lastAnimated = key;
+  var on = firstTime && !REDUCED;
+  app.classList.toggle('anim', on);
+  if (!on) return;
+  var main = app.querySelector('.main') || app;
+  Array.prototype.forEach.call(main.children, function (c, i) { c.style.setProperty('--i', i); });
+  app.querySelectorAll('.kpis, .goals, .scorecard, .people, .podium').forEach(function (g) { Array.prototype.forEach.call(g.children, function (c, i) { c.style.setProperty('--j', i); }); });
+  app.querySelectorAll('[data-count]').forEach(function (el) {
+    var to = Number(el.getAttribute('data-count')) || 0, fmt = el.getAttribute('data-fmt'), cur = el.getAttribute('data-cur');
+    if (!to) return;
+    var f = function (v) { return fmt === 'money' ? money(Math.round(v), cur, true) : nf.format(Math.round(v)); }, t0 = Date.now(), dur = 1100;
+    el.textContent = f(0);
+    (function step() { var t = Date.now(); var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = f(to * e); if (p < 1) requestAnimationFrame(step); })(t0);
+  });
+}
 
 /* ---------- clients ---------- */
 function viewClients(r) {
@@ -1430,13 +1679,17 @@ function viewTeam() {
     }).join('') + '</tbody></table>' + (inv.length ? '<h3 style="margin:18px 0 6px">Invites not used yet</h3><table><tbody>' + inv.map(function (i) { return '<tr><td>' + esc(i.name || i.email) + '</td><td>' + esc(i.email) + '</td><td>' + esc(teamName(String(i.perms || '').split(',').filter(Boolean))) + '</td><td>Expires ' + fmtDate(i.expiresAt) + '</td><td class="r">' + btn('Cancel', 'revokeInvite', { id: i.id }, 'ghost small') + '</td></tr>'; }).join('') + '</tbody></table>' : '') + '</section>';
 }
 function viewSettings() {
-  var a = D().agency;
+  var a = D().agency, g = a.goals || {};
   return head('Settings', 'Your agency details, printed on invoices and quotations.') + '<section class="card" style="max-width:760px">' + form('saveSettings', 'saveSettings', '<div class="form-grid">' +
     '<label>Agency name<input name="agencyName" maxlength="120" value="' + esc(a.name) + '"></label><label>Invoice number prefix<input name="invoicePrefix" maxlength="8" value="' + esc(a.invoicePrefix) + '"><span class="hint">Invoices look like ' + esc(a.invoicePrefix) + '-2026-0001.</span></label>' +
     '<label>Email on invoices<input name="agencyEmail" type="email" maxlength="200" value="' + esc(a.email) + '"></label><label>Phone<input name="agencyPhone" maxlength="40" value="' + esc(a.phone) + '"></label>' +
     '<label class="full">Address<textarea name="agencyAddress" maxlength="600">' + esc(a.address) + '</textarea></label>' +
     '<label class="full">Bank details for clients<textarea name="bankDetails" maxlength="800" placeholder="Account name, bank, account number, IFSC / IBAN">' + esc(a.bankDetails) + '</textarea><span class="hint">Shown on unpaid invoices.</span></label>' +
     '<label>Tax number (GSTIN / VAT)<input name="agencyTaxId" maxlength="40" value="' + esc(a.taxId) + '"><span class="hint">Leave empty while not registered: no tax is ever added then.</span></label><label>Tax number label<input name="agencyTaxIdLabel" maxlength="20" value="' + esc(a.taxIdLabel) + '"></label>' +
+    '</div><h2 id="goals" style="margin:22px 0 4px">Monthly goals</h2><p class="hint" style="margin:0 0 10px">The same target every month. Progress rings on the overview fill up as you get closer, with a celebration when you hit one. Leave empty to hide a goal.</p><div class="form-grid">' +
+    '<label>Money collected each month<input name="goalRevenue" inputmode="decimal" value="' + (g.revenue || '') + '" placeholder="e.g. 500000"></label><label>Currency of that goal<select name="goalCurrency">' + opts(CURRENCIES, g.currency || 'INR') + '</select></label>' +
+    '<label>New clients each month<input name="goalClients" inputmode="numeric" value="' + (g.clients || '') + '"></label><label>Deals won each month<input name="goalDeals" inputmode="numeric" value="' + (g.deals || '') + '"></label>' +
+    '<label>Leads delivered to clients each month<input name="goalLeads" inputmode="numeric" value="' + (g.leads || '') + '"></label>' +
     '</div><div style="margin-top:12px">' + submit('Save settings') + '</div>') + '</section>';
 }
 
@@ -1578,7 +1831,7 @@ var FORMS = {
   loseProspect: function (o) { return call('setStage', o.id, 'lost', o.reason).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); return 'Marked as lost.'; }); },
   saveTask: function (o) { return call('saveTask', o).then(function (t) { upsert('tasks', t); return o.id ? 'Saved.' : 'Task added.'; }); },
   createInvoice: function (o, fd) { return call('createInvoice', { clientId: o.clientId, title: o.title, dueDate: o.dueDate, notes: o.notes, items: lines(fd) }).then(function (i) { upsert('invoices', i); go('invoice/' + i.id); }); },
-  markInvoicePaid: function (o) { return call('markInvoicePaid', o.id, o.ref).then(function (i) { upsert('invoices', i); return 'Marked as paid. The client sees it as paid now.'; }); },
+  markInvoicePaid: function (o) { return call('markInvoicePaid', o.id, o.ref).then(function (i) { upsert('invoices', i); cheer('paid', null, 'Paid! ' + money(i.amountMinor, i.currency) + ' from ' + clientName(i.clientId) + '.'); return 'Marked as paid. The client sees it as paid now.'; }); },
   saveQuote: function (o, fd) { return call('saveQuote', { clientId: o.clientId, prospectId: o.prospectId, currency: o.currency, validDays: o.validDays, title: o.title, toName: o.toName, toAddress: o.toAddress, notes: o.notes, items: lines(fd) }).then(function (q) { upsert('quotes', q); go('quote/' + q.id); }); },
   addExpense: function (o) { return call('addExpense', o).then(function (e) { upsert('expenses', e); return 'Expense saved.'; }); },
   setUserPerms: function (o, fd) { return call('setUserPerms', o.id, fd.getAll('perm')).then(function (u) { upsert('users', u); showToast('Access saved for ' + u.name + '. It applies the next time they open or refresh the CRM.', false); }); },
@@ -1590,13 +1843,13 @@ var ACTS = {
   deleteClient: function (b) { return call('deleteClient', b.id).then(function () { return load().then(function () { go('clients'); }); }); },
   setUserDisabled: function (b) { return call('setUserDisabled', b.id, !!b.off).then(function (u) { upsert('users', u); }); },
   revokeInvite: function (b) { return call('revokeInvite', b.id).then(function () { drop('invites', b.id); }); },
-  setLeadStatus: function (b) { return call('setLeadStatus', b.id, b.status).then(function (l) { upsert('leads', l); refreshNotes('lead', l.id); }); },
+  setLeadStatus: function (b, el) { return call('setLeadStatus', b.id, b.status).then(function (l) { upsert('leads', l); refreshNotes('lead', l.id); if (l.status === 'won') cheer('lead', el); }); },
   deleteLead: function (b) { return call('deleteLead', b.id).then(function () { drop('leads', b.id); go('leads'); }); },
   deleteMetric: function (b) { return call('deleteMetric', b.id).then(function () { drop('metrics', b.id); }); },
   setStage: function (b) { return call('setStage', b.id, b.stage).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); }); },
-  convertProspect: function (b) { return call('convertProspect', b.id).then(function (r) { upsert('prospects', r.prospect); upsert('clients', r.client); if (r.tasks) S.d.tasks = r.tasks; if (r.quotes) S.d.quotes = r.quotes; if (can('clients')) go('client/' + r.client.id, { created: '1' }); else return 'Won. ' + r.client.name + ' is now a client.'; }); },
+  convertProspect: function (b) { return call('convertProspect', b.id).then(function (r) { cheer('big', null, 'Deal won! ' + r.client.name + ' is now a client. Brilliant work.'); upsert('prospects', r.prospect); upsert('clients', r.client); if (r.tasks) S.d.tasks = r.tasks; if (r.quotes) S.d.quotes = r.quotes; if (can('clients')) go('client/' + r.client.id, { created: '1' }); else return 'Won. ' + r.client.name + ' is now a client.'; }); },
   deleteProspect: function (b) { return call('deleteProspect', b.id).then(function () { drop('prospects', b.id); S.d.tasks = S.d.tasks.filter(function (t) { return t.prospectId !== b.id || t.clientId; }); go('pipeline'); }); },
-  setTaskStatus: function (b) { return call('setTaskStatus', b.id, b.status).then(function (t) { upsert('tasks', t); }); },
+  setTaskStatus: function (b, el) { return call('setTaskStatus', b.id, b.status).then(function (t) { upsert('tasks', t); if (t.status === 'done') cheer('task', el); }); },
   deleteTask: function (b) { return call('deleteTask', b.id).then(function () { drop('tasks', b.id); go('tasks'); }); },
   createRetainerInvoice: function (b) { return call('createRetainerInvoice', b.id).then(function (r) { upsert('invoices', r.invoice); upsert('clients', r.client); go('invoice/' + r.invoice.id); }); },
   voidInvoice: function (b) { return call('voidInvoice', b.id).then(function (i) { upsert('invoices', i); return 'Invoice cancelled.'; }); },
