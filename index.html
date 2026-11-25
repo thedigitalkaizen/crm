@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Kaizen CRM</title>
+<title>AdKaizen CRM</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -648,7 +648,7 @@ function shell(content, r) {
   var nav = links.map(function (l) { return '<a href="' + link(l[0]) + '"' + (top === l[0] ? ' aria-current="page"' : '') + '>' + esc(l[1]) + '</a>'; }).join('');
   var me = D().me || {};
   var sub = isClient() ? (D().client || {}).name : isOwner() ? 'Owner' : teamName(me.perms).replace(/^Custom: .*/, 'Team');
-  return '<div class="shell"><aside class="side"><div class="brand"><img src="logo-on-dark.svg" alt="The Kaizen Agency"><p class="tag">' + (isClient() ? 'Client dashboard' : 'Agency CRM') + '</p></div>' +
+  return '<div class="shell"><aside class="side"><div class="brand"><img src="logo-on-dark.svg" alt="AdKaizen"><p class="tag">' + (isClient() ? 'Client dashboard' : 'Agency CRM') + '</p></div>' +
     '<nav aria-label="Main">' + nav + '</nav><div class="foot"><div><div class="who">' + esc(me.name) + '</div><div>' + esc(sub) + '</div></div>' +
     '<a href="' + link('account') + '" style="color:#c9cfe0;font-size:13px;display:block;margin-top:6px">Password</a>' +
     '<button type="button" data-act="logout">Sign out</button></div></aside><main class="main">' + content + '</main></div>';
@@ -675,14 +675,14 @@ function sumByCur(rows, key) { var m = {}; rows.forEach(function (r) { m[r.curre
 
 /* ---------- auth screens ---------- */
 function authBox(title, sub, inner) {
-  return '<div class="auth"><div class="box"><img class="logo" src="logo-color.svg" alt="The Kaizen Agency"><div class="card"><h1>' + esc(title) + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + inner + '</div></div></div>';
+  return '<div class="auth"><div class="box"><img class="logo" src="logo-color.svg" alt="AdKaizen"><div class="card"><h1>' + esc(title) + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + inner + '</div></div></div>';
 }
 function viewLogin() {
   if (S.token && S.d) { go(''); return ''; }
-  return authBox('Sign in', 'Kaizen CRM and client dashboard.', form('login', 'login',
+  return authBox('Sign in', 'AdKaizen CRM and client dashboard.', form('login', 'login',
     '<label>Email<input name="email" type="email" autocomplete="email" required></label>' +
     '<label>Password<input name="password" type="password" autocomplete="current-password" required></label>' + submit('Sign in')) +
-    '<p class="below">New client? Use the invite link Kaizen sent you. Forgot your password? Ask your Kaizen contact for a new invite.</p>');
+    '<p class="below">New client? Use the invite link AdKaizen sent you. Forgot your password? Ask your AdKaizen contact for a new invite.</p>');
 }
 function viewSetup(r) {
   return authBox('Create the owner account', 'This is done once. The owner sees everything, including money.', form('setup', 'setup',
@@ -698,9 +698,9 @@ function viewInvite(r) {
     return '<div class="loading">Checking your invite…</div>';
   }
   if (inf.loading) return '<div class="loading">Checking your invite…</div>';
-  if (inf.err || !inf.v) return authBox('Invite not valid', 'This link has expired or was already used. Ask Kaizen for a new one.', '<p style="margin-top:14px"><a href="' + link('login') + '">Go to sign in</a></p>');
+  if (inf.err || !inf.v) return authBox('Invite not valid', 'This link has expired or was already used. Ask AdKaizen for a new one.', '<p style="margin-top:14px"><a href="' + link('login') + '">Go to sign in</a></p>');
   var v = inf.v;
-  return authBox(v.role === 'staff' ? 'Join the Kaizen team' : 'Welcome' + (v.clientName ? ', ' + v.clientName : ''), 'Set a password for <strong>' + esc(v.email) + '</strong>.', form('acceptInvite', 'acceptInvite',
+  return authBox(v.role === 'staff' ? 'Join the AdKaizen team' : 'Welcome' + (v.clientName ? ', ' + v.clientName : ''), 'Set a password for <strong>' + esc(v.email) + '</strong>.', form('acceptInvite', 'acceptInvite',
     '<input type="hidden" name="token" value="' + esc(token) + '"><label>Your name<input name="name" value="' + esc(v.name) + '" required maxlength="120"></label>' +
     '<label>Password<input name="password" type="password" minlength="10" required autocomplete="new-password"><span class="hint">At least 10 characters.</span></label>' + submit('Set password and open dashboard')));
 }
@@ -1722,7 +1722,7 @@ function chart(title, pts, kind, fmt) {
 function performance(rows, cur, channel, base) {
   var chans = Object.keys(rows.reduce(function (o, r) { o[r.channel] = 1; return o; }, {}));
   var t = totals(rows, channel).slice(-12), c = t[t.length - 1], p = t[t.length - 2];
-  if (!c) return '<div class="card"><div class="empty">No results yet. Your Kaizen team adds them every month.</div></div>';
+  if (!c) return '<div class="card"><div class="empty">No results yet. Your AdKaizen team adds them every month.</div></div>';
   var one = plain(1, cur), cm = function (v) { return money(Math.round(v), cur, true); };
   var change = p && p.leads ? (c.leads === p.leads ? ', the same as last month' : ', ' + nf.format(Math.abs(c.leads - p.leads)) + ' ' + (c.leads > p.leads ? 'more' : 'fewer') + ' than ' + fmtMonth(p.month).split(' ')[0]) : '';
   var sep = base.indexOf('?') >= 0 ? '&' : '?';
@@ -1767,7 +1767,7 @@ function portalHome() {
     '<div class="grid-2" style="margin-bottom:16px"><section class="card"><div class="card-head"><h2>Next bill</h2>' + (next ? badge(invState(next), INV_WORD[invState(next)]) : '') + '</div>' +
     (next ? '<p style="font-family:var(--font-head);font-size:26px;font-weight:600" class="num">' + money(next.amountMinor, next.currency) + '</p><p class="muted" style="margin-bottom:14px">Pay by ' + fmtDate(next.dueDate) + ' · ' + (next.kind === 'retainer' && next.periodStart ? 'Monthly service, ' + fmtDate(next.periodStart) + ' to ' + fmtDate(next.periodEnd) : esc(next.description)) + ' · <a href="' + link('invoice/' + next.id) + '">View invoice</a></p>' +
       '<p class="notice info" style="font-size:13.5px">Please pay by bank transfer. The details are on the <a href="' + link('invoice/' + next.id) + '">invoice</a>.</p>' : '<p class="muted">Nothing to pay right now. You\'re all up to date.</p>') + '</section>' +
-    '<section class="card"><div class="card-head"><h2>What Kaizen does for you</h2></div><dl class="kv"><dt>Plan</dt><dd>' + esc(c.planName) + '</dd><dt>Our fee</dt><dd>' + (c.retainerMinor ? money(c.retainerMinor, c.currency) + ' / ' + c.billingCycle.replace('ly', '') : '—') + '</dd><dt>Services</dt><dd>' + (esc(c.services) || '—') + '</dd></dl></section></div>' +
+    '<section class="card"><div class="card-head"><h2>What AdKaizen does for you</h2></div><dl class="kv"><dt>Plan</dt><dd>' + esc(c.planName) + '</dd><dt>Our fee</dt><dd>' + (c.retainerMinor ? money(c.retainerMinor, c.currency) + ' / ' + c.billingCycle.replace('ly', '') : '—') + '</dd><dt>Services</dt><dd>' + (esc(c.services) || '—') + '</dd></dl></section></div>' +
     '<div class="card-head"><h2>Your results</h2><a href="' + link('results') + '">See all results</a></div>' + performance(d.metrics, c.currency, 'all', link('results'));
 }
 function portalLeads(r) {
@@ -1785,7 +1785,7 @@ function portalLead(id) {
 }
 function portalInvoices() {
   var list = D().invoices.slice().sort(function (a, b) { return a.dueDate < b.dueDate ? 1 : -1; });
-  return head('Invoices & payments', 'Every bill from Kaizen. Open one to download it as a PDF.') + '<div class="card" style="padding:0">' + (list.length ? invoiceTable(list, false) : '<div class="empty">No invoices yet.</div>') + '</div>';
+  return head('Invoices & payments', 'Every bill from AdKaizen. Open one to download it as a PDF.') + '<div class="card" style="padding:0">' + (list.length ? invoiceTable(list, false) : '<div class="empty">No invoices yet.</div>') + '</div>';
 }
 function portalInvoice(id, r) {
   var inv = byId('invoices', id);
