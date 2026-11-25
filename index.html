@@ -464,6 +464,15 @@ section.card + section.card, .hero + section.card { margin-bottom: 16px; }
 .anim .todo li:first-child, .anim .wins li:first-child { animation-delay: .28s; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (max-width: 640px) { .hero-day { width: 100%; } .pod { width: 30%; } .goals { grid-template-columns: 1fr; } }
+/* pipeline: approve & send booking link */
+.book-card.fresh { border-color: var(--royal); box-shadow: 0 0 0 3px var(--royal-soft); }
+.book-head { display: flex; gap: 12px; align-items: flex-start; }
+.book-head h3 { margin: 0; }
+.book-head p { margin: 4px 0 0; }
+.book-ico { flex: none; width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--royal-soft); font-size: 18px; }
+.book-note { display: block; margin-top: 14px; }
+.book-note textarea { min-height: 64px; }
+.book-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-top: 12px; }
 </style>
 </head>
 <body>
@@ -1399,6 +1408,17 @@ function viewPipeline(r) {
     (show ? '<div class="card" style="padding:0">' + (closed.length ? '<div class="table-wrap"><table><thead><tr><th style="padding-left:20px">Business</th><th>Came from</th><th>Fee</th><th>Handled by</th><th>' + (show === 'lost' ? 'Why lost' : 'Client') + '</th><th>Updated</th></tr></thead><tbody>' +
       closed.map(function (p) { return '<tr><td style="padding-left:20px"><a href="' + link('prospect/' + p.id) + '"><strong>' + esc(p.company || p.name) + '</strong></a></td><td class="muted">' + esc(PROSPECT_SOURCES[p.source] || p.source) + '</td><td>' + (p.valueMinor ? money(p.valueMinor, p.currency) : '—') + '</td><td>' + (esc(userName(p.ownerId)) || '—') + '</td><td>' + (show === 'lost' ? (esc(p.lostReason) || '<span class="muted">—</span>') : p.clientId ? (can('clients') ? '<a href="' + link('client/' + p.clientId) + '">Open client</a>' : 'Now a client') : '<span class="muted">Not set up yet</span>') + '</td><td>' + fmtDate(p.updatedAt) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<div class="empty">None yet.</div>') + '</div>' : '');
 }
+function bookingCard(p) {
+  if (p.clientId || p.stage === 'won' || p.stage === 'lost') return '';
+  var fresh = p.stage === 'new';
+  var link = D().agency.bookingUrl || '';
+  if (!p.email) return '<section class="card book-card"><h3>Send the booking link</h3><p class="muted" style="margin:6px 0 0">Add their email under "Edit details" to send the calendar link from here.</p></section>';
+  return '<section class="card book-card' + (fresh ? ' fresh' : '') + '"><div class="book-head"><span class="book-ico" aria-hidden="true">&#128197;</span><div><h3>' + (fresh ? 'Happy with this company?' : 'Send the booking link again') + '</h3>' +
+    '<p class="muted">' + (fresh ? 'Check their website' + (p.source === 'website' ? ' (in the notes)' : '') + '. If they look right, send them your calendar link in a branded email.' : 'Emails your calendar link to ' + esc(p.email) + '.') + '</p></div></div>' +
+    form('sendBookingLink', 'sendBookingLink', '<input type="hidden" name="id" value="' + esc(p.id) + '">' +
+      '<label class="book-note">Personal note <span class="muted">(optional, shown in the email)</span><textarea name="note" maxlength="600" rows="2" placeholder="e.g. Loved your Instagram. Let\'s talk about filling your next intake."></textarea></label>' +
+      '<div class="book-row">' + submit('&#9993; Approve &amp; send booking link') + '<span class="hint">To ' + esc(p.email) + (link ? ' · <a href="' + esc(link) + '" target="_blank" rel="noopener">check link</a>' : '') + '</span></div>') + '</section>';
+}
 function viewProspect(id) {
   var p = byId('prospects', id);
   if (!p) return head('Not found', '<a href="' + link('pipeline') + '">Back to the pipeline</a>');
@@ -1410,6 +1430,7 @@ function viewProspect(id) {
     '<div class="grid-2" style="align-items:start"><div class="stack"><section class="card"><dl class="kv"><dt>Contact</dt><dd>' + (esc(p.name) || '—') + '</dd><dt>Phone</dt><dd>' + (p.phone ? '<a href="tel:' + tel(p.phone) + '">' + esc(p.phone) + '</a>' + wa(p.phone) : '—') + '</dd>' +
     '<dt>Email</dt><dd>' + (p.email ? '<a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a>' : '—') + '</dd><dt>Came from</dt><dd>' + esc(PROSPECT_SOURCES[p.source] || p.source || '—') + '</dd>' +
     '<dt>Expected fee</dt><dd>' + (p.valueMinor ? money(p.valueMinor, p.currency) + ' / month' : '—') + '</dd><dt>Added</dt><dd>' + fmtDate(p.createdAt) + '</dd>' + (p.stage === 'lost' && p.lostReason ? '<dt>Why lost</dt><dd>' + esc(p.lostReason) + '</dd>' : '') + '</dl></section>' +
+    bookingCard(p) +
     '<section class="card"><h3 style="margin-bottom:10px">Move to</h3><div class="pill-row">' + moves + '</div>' +
     form('setProspectFollowUp', 'setProspectFollowUp', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div class="form-row" style="margin-top:16px"><label>Next follow-up<input type="date" name="nextFollowUp" value="' + esc(p.nextFollowUp) + '"></label>' + submit('Save date', 'secondary small') + '</div>') +
     (p.stage !== 'lost' && !p.clientId ? '<details style="margin-top:14px"><summary>They said no</summary>' + form('loseProspect', 'loseProspect', '<input type="hidden" name="id" value="' + esc(p.id) + '"><div class="form-row" style="margin-top:8px"><label>Reason<input name="reason" maxlength="300" placeholder="e.g. Budget too low, chose another agency"></label>' + submit('Mark as lost', 'danger small') + '</div>') + '</details>' : '') + '</section>' +
@@ -1682,6 +1703,7 @@ function viewSettings() {
   var a = D().agency, g = a.goals || {};
   return head('Settings', 'Your agency details, printed on invoices and quotations.') + '<section class="card" style="max-width:760px">' + form('saveSettings', 'saveSettings', '<div class="form-grid">' +
     '<label>Agency name<input name="agencyName" maxlength="120" value="' + esc(a.name) + '"></label><label>Invoice number prefix<input name="invoicePrefix" maxlength="8" value="' + esc(a.invoicePrefix) + '"><span class="hint">Invoices look like ' + esc(a.invoicePrefix) + '-2026-0001.</span></label>' +
+    '<label class="full">Booking link (Google Calendar)<input name="bookingUrl" type="url" maxlength="300" value="' + esc(a.bookingUrl) + '"><span class="hint">Sent by the "Approve &amp; send booking link" button in the Sales pipeline.</span></label>' +
     '<label>Email on invoices<input name="agencyEmail" type="email" maxlength="200" value="' + esc(a.email) + '"></label><label>Phone<input name="agencyPhone" maxlength="40" value="' + esc(a.phone) + '"></label>' +
     '<label class="full">Address<textarea name="agencyAddress" maxlength="600">' + esc(a.address) + '</textarea></label>' +
     '<label class="full">Bank details for clients<textarea name="bankDetails" maxlength="800" placeholder="Account name, bank, account number, IFSC / IBAN">' + esc(a.bankDetails) + '</textarea><span class="hint">Shown on unpaid invoices.</span></label>' +
@@ -1829,6 +1851,7 @@ var FORMS = {
   saveProspect: function (o) { return call('saveProspect', o).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); return o.id ? 'Saved.' : 'Added to the pipeline.'; }); },
   setProspectFollowUp: function (o) { return call('setProspectFollowUp', o.id, o.nextFollowUp).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); return 'Saved.'; }); },
   loseProspect: function (o) { return call('setStage', o.id, 'lost', o.reason).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); return 'Marked as lost.'; }); },
+  sendBookingLink: function (o) { return call('sendBookingLink', o.id, o.note).then(function (p) { upsert('prospects', p); refreshNotes('prospect', p.id); cheer('task', null, 'Booking link sent to ' + p.email + '.'); return 'Booking link sent. Follow-up set for 2 days from now.'; }); },
   saveTask: function (o) { return call('saveTask', o).then(function (t) { upsert('tasks', t); return o.id ? 'Saved.' : 'Task added.'; }); },
   createInvoice: function (o, fd) { return call('createInvoice', { clientId: o.clientId, title: o.title, dueDate: o.dueDate, notes: o.notes, items: lines(fd) }).then(function (i) { upsert('invoices', i); go('invoice/' + i.id); }); },
   markInvoicePaid: function (o) { return call('markInvoicePaid', o.id, o.ref).then(function (i) { upsert('invoices', i); cheer('paid', null, 'Paid! ' + money(i.amountMinor, i.currency) + ' from ' + clientName(i.clientId) + '.'); return 'Marked as paid. The client sees it as paid now.'; }); },
