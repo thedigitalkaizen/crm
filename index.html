@@ -689,15 +689,15 @@ function authBox(title, sub, inner) {
 function viewLogin() {
   if (S.token && S.d) { go(''); return ''; }
   return authBox('Sign in', 'AdKaizen CRM and client dashboard.', form('login', 'login',
-    '<label>Email<input name="email" type="email" autocomplete="email" required></label>' +
+    '<label>Username or email<input name="email" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>' +
     '<label>Password<input name="password" type="password" autocomplete="current-password" required></label>' + submit('Sign in')) +
     '<p class="below">New client? Use the invite link AdKaizen sent you. Forgot your password? Ask your AdKaizen contact for a new invite.</p>');
 }
 function viewSetup(r) {
-  return authBox('Create the owner account', 'This is done once. The owner sees everything, including money.', form('setup', 'setup',
+  return authBox('Owner login', 'Choose the name, username and password the owner signs in with. The owner sees everything, including money.', form('setup', 'setup',
     '<input type="hidden" name="key" value="' + esc(r.parts[1] || '') + '">' +
-    '<label>Your name<input name="name" required maxlength="120"></label><label>Email<input name="email" type="email" required></label>' +
-    '<label>Password<input name="password" type="password" minlength="10" required autocomplete="new-password"><span class="hint">At least 10 characters.</span></label>' + submit('Create owner account')));
+    '<label>Your name<input name="name" required maxlength="120"></label><label>Username<input name="email" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="200" required><span class="hint">What you type to sign in, like adkaizen. An email works too.</span></label>' +
+    '<label>Password<input name="password" type="password" minlength="10" required autocomplete="new-password"><span class="hint">At least 10 characters.</span></label>' + submit('Save owner login')));
 }
 function viewInvite(r) {
   var token = r.parts[1] || '', inf = S.inviteInfo;
